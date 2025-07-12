@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Rutas - Imágenes Panel Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .test-item { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .test-item img { max-width: 200px; max-height: 200px; border: 1px solid #ddd; margin: 10px 0; }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test de Rutas - Imágenes Panel Admin</h1>
+    
+    <div class="test-item">
+        <h3>Test 1: Ruta desde html/ (como el panel admin)</h3>
+        <p>Ruta: ../IMAGENES/placeholder-simple.svg</p>
+        <img src="../IMAGENES/placeholder-simple.svg" alt="Placeholder desde html/" 
+             onload="this.nextSibling.className='success'; this.nextSibling.innerHTML='✅ Imagen cargada correctamente'"
+             onerror="this.nextSibling.className='error'; this.nextSibling.innerHTML='❌ Error cargando imagen'">
+        <div class="warning">⏳ Cargando...</div>
+    </div>
+    
+    <div class="test-item">
+        <h3>Test 2: Ruta absoluta</h3>
+        <p>Ruta: /IMAGENES/placeholder-simple.svg</p>
+        <img src="/IMAGENES/placeholder-simple.svg" alt="Placeholder absoluto" 
+             onload="this.nextSibling.className='success'; this.nextSibling.innerHTML='✅ Imagen cargada correctamente'"
+             onerror="this.nextSibling.className='error'; this.nextSibling.innerHTML='❌ Error cargando imagen'">
+        <div class="warning">⏳ Cargando...</div>
+    </div>
+    
+    <div class="test-item">
+        <h3>Test 3: Placeholder dinámico (Canvas)</h3>
+        <p>Generado con JavaScript</p>
+        <img id="dynamicPlaceholder" alt="Placeholder dinámico" 
+             onload="this.nextSibling.className='success'; this.nextSibling.innerHTML='✅ Imagen cargada correctamente'"
+             onerror="this.nextSibling.className='error'; this.nextSibling.innerHTML='❌ Error cargando imagen'">
+        <div class="warning">⏳ Cargando...</div>
+    </div>
+    
+    <div class="test-item">
+        <h3>Test 4: Imagen externa</h3>
+        <p>URL: https://picsum.photos/200/300</p>
+        <img src="https://picsum.photos/200/300" alt="Imagen externa" 
+             onload="this.nextSibling.className='success'; this.nextSibling.innerHTML='✅ Imagen cargada correctamente'"
+             onerror="this.nextSibling.className='error'; this.nextSibling.innerHTML='❌ Error cargando imagen'">
+        <div class="warning">⏳ Cargando...</div>
+    </div>
+    
+    <script>
+        // Generar placeholder dinámico
+        function generatePlaceholder() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 200;
+            canvas.height = 200;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.fillStyle = '#f8f9fa';
+            ctx.fillRect(0, 0, 200, 200);
+            
+            ctx.strokeStyle = '#dee2e6';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(1, 1, 198, 198);
+            
+            ctx.fillStyle = '#6c757d';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Sin imagen', 100, 100);
+            
+            ctx.font = '32px Arial';
+            ctx.fillText('🖼️', 100, 80);
+            
+            return canvas.toDataURL();
+        }
+        
+        // Configurar placeholder dinámico
+        document.getElementById('dynamicPlaceholder').src = generatePlaceholder();
+        
+        // Log de resultados
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                console.log('🔍 Resultados del test de rutas:');
+                document.querySelectorAll('.test-item img').forEach((img, index) => {
+                    const status = img.nextSibling.className;
+                    const message = img.nextSibling.innerHTML;
+                    console.log(`Test ${index + 1}: ${status} - ${message}`);
+                });
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

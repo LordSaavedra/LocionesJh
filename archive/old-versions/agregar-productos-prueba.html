@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Productos de Prueba</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .log {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>➕ Agregar Productos de Prueba</h1>
+    
+    <div class="section">
+        <h2>Agregar productos para ellos</h2>
+        <button class="btn" onclick="addTestProducts()">📦 Agregar 5 Productos de Prueba</button>
+        <button class="btn" onclick="checkProducts()">🔍 Verificar Productos Existentes</button>
+        <div id="status"></div>
+    </div>
+
+    <div class="section">
+        <h2>Log</h2>
+        <button class="btn" onclick="clearLog()">🗑️ Limpiar</button>
+        <div id="log" class="log">Esperando comandos...\n</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+        // Configuración de Supabase
+        const SUPABASE_URL = 'https://xelobsbzytdxrrxgmlta.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbG9ic2J6eXRkeHJyeGdtbHRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAzODUzNTksImV4cCI6MjA2NTk2MTM1OX0.bJL5DsL4pxlQ_FV3jX0ieiW3bYLA-Zf3M2HlNmdMMy4';
+        
+        let supabaseClient = null;
+        
+        // Funciones de logging
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+        
+        function clearLog() {
+            document.getElementById('log').textContent = 'Log limpiado...\n';
+        }
+        
+        function updateStatus(message, type = 'info') {
+            const element = document.getElementById('status');
+            element.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        // Inicializar Supabase
+        function initSupabase() {
+            try {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                log('✅ Cliente de Supabase inicializado');
+                return true;
+            } catch (error) {
+                log('❌ Error inicializando Supabase: ' + error.message);
+                return false;
+            }
+        }
+
+        // Productos de prueba
+        const testProducts = [
+            {
+                nombre: '212 Men',
+                marca: 'Carolina Herrera',
+                categoria: 'para-ellos',
+                precio: 89000,
+                descripcion: 'Fragancia fresca y urbana para el hombre moderno',
+                activo: true,
+                imagen_url: 'https://via.placeholder.com/300x400?text=212+Men'
+            },
+            {
+                nombre: 'Versace Eros Blue',
+                marca: 'Versace',
+                categoria: 'para-ellos',
+                precio: 120000,
+                descripcion: 'Frescura mediterránea con notas aromáticas',
+                activo: true,
+                imagen_url: 'https://via.placeholder.com/300x400?text=Versace+Eros'
+            },
+            {
+                nombre: 'One Million',
+                marca: 'Paco Rabanne',
+                categoria: 'para-ellos',
+                precio: 110000,
+                descripcion: 'El aroma del éxito y la seducción',
+                activo: true,
+                imagen_url: 'https://via.placeholder.com/300x400?text=One+Million'
+            },
+            {
+                nombre: 'Montblanc Legend Night',
+                marca: 'Montblanc',
+                categoria: 'para-ellos',
+                precio: 95000,
+                descripcion: 'Elegancia nocturna y sofisticación',
+                activo: true,
+                imagen_url: 'https://via.placeholder.com/300x400?text=Legend+Night'
+            },
+            {
+                nombre: 'Givenchy Blue Label',
+                marca: 'Givenchy',
+                categoria: 'para-ellos',
+                precio: 85000,
+                descripcion: 'Frescura azul con carácter masculino',
+                activo: true,
+                imagen_url: 'https://via.placeholder.com/300x400?text=Blue+Label'
+            }
+        ];
+
+        async function checkProducts() {
+            log('🔍 Verificando productos existentes...');
+            
+            if (!supabaseClient && !initSupabase()) {
+                updateStatus('Error: No hay conexión a Supabase', 'error');
+                return;
+            }
+            
+            try {
+                const { data, error, count } = await supabaseClient
+                    .from('productos')
+                    .select('*', { count: 'exact' })
+                    .eq('categoria', 'para-ellos');
+                
+                if (error) {
+                    log('❌ Error verificando productos: ' + error.message);
+                    updateStatus(`Error: ${error.message}`, 'error');
+                } else {
+                    log(`✅ ${count} productos encontrados para "para-ellos"`);
+                    updateStatus(`${count} productos encontrados para "para-ellos"`, count > 0 ? 'success' : 'error');
+                    
+                    if (data && data.length > 0) {
+                        data.forEach(product => {
+                            log(`📦 ${product.nombre} - ${product.marca} - $${product.precio}`);
+                        });
+                    }
+                }
+                
+            } catch (error) {
+                log('❌ Error inesperado: ' + error.message);
+                updateStatus(`Error inesperado: ${error.message}`, 'error');
+            }
+        }
+
+        async function addTestProducts() {
+            log('➕ Agregando productos de prueba...');
+            
+            if (!supabaseClient && !initSupabase()) {
+                updateStatus('Error: No hay conexión a Supabase', 'error');
+                return;
+            }
+            
+            try {
+                // Verificar si ya existen productos
+                const { data: existing, error: checkError } = await supabaseClient
+                    .from('productos')
+                    .select('nombre')
+                    .eq('categoria', 'para-ellos');
+                
+                if (checkError) {
+                    log('❌ Error verificando productos existentes: ' + checkError.message);
+                    updateStatus(`Error: ${checkError.message}`, 'error');
+                    return;
+                }
+                
+                if (existing && existing.length > 0) {
+                    log(`⚠️ Ya existen ${existing.length} productos para "para-ellos"`);
+                    updateStatus(`Ya existen ${existing.length} productos. No se agregarán duplicados.`, 'error');
+                    return;
+                }
+                
+                // Agregar productos uno por uno para mejor debugging
+                for (let i = 0; i < testProducts.length; i++) {
+                    const product = testProducts[i];
+                    log(`📦 Agregando producto ${i+1}/${testProducts.length}: ${product.nombre}...`);
+                    
+                    const { data, error } = await supabaseClient
+                        .from('productos')
+                        .insert([product])
+                        .select();
+                    
+                    if (error) {
+                        log(`❌ Error agregando ${product.nombre}: ${error.message}`);
+                    } else {
+                        log(`✅ ${product.nombre} agregado exitosamente (ID: ${data[0]?.id})`);
+                    }
+                    
+                    // Pequeña pausa entre inserciones
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                
+                log('🎉 Proceso de agregado completado');
+                updateStatus('Productos de prueba agregados exitosamente', 'success');
+                
+                // Verificar resultado final
+                setTimeout(checkProducts, 500);
+                
+            } catch (error) {
+                log('❌ Error inesperado: ' + error.message);
+                updateStatus(`Error inesperado: ${error.message}`, 'error');
+            }
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Iniciando herramienta de productos de prueba...');
+            initSupabase();
+        });
+    </script>
+</body>
+</html>

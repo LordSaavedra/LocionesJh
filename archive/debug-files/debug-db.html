@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug DB - Verificar Productos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .log {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug Base de Datos - Verificar Productos</h1>
+    
+    <div class="section">
+        <h2>Estado de la conexión</h2>
+        <div id="connection-status">Verificando...</div>
+        <button class="btn" onclick="testConnection()">🔗 Probar Conexión</button>
+    </div>
+
+    <div class="section">
+        <h2>Todos los productos en la base de datos</h2>
+        <button class="btn" onclick="loadAllProducts()">📦 Cargar Todos los Productos</button>
+        <div id="all-products-status"></div>
+        <div id="all-products-table"></div>
+    </div>
+
+    <div class="section">
+        <h2>Análisis de categorías</h2>
+        <button class="btn" onclick="analyzeCategories()">📊 Analizar Categorías</button>
+        <div id="categories-analysis"></div>
+    </div>
+
+    <div class="section">
+        <h2>Agregar producto de prueba</h2>
+        <button class="btn" onclick="addTestProduct()">➕ Agregar Producto de Prueba (Para Ellos)</button>
+        <div id="add-product-status"></div>
+    </div>
+
+    <div class="section">
+        <h2>Log</h2>
+        <button class="btn" onclick="clearLog()">🗑️ Limpiar</button>
+        <div id="log" class="log">Esperando comandos...\n</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+        // Configuración de Supabase
+        const SUPABASE_URL = 'https://xelobsbzytdxrrxgmlta.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbG9ic2J6eXRkeHJyeGdtbHRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAzODUzNTksImV4cCI6MjA2NTk2MTM1OX0.bJL5DsL4pxlQ_FV3jX0ieiW3bYLA-Zf3M2HlNmdMMy4';
+        
+        let supabaseClient = null;
+        
+        // Funciones de logging
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+        
+        function clearLog() {
+            document.getElementById('log').textContent = 'Log limpiado...\n';
+        }
+        
+        function updateStatus(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        // Inicializar Supabase
+        function initSupabase() {
+            try {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                log('✅ Cliente de Supabase inicializado');
+                return true;
+            } catch (error) {
+                log('❌ Error inicializando Supabase: ' + error.message);
+                return false;
+            }
+        }
+
+        async function testConnection() {
+            log('🔗 Probando conexión a Supabase...');
+            
+            if (!supabaseClient) {
+                if (!initSupabase()) {
+                    updateStatus('connection-status', 'Error: No se pudo inicializar Supabase', 'error');
+                    return;
+                }
+            }
+            
+            try {
+                // Probar consulta simple
+                const { data, error, count } = await supabaseClient
+                    .from('productos')
+                    .select('id', { count: 'exact' })
+                    .limit(1);
+                
+                if (error) {
+                    log('❌ Error en la consulta: ' + error.message);
+                    updateStatus('connection-status', `Error: ${error.message}`, 'error');
+                } else {
+                    log(`✅ Conexión exitosa. Total de productos: ${count}`);
+                    updateStatus('connection-status', `Conexión exitosa. ${count} productos en total.`, 'success');
+                }
+            } catch (error) {
+                log('❌ Error de conexión: ' + error.message);
+                updateStatus('connection-status', `Error de conexión: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadAllProducts() {
+            log('📦 Cargando todos los productos...');
+            
+            if (!supabaseClient && !initSupabase()) {
+                updateStatus('all-products-status', 'Error: No hay conexión a Supabase', 'error');
+                return;
+            }
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('productos')
+                    .select('*')
+                    .order('id');
+                
+                if (error) {
+                    log('❌ Error cargando productos: ' + error.message);
+                    updateStatus('all-products-status', `Error: ${error.message}`, 'error');
+                    return;
+                }
+                
+                log(`✅ ${data.length} productos cargados`);
+                updateStatus('all-products-status', `${data.length} productos cargados`, 'success');
+                
+                // Mostrar tabla de productos
+                if (data.length > 0) {
+                    let html = '<table><thead><tr>';
+                    html += '<th>ID</th><th>Nombre</th><th>Marca</th><th>Categoría</th><th>Precio</th><th>Activo</th><th>Imagen</th>';
+                    html += '</tr></thead><tbody>';
+                    
+                    data.forEach(product => {
+                        html += '<tr>';
+                        html += `<td>${product.id || 'N/A'}</td>`;
+                        html += `<td>${product.nombre || 'N/A'}</td>`;
+                        html += `<td>${product.marca || 'N/A'}</td>`;
+                        html += `<td>${product.categoria || 'N/A'}</td>`;
+                        html += `<td>$${product.precio || 'N/A'}</td>`;
+                        html += `<td>${product.activo ? '✅' : '❌'}</td>`;
+                        html += `<td>${product.imagen_url ? '🖼️' : '❌'}</td>`;
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                    document.getElementById('all-products-table').innerHTML = html;
+                } else {
+                    document.getElementById('all-products-table').innerHTML = '<p>No hay productos en la base de datos.</p>';
+                }
+                
+            } catch (error) {
+                log('❌ Error inesperado: ' + error.message);
+                updateStatus('all-products-status', `Error inesperado: ${error.message}`, 'error');
+            }
+        }
+
+        async function analyzeCategories() {
+            log('📊 Analizando categorías...');
+            
+            if (!supabaseClient && !initSupabase()) {
+                updateStatus('categories-analysis', 'Error: No hay conexión a Supabase', 'error');
+                return;
+            }
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('productos')
+                    .select('categoria');
+                
+                if (error) {
+                    log('❌ Error analizando categorías: ' + error.message);
+                    updateStatus('categories-analysis', `Error: ${error.message}`, 'error');
+                    return;
+                }
+                
+                // Contar categorías
+                const categoryCounts = {};
+                data.forEach(product => {
+                    const cat = product.categoria || 'Sin categoría';
+                    categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+                });
+                
+                log(`✅ Análisis completo. ${Object.keys(categoryCounts).length} categorías encontradas`);
+                
+                let html = '<h4>Distribución de categorías:</h4><table>';
+                html += '<thead><tr><th>Categoría</th><th>Cantidad</th></tr></thead><tbody>';
+                
+                Object.entries(categoryCounts)
+                    .sort(([,a], [,b]) => b - a)
+                    .forEach(([category, count]) => {
+                        html += `<tr><td>${category}</td><td>${count}</td></tr>`;
+                    });
+                
+                html += '</tbody></table>';
+                document.getElementById('categories-analysis').innerHTML = html;
+                
+                // Log de categorías encontradas
+                Object.entries(categoryCounts).forEach(([cat, count]) => {
+                    log(`📂 ${cat}: ${count} productos`);
+                });
+                
+            } catch (error) {
+                log('❌ Error inesperado: ' + error.message);
+                updateStatus('categories-analysis', `Error inesperado: ${error.message}`, 'error');
+            }
+        }
+
+        async function addTestProduct() {
+            log('➕ Agregando producto de prueba...');
+            
+            if (!supabaseClient && !initSupabase()) {
+                updateStatus('add-product-status', 'Error: No hay conexión a Supabase', 'error');
+                return;
+            }
+            
+            const testProduct = {
+                nombre: 'Test Fragancia Masculina',
+                marca: 'Test Brand',
+                categoria: 'para-ellos',
+                precio: 150000,
+                descripcion: 'Producto de prueba para verificar la funcionalidad',
+                activo: true,
+                imagen_url: 'https://via.placeholder.com/300x400?text=Test+Product'
+            };
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('productos')
+                    .insert([testProduct])
+                    .select();
+                
+                if (error) {
+                    log('❌ Error agregando producto: ' + error.message);
+                    updateStatus('add-product-status', `Error: ${error.message}`, 'error');
+                } else {
+                    log('✅ Producto de prueba agregado exitosamente');
+                    log('📦 Producto agregado: ' + JSON.stringify(data[0], null, 2));
+                    updateStatus('add-product-status', 'Producto de prueba agregado exitosamente', 'success');
+                }
+                
+            } catch (error) {
+                log('❌ Error inesperado: ' + error.message);
+                updateStatus('add-product-status', `Error inesperado: ${error.message}`, 'error');
+            }
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Iniciando debug de base de datos...');
+            
+            setTimeout(() => {
+                testConnection();
+            }, 100);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargar Productos - Perfumería</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 900px; 
+            margin: 20px auto; 
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+        
+        button:hover { background: #2980b9; }
+        
+        .btn-success { background: #27ae60; }
+        .btn-success:hover { background: #219a52; }
+        
+        .btn-warning { background: #f39c12; }
+        .btn-warning:hover { background: #e67e22; }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .productos-list {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .producto-item {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛍️ Cargar Productos a Supabase</h1>
+            <p>Gestiona tu catálogo de perfumes</p>
+        </div>
+
+        <!-- Estado de conexión -->
+        <div id="status" class="status loading">
+            Verificando conexión a Supabase...
+        </div>
+
+        <div class="grid">
+            <!-- Formulario para agregar producto -->
+            <div>
+                <h3>➕ Agregar Producto Individual</h3>
+                <form id="producto-form">
+                    <div class="form-group">
+                        <label for="nombre">Nombre del Producto *</label>
+                        <input type="text" id="nombre" required placeholder="Ej: Chanel N°5">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="marca">Marca *</label>
+                        <input type="text" id="marca" required placeholder="Ej: Chanel">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="categoria">Categoría *</label>
+                        <select id="categoria" required>
+                            <option value="">Seleccionar categoría</option>
+                            <option value="para-ellos">Para Ellos</option>
+                            <option value="para-ellas">Para Ellas</option>
+                            <option value="unisex">Unisex</option>
+                            <option value="clasicas">Clásicas</option>
+                            <option value="vintage">Vintage</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="precio">Precio (COP) *</label>
+                        <input type="number" id="precio" required placeholder="89000" min="0" step="1000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="imagen">URL/Ruta de la Imagen</label>
+                        <input type="text" id="imagen" placeholder="IMAGENES/producto.jpg">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <textarea id="descripcion" placeholder="Descripción del producto..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-success">🆕 Agregar Producto</button>
+                </form>
+            </div>
+
+            <!-- Acciones rápidas -->
+            <div>
+                <h3>⚡ Acciones Rápidas</h3>
+                
+                <button onclick="cargarProductosBase()" class="btn-warning" style="width: 100%; margin-bottom: 15px;">
+                    🚚 Cargar Productos Base (5 productos)
+                </button>
+                
+                <button onclick="verificarTablas()" style="width: 100%; margin-bottom: 15px;">
+                    🔍 Verificar Tablas
+                </button>
+                
+                <button onclick="listarProductos()" style="width: 100%; margin-bottom: 15px;">
+                    📋 Ver Productos Existentes
+                </button>
+                
+                <button onclick="window.open('https://xelobsbzytdxrrxgmlta.supabase.co/project/default/editor', '_blank')" style="width: 100%; margin-bottom: 15px;">
+                    🎛️ Panel de Supabase
+                </button>
+                
+                <button onclick="window.open('test-final.html', '_blank')" style="width: 100%;">
+                    🧪 Ir a Tests
+                </button>
+            </div>
+        </div>
+
+        <!-- Lista de productos -->
+        <div id="productos-container" style="display: none;">
+            <h3>📦 Productos en la Base de Datos</h3>
+            <div id="productos-list" class="productos-list"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de Supabase
+        const supabase = window.supabase.createClient(
+            'https://xelobsbzytdxrrxgmlta.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlbG9ic2J6eXRkeHJyeGdtbHRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAzODUzNTksImV4cCI6MjA2NTk2MTM1OX0.bJL5DsL4pxlQ_FV3jX0ieiW3bYLA-Zf3M2HlNmdMMy4'
+        );
+
+        // Estado
+        let statusEl = document.getElementById('status');
+
+        // Verificar conexión al cargar
+        window.addEventListener('load', verificarConexion);
+
+        // Verificar conexión
+        async function verificarConexion() {
+            try {
+                statusEl.className = 'status loading';
+                statusEl.textContent = 'Verificando conexión a Supabase...';
+
+                const { data, error } = await supabase
+                    .from('productos')
+                    .select('count')
+                    .limit(1);
+
+                if (error) {
+                    if (error.code === '42P01') {
+                        statusEl.className = 'status error';
+                        statusEl.innerHTML = `
+                            ❌ Tabla "productos" no existe.<br>
+                            <strong>Solución:</strong> Ve al <a href="https://xelobsbzytdxrrxgmlta.supabase.co/project/default/sql" target="_blank">SQL Editor</a> 
+                            y ejecuta el archivo create-tables-simple.sql
+                        `;
+                        return;
+                    }
+                    throw error;
+                }
+
+                statusEl.className = 'status success';
+                statusEl.textContent = '✅ Conexión exitosa - Listo para agregar productos';
+
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = `❌ Error: ${error.message}`;
+                console.error('Error:', error);
+            }
+        }
+
+        // Verificar tablas
+        async function verificarTablas() {
+            try {
+                const tablas = ['productos', 'categorias', 'marcas'];
+                let resultados = [];
+
+                for (const tabla of tablas) {
+                    try {
+                        const { data, error } = await supabase
+                            .from(tabla)
+                            .select('count')
+                            .limit(1);
+
+                        if (error) {
+                            resultados.push(`❌ ${tabla}: ${error.message}`);
+                        } else {
+                            resultados.push(`✅ ${tabla}: OK`);
+                        }
+                    } catch (err) {
+                        resultados.push(`❌ ${tabla}: ${err.message}`);
+                    }
+                }
+
+                alert('Estado de las tablas:\n\n' + resultados.join('\n'));
+            } catch (error) {
+                alert('Error verificando tablas: ' + error.message);
+            }
+        }
+
+        // Formulario de producto
+        document.getElementById('producto-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const producto = {
+                nombre: document.getElementById('nombre').value,
+                marca: document.getElementById('marca').value,
+                categoria: document.getElementById('categoria').value,
+                precio: parseFloat(document.getElementById('precio').value),
+                imagen: document.getElementById('imagen').value || null,
+                descripcion: document.getElementById('descripcion').value || null
+            };
+
+            try {
+                statusEl.className = 'status loading';
+                statusEl.textContent = 'Agregando producto...';
+
+                const { data, error } = await supabase
+                    .from('productos')
+                    .insert([producto])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                statusEl.className = 'status success';
+                statusEl.textContent = `✅ Producto "${data.nombre}" agregado correctamente`;
+
+                // Limpiar formulario
+                document.getElementById('producto-form').reset();
+
+                // Actualizar lista
+                setTimeout(listarProductos, 1000);
+
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = `❌ Error agregando producto: ${error.message}`;
+                console.error('Error:', error);
+            }
+        });
+
+        // Cargar productos base
+        async function cargarProductosBase() {
+            const productos = [
+                {
+                    nombre: '212 Men Carolina Herrera',
+                    marca: 'Carolina Herrera',
+                    categoria: 'para-ellos',
+                    precio: 89000,
+                    imagen: 'LOCIONES_PARA _ELLOS/212_CAROLINA_HERRERA.png',
+                    descripcion: 'Fragancia fresca y urbana para el hombre moderno'
+                },
+                {
+                    nombre: 'Versace Eros Blue',
+                    marca: 'Versace',
+                    categoria: 'para-ellos',
+                    precio: 120000,
+                    imagen: 'LOCIONES_PARA _ELLOS/VERSACE_EROS_BLUE.png',
+                    descripcion: 'Frescura mediterránea con notas aromáticas'
+                },
+                {
+                    nombre: 'One Million Paco Rabanne',
+                    marca: 'Paco Rabanne',
+                    categoria: 'para-ellos',
+                    precio: 110000,
+                    imagen: 'LOCIONES_PARA _ELLOS/ONE_MILLON_PACO_RABANE.png',
+                    descripcion: 'El aroma del éxito y la seducción'
+                },
+                {
+                    nombre: 'Montblanc Legend Night',
+                    marca: 'Montblanc',
+                    categoria: 'para-ellos',
+                    precio: 95000,
+                    imagen: 'LOCIONES_PARA _ELLOS/MONTBLACK_LEGEND_NIGH.png',
+                    descripcion: 'Elegancia nocturna y sofisticación'
+                },
+                {
+                    nombre: 'Givenchy Blue Label',
+                    marca: 'Givenchy',
+                    categoria: 'para-ellos',
+                    precio: 85000,
+                    imagen: 'LOCIONES_PARA _ELLOS/GIVENCHY_BLUE_LABEL.png',
+                    descripcion: 'Frescura azul con carácter masculino'
+                }
+            ];
+
+            try {
+                statusEl.className = 'status loading';
+                statusEl.textContent = 'Cargando productos base...';
+
+                const { data, error } = await supabase
+                    .from('productos')
+                    .insert(productos)
+                    .select();
+
+                if (error) throw error;
+
+                statusEl.className = 'status success';
+                statusEl.textContent = `✅ ${data.length} productos base cargados correctamente`;
+
+                // Actualizar lista
+                setTimeout(listarProductos, 1000);
+
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = `❌ Error cargando productos: ${error.message}`;
+                console.error('Error:', error);
+            }
+        }
+
+        // Listar productos existentes
+        async function listarProductos() {
+            try {
+                const { data: productos, error } = await supabase
+                    .from('productos')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const container = document.getElementById('productos-container');
+                const lista = document.getElementById('productos-list');
+
+                if (productos.length === 0) {
+                    lista.innerHTML = '<p>No hay productos en la base de datos.</p>';
+                } else {
+                    lista.innerHTML = productos.map(p => `
+                        <div class="producto-item">
+                            <strong>${p.nombre}</strong> - ${p.marca}<br>
+                            <small>Categoría: ${p.categoria} | Precio: $${p.precio?.toLocaleString()}</small><br>
+                            <small style="color: #666;">ID: ${p.id} | Creado: ${new Date(p.created_at).toLocaleDateString()}</small>
+                        </div>
+                    `).join('');
+                }
+
+                container.style.display = 'block';
+
+            } catch (error) {
+                alert('Error listando productos: ' + error.message);
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

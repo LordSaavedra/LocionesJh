@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview CSS Admin Panel - Aromes De Dieu</title>
+    
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500;600&family=Italiana&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS del panel actualizado -->
+    <link rel="stylesheet" href="css/admin-panel.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <header class="admin-header">
+            <h1>Panel de Administración</h1>
+            <p>Gestión completa de productos y categorías - Aromes De Dieu</p>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <nav>
+                <ul class="sidebar-menu">
+                    <li>
+                        <a href="#dashboard" class="active">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#productos">
+                            <i class="fas fa-box"></i>
+                            Productos
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#agregar-producto">
+                            <i class="fas fa-plus"></i>
+                            Agregar Producto
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="admin-content">
+            <!-- Dashboard -->
+            <section id="dashboard" class="content-section active">
+                <h2 class="section-title">Dashboard</h2>
+                
+                <div class="dashboard-grid">
+                    <div class="dashboard-card" data-card="total-productos">
+                        <h3>Total Productos</h3>
+                        <div class="number">15</div>
+                        <div class="description">Productos en la base de datos</div>
+                    </div>
+                    
+                    <div class="dashboard-card" data-card="productos-activos">
+                        <h3>Productos Activos</h3>
+                        <div class="number">15</div>
+                        <div class="description">Productos visibles en la tienda</div>
+                    </div>
+                    
+                    <div class="dashboard-card" data-card="total-categorias">
+                        <h3>Categorías</h3>
+                        <div class="number">6</div>
+                        <div class="description">Categorías disponibles</div>
+                    </div>
+                    
+                    <div class="dashboard-card" data-card="total-marcas">
+                        <h3>Marcas</h3>
+                        <div class="number">12</div>
+                        <div class="description">Marcas representadas</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button id="refreshData" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i>
+                        Actualizar Datos
+                    </button>
+                </div>
+            </section>
+
+            <!-- Productos -->
+            <section id="productos" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Gestión de Productos</h2>
+                    <button id="refreshProducts" class="btn btn-secondary">
+                        <i class="fas fa-sync-alt"></i>
+                        Recargar Productos
+                    </button>
+                </div>
+                
+                <div class="products-controls">
+                    <input type="text" id="searchProducts" placeholder="Buscar productos..." class="form-control">
+                </div>
+                
+                <div class="products-grid">
+                    <!-- Producto normal -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/B8860B/FFFFFF?text=Perfume+Normal" alt="Perfume Normal">
+                            <span class="estado-badge estado-disponible">Disponible</span>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Perfume Clásico Elegante</h3>
+                            <p class="product-brand">Marca Premium</p>
+                            <div class="product-price">$120.000</div>
+                            <p class="product-category">Para Ellos</p>
+                            <div class="product-actions">
+                                <button class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Producto en oferta -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/E67E22/FFFFFF?text=En+Oferta" alt="Perfume en Oferta">
+                            <span class="estado-badge estado-oferta">En Oferta</span>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Perfume Especial en Promoción</h3>
+                            <p class="product-brand">Marca de Lujo</p>
+                            <div class="product-price">
+                                <div class="precio-con-descuento">
+                                    <span class="precio-original">$200.000</span>
+                                    <span class="precio-oferta">$140.000</span>
+                                    <span class="descuento-badge">-30%</span>
+                                </div>
+                            </div>
+                            <p class="product-category">Para Ellas</p>
+                            <div class="product-actions">
+                                <button class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Producto agotado -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/E74C3C/FFFFFF?text=Agotado" alt="Perfume Agotado">
+                            <span class="estado-badge estado-agotado">Agotado</span>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Perfume Exclusivo (Sin Stock)</h3>
+                            <p class="product-brand">Edición Limitada</p>
+                            <div class="product-price">$350.000</div>
+                            <p class="product-category">Unisex</p>
+                            <div class="product-actions">
+                                <button class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Producto próximamente -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/3498DB/FFFFFF?text=Pr%C3%B3ximamente" alt="Perfume Próximamente">
+                            <span class="estado-badge estado-proximo">Próximamente</span>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Nueva Fragancia 2025</h3>
+                            <p class="product-brand">Marca Innovadora</p>
+                            <div class="product-price">$180.000</div>
+                            <p class="product-category">Para Ellos</p>
+                            <div class="product-actions">
+                                <button class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Formulario de agregar producto -->
+            <section id="agregar-producto" class="content-section">
+                <h2 class="section-title">Agregar Nuevo Producto</h2>
+                
+                <form id="productForm" class="product-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nombre">Nombre del Producto *</label>
+                            <input type="text" id="nombre" name="nombre" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="marca">Marca *</label>
+                            <input type="text" id="marca" name="marca" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="precio">Precio (COP) *</label>
+                            <input type="number" id="precio" name="precio" required step="1000" min="0" placeholder="Ej: 50000">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="categoria">Categoría *</label>
+                            <select id="categoria" name="categoria" required>
+                                <option value="">Seleccionar categoría</option>
+                                <option value="para-ellos">Para Ellos</option>
+                                <option value="para-ellas">Para Ellas</option>
+                                <option value="unisex">Unisex</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="estado">Estado del Producto *</label>
+                            <select id="estado" name="estado" required>
+                                <option value="disponible">Disponible</option>
+                                <option value="agotado">Agotado</option>
+                                <option value="proximo">Disponible Próximamente</option>
+                                <option value="oferta">En Oferta</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="descuentoGroup" style="display: none;">
+                            <label for="descuento">Descuento (%) *</label>
+                            <input type="number" id="descuento" name="descuento" min="1" max="99" step="1" placeholder="Ej: 15">
+                            <div class="help-text">Porcentaje de descuento sobre el precio original</div>
+                            <div class="precio-info" id="precioInfo" style="display: none;">
+                                <small>Precio original: <span id="precioOriginal">$0</span></small>
+                                <small>Precio con descuento: <span id="precioConDescuento">$0</span></small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <textarea id="descripcion" name="descripcion" rows="4" placeholder="Descripción detallada del producto..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="activo" name="activo" checked>
+                            Producto activo (visible en la tienda)
+                        </label>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Guardar Producto
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-undo"></i>
+                            Limpiar Formulario
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Simular funcionalidad básica de navegación
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remover active de todos los links
+                document.querySelectorAll('.sidebar-menu a').forEach(l => l.classList.remove('active'));
+                // Agregar active al link clickeado
+                this.classList.add('active');
+                
+                // Ocultar todas las secciones
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                
+                // Mostrar la sección correspondiente
+                const targetSection = this.getAttribute('href').substring(1);
+                const section = document.getElementById(targetSection);
+                if (section) {
+                    section.classList.add('active');
+                }
+            });
+        });
+
+        // Simular funcionalidad del formulario de descuento
+        document.getElementById('estado').addEventListener('change', function() {
+            const descuentoGroup = document.getElementById('descuentoGroup');
+            if (this.value === 'oferta') {
+                descuentoGroup.style.display = 'block';
+            } else {
+                descuentoGroup.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

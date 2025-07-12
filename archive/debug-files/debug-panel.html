@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Panel Admin</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        .debug-section { border: 1px solid #ccc; margin: 1rem 0; padding: 1rem; }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+        button { padding: 0.5rem 1rem; margin: 0.5rem; background: #007bff; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug Panel de Administración</h1>
+    
+    <div class="debug-section">
+        <h2>1. Test de Conexión</h2>
+        <div id="connectionResult">Ejecutando...</div>
+        <button onclick="testConnection()">Probar Conexión</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>2. Test de Productos</h2>
+        <div id="productsResult">Ejecutando...</div>
+        <button onclick="testProducts()">Cargar Productos</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>3. Simular Panel de Admin</h2>
+        <div id="simulateResult"></div>
+        <button onclick="simulatePanel()">Simular Navegación</button>
+    </div>
+
+    <script src="js/supabase-config.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', async () => {
+            await testConnection();
+            await testProducts();
+        });
+
+        async function testConnection() {
+            const resultDiv = document.getElementById('connectionResult');
+            let result = '';
+            
+            try {
+                // Test inicialización
+                if (typeof initSupabase === 'function') {
+                    const init = initSupabase();
+                    result += `<p class="${init ? 'success' : 'error'}">Supabase Init: ${init}</p>`;
+                }
+                
+                // Test ProductosService
+                if (typeof ProductosService !== 'undefined') {
+                    result += '<p class="success">✅ ProductosService disponible</p>';
+                    
+                    // Test conexión específica
+                    if (typeof testSupabaseConnection === 'function') {
+                        const connected = await testSupabaseConnection();
+                        result += `<p class="${connected ? 'success' : 'error'}">Conexión DB: ${connected}</p>`;
+                    }
+                } else {
+                    result += '<p class="error">❌ ProductosService NO disponible</p>';
+                }
+                
+            } catch (error) {
+                result += `<p class="error">Error: ${error.message}</p>`;
+            }
+            
+            resultDiv.innerHTML = result;
+        }
+        
+        async function testProducts() {
+            const resultDiv = document.getElementById('productsResult');
+            let result = '';
+            
+            try {
+                if (typeof ProductosService !== 'undefined') {
+                    const productos = await ProductosService.obtenerProductos();
+                    result += `<p class="success">✅ Productos obtenidos: ${productos.length}</p>`;
+                    
+                    // Mostrar algunos productos
+                    productos.slice(0, 3).forEach((p, i) => {
+                        result += `<p>📦 ${i+1}. ${p.nombre} - ${p.marca} - $${p.precio}</p>`;
+                    });
+                    
+                    // Test crear producto
+                    const testProduct = {
+                        nombre: 'Test Debug Product',
+                        marca: 'Debug Brand',
+                        precio: 55000,
+                        categoria: 'para-ellos',
+                        descripcion: 'Producto de prueba para debug',
+                        imagen_url: 'https://via.placeholder.com/300x400/B8860B/FFFFFF?text=Debug',
+                        activo: true
+                    };
+                    
+                    try {
+                        const created = await ProductosService.crearProducto(testProduct);
+                        if (created) {
+                            result += `<p class="success">✅ Producto creado: ID ${created.id}</p>`;
+                        } else {
+                            result += '<p class="warning">⚠️ Crear producto devolvió null</p>';
+                        }
+                    } catch (createError) {
+                        result += `<p class="error">❌ Error creando: ${createError.message}</p>`;
+                    }
+                    
+                } else {
+                    result += '<p class="error">❌ ProductosService no disponible</p>';
+                }
+                
+            } catch (error) {
+                result += `<p class="error">Error: ${error.message}</p>`;
+            }
+            
+            resultDiv.innerHTML = result;
+        }
+        
+        async function simulatePanel() {
+            const resultDiv = document.getElementById('simulateResult');
+            let result = '';
+            
+            try {
+                // Simular creación del panel
+                result += '<p class="success">✅ Simulando AdminPanel...</p>';
+                
+                // Verificar que el selector de productos funcione
+                const mockProducts = [
+                    { id: 1, nombre: 'Test 1', marca: 'Brand 1', precio: 50000, categoria: 'para-ellos', imagen_url: 'https://via.placeholder.com/300' },
+                    { id: 2, nombre: 'Test 2', marca: 'Brand 2', precio: 75000, categoria: 'para-ellas', imagen_url: 'https://via.placeholder.com/300' }
+                ];
+                
+                // Simular renderizado
+                const mockHTML = mockProducts.map(product => `
+                    <div class="product-card">
+                        <h3>${product.nombre}</h3>
+                        <p>${product.marca}</p>
+                        <p>$${product.precio}</p>
+                    </div>
+                `).join('');
+                
+                result += '<p class="success">✅ HTML de productos generado:</p>';
+                result += `<div style="border: 1px solid #ccc; padding: 1rem; background: #f9f9f9;"><pre>${mockHTML}</pre></div>`;
+                
+                // Verificar selectores
+                const productGrid = document.querySelector('.products-grid');
+                result += `<p class="${productGrid ? 'warning' : 'error'}">Selector .products-grid: ${productGrid ? 'Encontrado en esta página (no debería)' : 'No encontrado (correcto)'}</p>`;
+                
+            } catch (error) {
+                result += `<p class="error">Error: ${error.message}</p>`;
+            }
+            
+            resultDiv.innerHTML = result;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Carga de Imagen en Panel Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 4px; font-weight: bold; }
+        .status.success { background-color: #d4edda; color: #155724; }
+        .status.error { background-color: #f8d7da; color: #721c24; }
+        .status.info { background-color: #d1ecf1; color: #0c5460; }
+        .log-container { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 4px; padding: 15px; margin: 10px 0; max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 12px; }
+        .btn { padding: 8px 16px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .counter { display: inline-block; padding: 3px 8px; background: #007bff; color: white; border-radius: 12px; font-size: 12px; margin-left: 5px; }
+        
+        .file-upload-area {
+            border: 2px dashed #ccc;
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+            background: #fafafa;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .file-upload-area:hover {
+            border-color: #007bff;
+            background: #f0f8ff;
+        }
+        .file-upload-area.file-selected {
+            border-color: #28a745;
+            background: #f0fff0;
+        }
+        .file-input { display: none; }
+        .file-upload-label { cursor: pointer; display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Debug - Problema de Duplicación en Panel Admin</h1>
+        <p>Este test diagnostica específicamente por qué se abre dos veces el selector de archivos en el panel real.</p>
+        
+        <div class="test-section">
+            <h3>📊 Contadores de Eventos</h3>
+            <div>
+                <span>Clicks en Área: <span class="counter" id="areaClickCount">0</span></span>
+                <span>Clicks en Input: <span class="counter" id="inputClickCount">0</span></span>
+                <span>Change Events: <span class="counter" id="changeCount">0</span></span>
+                <span>Label Clicks: <span class="counter" id="labelClickCount">0</span></span>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🧪 Test 1: HTML Correcto (Sin for en label)</h3>
+            <div class="file-upload-area" id="correctArea">
+                <input type="file" id="correct_file" accept="image/*" class="file-input">
+                <div class="file-upload-label" id="correctLabel">
+                    <span>📁 Haz clic para seleccionar (CORRECTO)</span>
+                    <div style="font-size: 12px; color: #666;">Sin atributo 'for' en label</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🚨 Test 2: HTML Problemático (Con for en label)</h3>
+            <div class="file-upload-area" id="problemArea">
+                <input type="file" id="problem_file" accept="image/*" class="file-input">
+                <label for="problem_file" class="file-upload-label" id="problemLabel">
+                    <span>📁 Haz clic para seleccionar (PROBLEMÁTICO)</span>
+                    <div style="font-size: 12px; color: #666;">Con atributo 'for' en label</div>
+                </label>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📝 Log de Eventos</h3>
+            <div class="log-container" id="logContainer"></div>
+            <button class="btn btn-primary" onclick="clearLog()">Limpiar Log</button>
+            <button class="btn btn-danger" onclick="resetCounters()">Reset Contadores</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>🎯 Resultados</h3>
+            <div id="results">
+                <div class="status info">Haz click en ambas áreas para comparar el comportamiento</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let counters = {
+            areaClick: 0,
+            inputClick: 0,
+            change: 0,
+            labelClick: 0
+        };
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logContainer = document.getElementById('logContainer');
+            const logEntry = document.createElement('div');
+            const color = type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : type === 'warning' ? '#ffc107' : '#007bff';
+            logEntry.innerHTML = `<span style="color: #666;">[${timestamp}]</span> <span style="color: ${color};">[${type.toUpperCase()}] ${message}</span>`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+        
+        function updateCounter(type) {
+            counters[type]++;
+            document.getElementById(`${type}Count`).textContent = counters[type];
+        }
+        
+        function clearLog() {
+            document.getElementById('logContainer').innerHTML = '';
+        }
+        
+        function resetCounters() {
+            Object.keys(counters).forEach(key => {
+                counters[key] = 0;
+                document.getElementById(`${key}Count`).textContent = '0';
+            });
+            log('🔄 Contadores reseteados');
+        }
+        
+        function setupEvents() {
+            log('🔧 Configurando eventos de debug...');
+            
+            // === CONFIGURACIÓN CORRECTA ===
+            const correctArea = document.getElementById('correctArea');
+            const correctInput = document.getElementById('correct_file');
+            const correctLabel = document.getElementById('correctLabel');
+            
+            // Event listener en el área (método correcto)
+            correctArea.addEventListener('click', function(e) {
+                updateCounter('areaClick');
+                log('✅ CORRECTO: Click en área detectado');
+                
+                // Solo abrir si el click no viene del input
+                if (e.target !== correctInput) {
+                    log('✅ CORRECTO: Abriendo selector programáticamente...');
+                    correctInput.click();
+                }
+            });
+            
+            // Event listener en el input
+            correctInput.addEventListener('click', function() {
+                updateCounter('inputClick');
+                log('✅ CORRECTO: Click directo en input');
+            });
+            
+            // Event listener de cambio
+            correctInput.addEventListener('change', function() {
+                updateCounter('change');
+                const fileName = this.files[0] ? this.files[0].name : 'ninguno';
+                log(`✅ CORRECTO: Archivo seleccionado: ${fileName}`, 'success');
+                
+                if (this.files[0]) {
+                    correctArea.classList.add('file-selected');
+                    correctLabel.innerHTML = `
+                        <span>✅ Archivo: ${fileName}</span>
+                        <div style="font-size: 12px; color: #666;">Sin atributo 'for' en label</div>
+                    `;
+                }
+            });
+            
+            // === CONFIGURACIÓN PROBLEMÁTICA ===
+            const problemArea = document.getElementById('problemArea');
+            const problemInput = document.getElementById('problem_file');
+            const problemLabel = document.getElementById('problemLabel');
+            
+            // Event listener en el área (duplicará con el label)
+            problemArea.addEventListener('click', function(e) {
+                updateCounter('areaClick');
+                log('🚨 PROBLEMÁTICO: Click en área detectado');
+                
+                // Solo abrir si el click no viene del input
+                if (e.target !== problemInput) {
+                    log('🚨 PROBLEMÁTICO: Abriendo selector programáticamente...');
+                    problemInput.click();
+                }
+            });
+            
+            // Event listener en el label (detectar cuando el label dispara)
+            problemLabel.addEventListener('click', function() {
+                updateCounter('labelClick');
+                log('🚨 PROBLEMÁTICO: Click en label detectado (esto causará duplicación)');
+            });
+            
+            // Event listener en el input
+            problemInput.addEventListener('click', function() {
+                updateCounter('inputClick');
+                log('🚨 PROBLEMÁTICO: Click directo en input');
+            });
+            
+            // Event listener de cambio
+            problemInput.addEventListener('change', function() {
+                updateCounter('change');
+                const fileName = this.files[0] ? this.files[0].name : 'ninguno';
+                log(`🚨 PROBLEMÁTICO: Archivo seleccionado: ${fileName}`, 'warning');
+                
+                if (this.files[0]) {
+                    problemArea.classList.add('file-selected');
+                    problemLabel.innerHTML = `
+                        <span>⚠️ Archivo: ${fileName}</span>
+                        <div style="font-size: 12px; color: #666;">Con atributo 'for' en label</div>
+                    `;
+                }
+            });
+            
+            log('✅ Eventos configurados correctamente');
+        }
+        
+        // Función para simular el comportamiento real del panel
+        function analyzeResults() {
+            const results = document.getElementById('results');
+            
+            if (counters.areaClick > 0 || counters.inputClick > 0) {
+                let analysis = '<div class="status info"><strong>📊 Análisis de Resultados:</strong><br>';
+                
+                if (counters.labelClick > 0) {
+                    analysis += '<div class="status error">🚨 <strong>PROBLEMA DETECTADO:</strong> El label con "for" está causando eventos duplicados. ';
+                    analysis += 'Cada click en el área dispara TANTO el event listener programático COMO el comportamiento nativo del label.</div>';
+                    
+                    analysis += '<div class="status success">✅ <strong>SOLUCIÓN:</strong> Cambiar el &lt;label for="input_id"&gt; por un &lt;div&gt; simple y manejar todo programáticamente.</div>';
+                } else {
+                    analysis += '<div class="status success">✅ <strong>FUNCIONAMIENTO CORRECTO:</strong> Sin duplicación de eventos.</div>';
+                }
+                
+                analysis += `<div><strong>Eventos registrados:</strong><br>
+                    - Clicks en área: ${counters.areaClick}<br>
+                    - Clicks en input: ${counters.inputClick}<br>
+                    - Clicks en label: ${counters.labelClick}<br>
+                    - Cambios de archivo: ${counters.change}
+                </div></div>`;
+                
+                results.innerHTML = analysis;
+            }
+        }
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Iniciando debug de duplicación de eventos...');
+            setupEvents();
+            
+            // Analizar resultados cada vez que cambie un contador
+            setInterval(analyzeResults, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico Para Ellos - Imágenes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background: #f4f4f4;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .diagnostic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .diagnostic-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .diagnostic-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .status {
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 5px 0;
+            display: inline-block;
+        }
+
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.warning { background: #fff3cd; color: #856404; }
+        .status.info { background: #d1ecf1; color: #0c5460; }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .product-item {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .product-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f8f9fa;
+        }
+
+        .product-info {
+            padding: 15px;
+        }
+
+        .product-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .product-brand {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .product-price {
+            color: #007bff;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .image-info {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 8px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .btn.secondary {
+            background: #6c757d;
+        }
+
+        .btn.success {
+            background: #28a745;
+        }
+
+        .btn.danger {
+            background: #dc3545;
+        }
+
+        .log-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-image {
+            background: #f8d7da;
+            border: 2px dashed #dc3545;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #721c24;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Diagnóstico Para Ellos - Sistema de Imágenes</h1>
+        <p>Verificación del funcionamiento de carga y visualización de productos</p>
+    </div>
+
+    <div class="container">
+        <!-- Controles -->
+        <div class="controls">
+            <h3>🛠️ Controles de Diagnóstico</h3>
+            <button class="btn" onclick="diagnosticManager.runFullDiagnostic()">🔍 Diagnóstico Completo</button>
+            <button class="btn secondary" onclick="diagnosticManager.testImagePaths()">🖼️ Probar Rutas de Imágenes</button>
+            <button class="btn success" onclick="diagnosticManager.loadProducts()">📦 Cargar Productos</button>
+            <button class="btn danger" onclick="diagnosticManager.clearLogs()">🗑️ Limpiar Logs</button>
+        </div>
+
+        <!-- Información del Sistema -->
+        <div class="diagnostic-grid">
+            <div class="diagnostic-card">
+                <h3>📊 Estado del Sistema</h3>
+                <div id="systemStatus">Iniciando diagnóstico...</div>
+            </div>
+
+            <div class="diagnostic-card">
+                <h3>🔧 Dependencias</h3>
+                <div id="dependenciesStatus">Verificando...</div>
+            </div>
+
+            <div class="diagnostic-card">
+                <h3>📦 Productos Cargados</h3>
+                <div id="productsStatus">Esperando...</div>
+            </div>
+
+            <div class="diagnostic-card">
+                <h3>🖼️ Estado de Imágenes</h3>
+                <div id="imagesStatus">Esperando...</div>
+            </div>
+        </div>
+
+        <!-- Productos Visuales -->
+        <div class="diagnostic-card">
+            <h3>🎨 Visualización de Productos</h3>
+            <div id="productsContainer" class="loading">Cargando productos...</div>
+        </div>
+
+        <!-- Logs -->
+        <div class="diagnostic-card">
+            <h3>📋 Logs del Sistema</h3>
+            <div id="systemLogs" class="log-section">Esperando logs...</div>
+        </div>
+    </div>
+
+    <!-- Scripts necesarios -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/productos-service.js"></script>
+    <script>
+        class DiagnosticManager {
+            constructor() {
+                this.logs = [];
+                this.products = [];
+                this.imageErrors = [];
+                this.imageSuccess = [];
+                this.init();
+            }
+
+            init() {
+                this.log('🚀 Inicializando diagnóstico de Para Ellos...');
+                this.updateSystemStatus();
+                
+                // Esperar un poco para que se carguen las dependencias
+                setTimeout(() => {
+                    this.checkDependencies();
+                    this.runFullDiagnostic();
+                }, 1000);
+            }
+
+            log(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = `[${timestamp}] ${message}`;
+                this.logs.push(logEntry);
+                
+                console.log(message);
+                this.updateLogsDisplay();
+            }
+
+            updateLogsDisplay() {
+                const logsContainer = document.getElementById('systemLogs');
+                if (logsContainer) {
+                    logsContainer.innerHTML = this.logs.slice(-50).join('\n');
+                    logsContainer.scrollTop = logsContainer.scrollHeight;
+                }
+            }
+
+            updateSystemStatus() {
+                const statusContainer = document.getElementById('systemStatus');
+                const currentPath = window.location.pathname;
+                const isInHtmlFolder = currentPath.includes('/html/') || currentPath.includes('\\html\\');
+                
+                statusContainer.innerHTML = `
+                    <div class="status info">Ruta actual: ${currentPath}</div>
+                    <div class="status ${isInHtmlFolder ? 'warning' : 'success'}">
+                        Contexto: ${isInHtmlFolder ? 'Carpeta HTML' : 'Raíz del proyecto'}
+                    </div>
+                    <div class="status info">Timestamp: ${new Date().toLocaleString()}</div>
+                `;
+            }
+
+            checkDependencies() {
+                this.log('🔍 Verificando dependencias...');
+                
+                const deps = {
+                    'Supabase JS': typeof window.supabase !== 'undefined',
+                    'Supabase Config': typeof initSupabase === 'function',
+                    'Productos Service': typeof ProductosService !== 'undefined',
+                    'Supabase Client': typeof supabaseClient !== 'undefined'
+                };
+
+                let depsHTML = '';
+                let allGood = true;
+
+                Object.entries(deps).forEach(([name, available]) => {
+                    const status = available ? 'success' : 'error';
+                    depsHTML += `<div class="status ${status}">${name}: ${available ? '✅' : '❌'}</div>`;
+                    if (!available) allGood = false;
+                    this.log(`${available ? '✅' : '❌'} ${name}: ${available ? 'Disponible' : 'NO DISPONIBLE'}`);
+                });
+
+                document.getElementById('dependenciesStatus').innerHTML = depsHTML;
+                return allGood;
+            }
+
+            async loadProducts() {
+                this.log('📦 Cargando productos para ellos...');
+                
+                try {
+                    // Inicializar Supabase si es necesario
+                    if (typeof window.supabase === 'undefined' && typeof initSupabase === 'function') {
+                        this.log('🔄 Inicializando Supabase...');
+                        initSupabase();
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                    }
+
+                    if (typeof ProductosService === 'undefined') {
+                        this.log('❌ ProductosService no disponible');
+                        document.getElementById('productsStatus').innerHTML = 
+                            '<div class="status error">ProductosService no disponible</div>';
+                        return;
+                    }
+
+                    // Cargar productos
+                    this.products = await ProductosService.obtenerProductosPorCategoria('para-ellos');
+                    this.log(`✅ ${this.products.length} productos cargados`);
+
+                    // Actualizar estado
+                    document.getElementById('productsStatus').innerHTML = `
+                        <div class="status success">Total: ${this.products.length} productos</div>
+                        <div class="status info">Con imagen: ${this.products.filter(p => p.imagen_url || p.imagen).length}</div>
+                        <div class="status warning">Sin imagen: ${this.products.filter(p => !p.imagen_url && !p.imagen).length}</div>
+                    `;
+
+                    // Renderizar productos
+                    this.renderProducts();
+                    return this.products;
+
+                } catch (error) {
+                    this.log(`❌ Error cargando productos: ${error.message}`);
+                    document.getElementById('productsStatus').innerHTML = 
+                        `<div class="status error">Error: ${error.message}</div>`;
+                    return [];
+                }
+            }
+
+            renderProducts() {
+                const container = document.getElementById('productsContainer');
+                if (!container || this.products.length === 0) {
+                    container.innerHTML = '<div class="status warning">No hay productos para mostrar</div>';
+                    return;
+                }
+
+                this.log(`🎨 Renderizando ${this.products.length} productos...`);            const productsHTML = this.products.slice(0, 12).map(product => {
+                const imageSrc = this.getImagePath(product.imagen_url || product.imagen);
+                const imageType = this.detectImageType(product.imagen_url || product.imagen);
+                const productName = product.nombre || 'Producto sin nombre';
+                const productId = `product-${product.id}`;
+
+                return `
+                    <div class="product-item" data-product-id="${product.id}">
+                        <img class="product-image" 
+                             id="${productId}-img"
+                             src="${imageSrc}" 
+                             alt="${productName}"
+                             loading="lazy"
+                             onerror="diagnosticManager.handleImageError(this, '${productName}', '${product.id}');"
+                             onload="diagnosticManager.handleImageSuccess(this, '${productName}', '${product.id}');">
+                        <div class="product-info">
+                            <div class="product-name">${productName}</div>
+                            <div class="product-brand">${product.marca || 'Sin marca'}</div>
+                            <div class="product-price">$${this.formatPrice(product.precio || 0)}</div>
+                            <div class="image-info" id="${productId}-info">
+                                <strong>Imagen:</strong> ${imageSrc}<br>
+                                <strong>Tipo:</strong> ${imageType}<br>
+                                <strong>Estado:</strong> <span id="${productId}-status">Cargando...</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+                container.innerHTML = `<div class="product-grid">${productsHTML}</div>`;
+                
+                // Actualizar estadísticas después de un momento
+                setTimeout(() => this.updateImageStats(), 2000);
+            }
+
+            getImagePath(imagePath) {
+                if (!imagePath) return this.getPlaceholderImagePath();
+                
+                // Si es una URL completa (http/https), usarla tal como está
+                if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+                    return imagePath;
+                }
+                
+                // Si es una ruta relativa que empieza con ../, usarla tal como está
+                if (imagePath.startsWith('../')) {
+                    return imagePath;
+                }
+                
+                // Si es una ruta absoluta desde la raíz, ajustarla según el contexto
+                const currentPath = window.location.pathname;
+                const isInHtmlFolder = currentPath.includes('/html/') || currentPath.includes('\\html\\');
+                
+                if (isInHtmlFolder && !imagePath.startsWith('../')) {
+                    return `../${imagePath}`;
+                }
+                
+                return imagePath;
+            }
+
+            getPlaceholderImagePath() {
+                const currentPath = window.location.pathname;
+                const isInHtmlFolder = currentPath.includes('/html/') || currentPath.includes('\\html\\');
+                
+                if (isInHtmlFolder) {
+                    return '../IMAGENES/placeholder-simple.svg';
+                } else {
+                    return 'IMAGENES/placeholder-simple.svg';
+                }
+            }
+
+            handleImageError(imgElement, productName, productId) {
+                if (imgElement.hasAttribute('data-error-handled')) return;
+                imgElement.setAttribute('data-error-handled', 'true');
+
+                this.imageErrors.push({
+                    productId,
+                    productName,
+                    originalSrc: imgElement.src,
+                    timestamp: new Date()
+                });
+
+                const placeholderSrc = this.getPlaceholderImagePath();
+                this.log(`⚠️ Error cargando imagen para ${productName} (ID: ${productId})`);
+                this.log(`   Ruta original: ${imgElement.src}`);
+                this.log(`   Usando placeholder: ${placeholderSrc}`);
+
+                setTimeout(() => {
+                    imgElement.src = placeholderSrc;
+                    imgElement.alt = `Imagen no disponible - ${productName}`;
+                    imgElement.classList.add('error-image');
+                }, 50);
+
+                // Actualizar info del producto
+                const statusElement = document.getElementById(`product-${productId}-status`);
+                if (statusElement) {
+                    statusElement.innerHTML = '<span style="color: #dc3545;">❌ Error</span>';
+                }
+
+                this.updateImageStats();
+            }
+
+            handleImageSuccess(imgElement, productName, productId) {
+                this.imageSuccess.push({
+                    productId,
+                    productName,
+                    src: imgElement.src,
+                    timestamp: new Date()
+                });
+
+                this.log(`✅ Imagen cargada correctamente para ${productName}`);
+
+                // Actualizar info del producto
+                const statusElement = document.getElementById(`product-${productId}-status`);
+                if (statusElement) {
+                    statusElement.innerHTML = '<span style="color: #28a745;">✅ OK</span>';
+                }
+            }
+
+            updateImageStats() {
+                const total = this.products.length;
+                const errors = this.imageErrors.length;
+                const success = this.imageSuccess.length;
+                const pending = total - errors - success;
+
+                document.getElementById('imagesStatus').innerHTML = `
+                    <div class="status success">Exitosas: ${success}</div>
+                    <div class="status error">Con error: ${errors}</div>
+                    <div class="status warning">Pendientes: ${pending}</div>
+                    <div class="status info">Total: ${total}</div>
+                `;
+
+                if (errors > 0) {
+                    this.log(`📊 Resumen de imágenes: ${success} OK, ${errors} errores, ${pending} pendientes`);
+                }
+            }
+
+            formatPrice(price) {
+                return new Intl.NumberFormat('es-CO', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(price);
+            }
+
+            async testImagePaths() {
+                this.log('🔍 Probando rutas de imágenes...');
+                
+                const testPaths = [
+                    'IMAGENES/placeholder-simple.svg',
+                    '../IMAGENES/placeholder-simple.svg',
+                    'IMAGENES/PARA_ELLOS.png',
+                    '../IMAGENES/PARA_ELLOS.png'
+                ];
+
+                for (const path of testPaths) {
+                    await this.testSingleImagePath(path);
+                }
+            }
+
+            testSingleImagePath(path) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        this.log(`✅ Ruta accesible: ${path}`);
+                        resolve(true);
+                    };
+                    img.onerror = () => {
+                        this.log(`❌ Ruta NO accesible: ${path}`);
+                        resolve(false);
+                    };
+                    img.src = path;
+                });
+            }
+
+            async runFullDiagnostic() {
+                this.log('🔍 Ejecutando diagnóstico completo...');
+                
+                // Verificar dependencias
+                const depsOK = this.checkDependencies();
+                
+                if (!depsOK) {
+                    this.log('❌ No se pueden ejecutar más pruebas sin dependencias');
+                    return;
+                }
+
+                // Cargar productos
+                await this.loadProducts();
+                
+                // Probar rutas de imágenes
+                await this.testImagePaths();
+                
+                this.log('✅ Diagnóstico completo finalizado');
+            }            clearLogs() {
+                this.logs = [];
+                this.imageErrors = [];
+                this.imageSuccess = [];
+                this.updateLogsDisplay();
+                this.log('🗑️ Logs limpiados');
+            }
+
+            detectImageType(imagePath) {
+                if (!imagePath) return 'Sin imagen';
+                if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) return '🌐 URL externa';
+                if (imagePath.startsWith('data:image/')) return '📄 Base64';
+                return '📂 Imagen local';
+            }
+        }
+
+        // Inicializar cuando se carga la página
+        let diagnosticManager;
+        document.addEventListener('DOMContentLoaded', function() {
+            diagnosticManager = new DiagnosticManager();
+        });
+    </script>
+</body>
+</html>

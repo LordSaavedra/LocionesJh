@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colección Vintage - Aromes De Dieu</title>    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/navbar.css">
+    <link rel="stylesheet" href="../../css/colecciones/elements.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Contenedor para la navbar -->
+    <div id="navbar-container"></div>    <main class="vintage-main">
+        <div class="vintage-content">
+            <h1>Colección Vintage</h1>
+            <p>Fragancias atemporales que han definido épocas</p>
+        </div>
+
+        <section class="vintage-fragrances">
+            <!-- Bleu Desierto -->
+            <article class="fragrance-card desert">
+                <div class="video-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="../../VIDEOS/Bleu Desierto.MP4" type="video/mp4">
+                    </video>
+                    <div class="overlay"></div>
+                </div>
+                <div class="fragrance-info">
+                    <div class="fragrance-title">
+                        <h2>Bleu Desierto</h2>
+                        <span class="vintage-year">2025</span>
+                    </div>
+                    <p class="fragrance-description">La esencia mística del desierto capturada en una fragancia que evoca el misterio de las dunas doradas bajo el sol ardiente.</p>
+                    <div class="fragrance-notes">
+                        <span>Notas de Salida: Arena cálida, Especias exóticas</span>
+                        <span>Notas de Corazón: Rosa del desierto, Ámbar solar</span>
+                        <span>Notas de Fondo: Madera de oud, Vainilla aromática</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- CREED SILVER HIELO -->
+            <article class="fragrance-card ice">
+                <div class="video-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="../../VIDEOS/CREED_SILVER_HIELO.MP4" type="video/mp4">
+                    </video>
+                    <div class="overlay"></div>
+                </div>
+                <div class="fragrance-info">
+                    <div class="fragrance-title">
+                        <h2>CREED Silver Hielo</h2>
+                        <span class="vintage-year">2025</span>
+                    </div>
+                    <p class="fragrance-description">La pureza cristalina del hielo eterno, una fragancia que captura la esencia de los glaciares milenarios.</p>
+                    <div class="fragrance-notes">
+                        <span>Notas de Salida: Menta glacial, Bergamota helada</span>
+                        <span>Notas de Corazón: Iris ártico, Violeta nevada</span>
+                        <span>Notas de Fondo: Ámbar blanco, Almizcle helado</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- JeanPaul Mar -->
+            <article class="fragrance-card ocean">
+                <div class="video-container">
+                    <video autoplay loop muted playsinline>
+                        <source src="../../VIDEOS/JeanPaul_Mar.MP4" type="video/mp4">
+                    </video>
+                    <div class="overlay"></div>
+                </div>
+                <div class="fragrance-info">
+                    <div class="fragrance-title">
+                        <h2>JeanPaul Mar</h2>
+                        <span class="vintage-year">2025</span>
+                    </div>
+                    <p class="fragrance-description">Las profundidades del océano encapsuladas en una fragancia que evoca la majestuosidad del mar infinito.</p>
+                    <div class="fragrance-notes">
+                        <span>Notas de Salida: Brisa marina, Sal del océano</span>
+                        <span>Notas de Corazón: Algas marinas, Neroli acuático</span>
+                        <span>Notas de Fondo: Ámbar marino, Musgo de mar</span>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <script src="../../js/navbar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cargar la navbar
+            fetch('../../html/navbar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('navbar-container').innerHTML = data;
+                });
+
+            // Efecto de reproducción de video al hacer scroll
+            const videoCards = document.querySelectorAll('.fragrance-card');
+            
+            const observerOptions = {
+                threshold: 0.5
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target.querySelector('video');
+                    if (entry.isIntersecting) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                });
+            }, observerOptions);
+
+            videoCards.forEach(card => {
+                observer.observe(card);
+            });        });
+    </script>
+    
+    <script src="../../js/navbar.js"></script>    <script>
+        // Cargar la navbar
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('../navbar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('navbar-container').innerHTML = data;
+                      // Ajustar rutas para navegación desde colecciones/
+                    
+                    // Ajustar logo
+                    const logo = document.querySelector('.navbar-logo');
+                    if (logo && logo.getAttribute('href') === '../index.html') {
+                        logo.setAttribute('href', '../../index.html');
+                    }
+                    
+                    // Ajustar enlaces del menú
+                    const navLinks = document.querySelectorAll('.navbar-menu a[href]');
+                    navLinks.forEach(link => {
+                        const currentHref = link.getAttribute('href');
+                        
+                        // Para el enlace de Inicio
+                        if (currentHref === '../index.html') {
+                            link.setAttribute('href', '../../index.html');
+                        }
+                        // Para enlaces que van a páginas en html/ (pero no son colecciones)
+                        else if (!currentHref.startsWith('http') && 
+                                !currentHref.startsWith('../../') && 
+                                !currentHref.startsWith('#') &&
+                                !currentHref.startsWith('colecciones/') &&
+                                currentHref.includes('.html')) {
+                            link.setAttribute('href', '../' + currentHref);
+                        }
+                    });
+                    
+                    // Inicializar navbar después de un pequeño delay
+                    setTimeout(() => {
+                        if (typeof initNavbar === 'function') {
+                            initNavbar();
+                        }
+                    }, 150);
+                })
+                .catch(error => console.error('Error cargando navbar:', error));
+        });
+    </script>
+</body>
+</html>

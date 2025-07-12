@@ -1,0 +1,174 @@
+/* Estilos para validación mejorada del panel admin */
+
+/* Estados de validación para inputs */
+.form-group input.valid,
+.form-group textarea.valid {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.form-group input.invalid,
+.form-group textarea.invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Mensajes de validación */
+.validation-message {
+    font-size: 12px;
+    margin-top: 5px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.validation-message.success {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+.validation-message.error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+}
+
+.validation-message.warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+}
+
+/* Vista previa de imagen */
+.image-preview {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f9f9f9;
+    text-align: center;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 100px;
+    object-fit: contain;
+}
+
+/* Indicadores de estado */
+.field-status {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 14px;
+}
+
+.field-status.loading {
+    color: #007bff;
+}
+
+.field-status.success {
+    color: #28a745;
+}
+
+.field-status.error {
+    color: #dc3545;
+}
+
+/* Mejoras en el formulario */
+.form-group {
+    position: relative;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.form-group .required::after {
+    content: " *";
+    color: #dc3545;
+}
+
+/* Botones de acción mejorados */
+.btn-validate {
+    background: #17a2b8;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.btn-validate:hover {
+    background: #138496;
+}
+
+/* Tooltip para ayuda */
+.help-tooltip {
+    position: relative;
+    display: inline-block;
+    margin-left: 5px;
+    cursor: help;
+}
+
+.help-tooltip::before {
+    content: "?";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #007bff;
+    color: white;
+    text-align: center;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.help-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s;
+    z-index: 1000;
+}
+
+.help-tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .validation-message {
+        font-size: 11px;
+    }
+    
+    .image-preview {
+        min-height: 50px;
+    }
+    
+    .help-tooltip::after {
+        font-size: 11px;
+        padding: 3px 6px;
+    }
+}

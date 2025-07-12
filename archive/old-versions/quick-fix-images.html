@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrección Rápida de Imágenes</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .btn { 
+            background: #00b894; 
+            color: white; 
+            border: none; 
+            padding: 15px 25px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .btn:hover { background: #00a085; }
+        .log { 
+            background: #1a1a1a; 
+            color: #00ff00; 
+            padding: 15px; 
+            border-radius: 5px; 
+            font-family: 'Courier New', monospace; 
+            font-size: 14px;
+            max-height: 400px; 
+            overflow-y: auto; 
+            margin-top: 20px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.warning { background: #fff3cd; color: #856404; }
+        .mapping-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .mapping-table th, .mapping-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .mapping-table th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Corrección Rápida de Imágenes</h1>
+        <p>Esta herramienta corrige automáticamente las rutas de imágenes para los productos "Para Ellos".</p>
+
+        <div class="status warning">
+            <strong>⚠️ Importante:</strong> Esta herramienta actualizará directamente la base de datos. Úsala solo si estás seguro.
+        </div>
+
+        <h3>📋 Mapeo de Correcciones</h3>
+        <table class="mapping-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Archivo Disponible</th>
+                    <th>Ruta Correcta</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>One Million Paco Rabanne</td>
+                    <td>ONE_MILLON_PACO_RABANE.png</td>
+                    <td>LOCIONES_PARA _ELLOS/ONE_MILLON_PACO_RABANE.png</td>
+                </tr>
+                <tr>
+                    <td>212 Men Carolina Herrera</td>
+                    <td>212_CAROLINA_HERRERA.png</td>
+                    <td>LOCIONES_PARA _ELLOS/212_CAROLINA_HERRERA.png</td>
+                </tr>
+                <tr>
+                    <td>Givenchy Blue Label</td>
+                    <td>GIVENCHY_BLUE_LABEL.png</td>
+                    <td>LOCIONES_PARA _ELLOS/GIVENCHY_BLUE_LABEL.png</td>
+                </tr>
+                <tr>
+                    <td>Montblanc Legend Night</td>
+                    <td>MONTBLACK_LEGEND_NIGH.png</td>
+                    <td>LOCIONES_PARA _ELLOS/MONTBLACK_LEGEND_NIGH.png</td>
+                </tr>
+                <tr>
+                    <td>Versace Eros Blue</td>
+                    <td>VERSACE_EROS_BLUE.png</td>
+                    <td>LOCIONES_PARA _ELLOS/VERSACE_EROS_BLUE.png</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn" onclick="corregirImagenesRapido()">🔧 Corregir Todas las Rutas Automáticamente</button>
+        <button class="btn" onclick="verificarImagenes()">🔍 Verificar Estado Actual</button>
+
+        <div id="logContainer">
+            <h3>📝 Log de Corrección</h3>
+            <div id="fixLog" class="log"></div>
+        </div>
+    </div>
+
+    <!-- Incluir Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    
+    <script>
+        function log(message, type = 'info') {
+            const logElement = document.getElementById('fixLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const icon = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+            
+            logElement.innerHTML += `[${timestamp}] ${icon} ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(`${icon} ${message}`);
+        }
+
+        const imageMappings = [
+            {
+                searchTerms: ['one million', 'paco rabanne', 'one millon', 'paco rabane'],
+                filename: 'ONE_MILLON_PACO_RABANE.png',
+                path: 'LOCIONES_PARA _ELLOS/ONE_MILLON_PACO_RABANE.png'
+            },
+            {
+                searchTerms: ['212', 'carolina herrera'],
+                filename: '212_CAROLINA_HERRERA.png',
+                path: 'LOCIONES_PARA _ELLOS/212_CAROLINA_HERRERA.png'
+            },
+            {
+                searchTerms: ['givenchy', 'blue label'],
+                filename: 'GIVENCHY_BLUE_LABEL.png',
+                path: 'LOCIONES_PARA _ELLOS/GIVENCHY_BLUE_LABEL.png'
+            },
+            {
+                searchTerms: ['montblanc', 'legend night', 'mont blanc'],
+                filename: 'MONTBLACK_LEGEND_NIGH.png',
+                path: 'LOCIONES_PARA _ELLOS/MONTBLACK_LEGEND_NIGH.png'
+            },
+            {
+                searchTerms: ['versace', 'eros blue'],
+                filename: 'VERSACE_EROS_BLUE.png',
+                path: 'LOCIONES_PARA _ELLOS/VERSACE_EROS_BLUE.png'
+            }
+        ];
+
+        async function corregirImagenesRapido() {
+            try {
+                log('🚀 Iniciando corrección rápida de imágenes...');
+
+                if (typeof ProductosService === 'undefined') {
+                    log('❌ ProductosService no está disponible', 'error');
+                    return;
+                }
+
+                // Cargar productos para ellos
+                const productos = await ProductosService.obtenerProductos();
+                const productosParaEllos = productos.filter(p => p.categoria === 'para-ellos');
+                
+                log(`📦 Encontrados ${productosParaEllos.length} productos para ellos`);
+
+                let corregidos = 0;
+                let errores = 0;
+
+                for (const producto of productosParaEllos) {
+                    try {
+                        const nombreCompleto = `${producto.nombre} ${producto.marca}`.toLowerCase();
+                        
+                        // Buscar mapeo correspondiente
+                        const mapping = imageMappings.find(m => 
+                            m.searchTerms.some(term => nombreCompleto.includes(term.toLowerCase()))
+                        );
+
+                        if (mapping) {
+                            log(`🔍 Procesando: ${producto.nombre} (${producto.marca})`);
+                            
+                            // Verificar si la imagen actual funciona
+                            const currentImage = producto.imagen_url || producto.imagen;
+                            const needsUpdate = !currentImage || currentImage !== mapping.path;
+                            
+                            if (needsUpdate) {
+                                // Actualizar la ruta de imagen
+                                const result = await ProductosService.updateProduct(producto.id, {
+                                    imagen_url: mapping.path
+                                });
+
+                                if (result) {
+                                    log(`✅ Actualizado: ${producto.nombre} -> ${mapping.path}`, 'success');
+                                    corregidos++;
+                                } else {
+                                    log(`❌ Error actualizando: ${producto.nombre}`, 'error');
+                                    errores++;
+                                }
+                            } else {
+                                log(`ℹ️ Ya correcto: ${producto.nombre} -> ${mapping.path}`);
+                            }
+                        } else {
+                            log(`⚠️ Sin mapeo para: ${producto.nombre} (${producto.marca})`, 'warning');
+                        }
+
+                        // Pequeña pausa para no saturar la API
+                        await new Promise(resolve => setTimeout(resolve, 100));
+
+                    } catch (error) {
+                        log(`❌ Error procesando ${producto.nombre}: ${error.message}`, 'error');
+                        errores++;
+                    }
+                }
+
+                log(`🎉 Corrección completada: ${corregidos} actualizados, ${errores} errores`, 'success');
+                
+                if (corregidos > 0) {
+                    log('🔄 Recomendación: Recarga la página para_ellos.html para ver los cambios', 'warning');
+                }
+
+            } catch (error) {
+                log(`❌ Error en corrección rápida: ${error.message}`, 'error');
+            }
+        }
+
+        async function verificarImagenes() {
+            try {
+                log('🔍 Verificando estado actual de las imágenes...');
+
+                if (typeof ProductosService === 'undefined') {
+                    log('❌ ProductosService no está disponible', 'error');
+                    return;
+                }
+
+                const productos = await ProductosService.obtenerProductos();
+                const productosParaEllos = productos.filter(p => p.categoria === 'para-ellos');
+                
+                log(`📦 Verificando ${productosParaEllos.length} productos para ellos`);
+
+                for (const producto of productosParaEllos) {
+                    const imagenActual = producto.imagen_url || producto.imagen || 'Sin imagen';
+                    log(`📸 ${producto.nombre} (${producto.marca}): ${imagenActual}`);
+                    
+                    // Verificar si la imagen existe
+                    if (imagenActual !== 'Sin imagen') {
+                        const imageExists = await checkImageExists(imagenActual);
+                        log(`   ${imageExists ? '✅' : '❌'} Imagen ${imageExists ? 'accesible' : 'no accesible'}`);
+                    }
+                }
+
+                log('✅ Verificación completada', 'success');
+
+            } catch (error) {
+                log(`❌ Error en verificación: ${error.message}`, 'error');
+            }
+        }
+
+        function checkImageExists(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                
+                // Timeout para evitar esperas largas
+                setTimeout(() => resolve(false), 3000);
+                
+                img.src = url;
+            });
+        }
+
+        // Inicializar al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            log('🚀 Herramienta de corrección rápida iniciada');
+            log('📋 Usa los botones de arriba para corregir o verificar las imágenes');
+        });
+    </script>
+</body>
+</html>

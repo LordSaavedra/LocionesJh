@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Completo - Perfumería</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- NoUI Slider -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.css">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/catalogo.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <div id="navbar-container"></div>
+
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">Catálogo Completo</h1>
+                <p class="hero-subtitle">Descubre nuestra colección completa de fragancias</p>
+            </div>
+        </section>
+
+        <!-- Configuración de Supabase -->
+        <section class="supabase-config" style="background: #f8f9fa; padding: 20px; margin: 20px; border-radius: 10px; border-left: 4px solid #007bff;">
+            <h3>⚙️ Configuración de Supabase</h3>
+            <p>Para usar Supabase, necesitas configurar las credenciales en <code>js/supabase-config.js</code>:</p>
+            <div style="background: #fff; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                <code>
+                    const SUPABASE_URL = 'tu-proyecto.supabase.co';<br>
+                    const SUPABASE_ANON_KEY = 'tu-clave-anonima';
+                </code>
+            </div>
+            <div class="config-buttons">
+                <button id="test-connection" class="btn-primary">
+                    <i class="fas fa-database"></i>
+                    Probar Conexión
+                </button>
+                <button id="migrate-data" class="btn-secondary">
+                    <i class="fas fa-upload"></i>
+                    Migrar Datos
+                </button>
+            </div>
+            <div id="connection-status" style="margin-top: 10px;"></div>
+        </section>
+
+        <!-- Filtros y Búsqueda -->
+        <section class="filters-section">
+            <div class="container">
+                <div class="filters-header">
+                    <h2>Explorar Productos</h2>
+                    <div id="contador-resultados" class="results-counter">
+                        Cargando productos...
+                    </div>
+                </div>
+                
+                <div class="filters-container">
+                    <!-- Búsqueda -->
+                    <div class="search-container">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="buscador" placeholder="Buscar fragancias, marcas o notas...">
+                        </div>
+                    </div>
+
+                    <!-- Filtros de Categoría -->
+                    <div class="category-filters">
+                        <h4>Categorías</h4>
+                        <div id="filtros-categoria" class="filter-buttons">
+                            <!-- Se cargarán dinámicamente desde Supabase -->
+                        </div>
+                    </div>
+
+                    <!-- Filtro de Precio -->
+                    <div class="price-filter">
+                        <h4>Rango de Precio</h4>
+                        <div class="price-range">
+                            <div id="slider-precio"></div>
+                            <div class="price-display">
+                                <span id="precio-min">$0</span>
+                                <span id="precio-max">$2M</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botón Limpiar -->
+                    <button id="limpiar-filtros" class="btn-clear">
+                        <i class="fas fa-times"></i>
+                        Limpiar filtros
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grid de Productos -->
+        <section class="products-section">
+            <div class="container">
+                <div id="productos-grid" class="products-grid">
+                    <!-- Los productos se cargarán dinámicamente -->
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando productos...</p>
+                    </div>
+                </div>
+
+                <!-- Paginación -->
+                <div id="paginacion" class="pagination">
+                    <!-- Se generará dinámicamente -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Perfumería Premium. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script>
+    <script src="../js/navbar.js"></script>
+    <script src="../js/supabase-config.js"></script>
+    <script src="../js/catalogo-supabase.js"></script>
+
+    <script>
+        // Funciones para testing y migración
+        document.getElementById('test-connection').addEventListener('click', async function() {
+            const statusEl = document.getElementById('connection-status');
+            
+            try {
+                statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Probando conexión...';
+                
+                if (!supabaseClient) {
+                    statusEl.innerHTML = '<span style="color: #e74c3c;"><i class="fas fa-times"></i> Supabase no configurado</span>';
+                    return;
+                }
+
+                const { data, error } = await supabaseClient.from('productos').select('count').limit(1);
+                
+                if (error) {
+                    statusEl.innerHTML = `<span style="color: #e74c3c;"><i class="fas fa-times"></i> Error: ${error.message}</span>`;
+                } else {
+                    statusEl.innerHTML = '<span style="color: #27ae60;"><i class="fas fa-check"></i> Conexión exitosa</span>';
+                }
+            } catch (error) {
+                statusEl.innerHTML = `<span style="color: #e74c3c;"><i class="fas fa-times"></i> Error: ${error.message}</span>`;
+            }
+        });
+
+        document.getElementById('migrate-data').addEventListener('click', function() {
+            if (typeof ejecutarMigracion === 'function') {
+                ejecutarMigracion();
+            } else {
+                alert('Script de migración no disponible. Asegúrate de que migration.js esté cargado.');
+            }
+        });
+    </script>
+</body>
+</html>

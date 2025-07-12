@@ -1,0 +1,176 @@
+/* Estilos para la página de productos */
+.productos-main {
+    padding-top: 80px; /* Espacio para la navbar */
+    min-height: 100vh;
+    background-color: #f8f8f8;
+}
+
+.category-showcase {
+    width: 100%;
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.category-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    height: calc(100vh - 120px);
+    min-height: 600px;
+}
+
+.category-item {
+    position: relative;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.5s ease;
+}
+
+.category-item:hover {
+    transform: translateY(-10px);
+}
+
+.category-image {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.category-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.category-item:hover .category-img {
+    transform: scale(1.05);
+}
+
+/* Efecto de overlay mejorado */
+.category-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 4rem 3rem;
+    background: linear-gradient(to top, 
+        rgba(0,0,0,0.9) 0%,
+        rgba(0,0,0,0.7) 40%,
+        rgba(0,0,0,0.3) 70%,
+        transparent 100%);
+    color: white;
+    transform: translateY(4rem);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.category-item:hover .category-content {
+    transform: translateY(0);
+}
+
+.category-content h2 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.category-content p {
+    font-size: 1.1rem;
+    margin: 1rem 0 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease 0.1s;
+}
+
+.category-item:hover .category-content p {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.btn-catalogue {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border: 1px solid white;
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.category-item:hover .btn-catalogue {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.btn-catalogue:hover {
+    background-color: white;
+    color: black;
+}
+
+/* Media queries */
+@media (max-width: 1024px) {
+    .category-container {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .category-item {
+        height: 70vh;
+        min-height: 500px;
+    }
+}
+
+@media (max-width: 768px) {
+    .category-img {
+        height: 100%;
+        object-position: center;
+    }
+
+    .category-content {
+        transform: translateY(0);
+        padding: 2rem;
+    }
+
+    .category-content h2 {
+        font-size: 2rem;
+    }
+
+    .category-content p,
+    .btn-catalogue {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .category-item {
+        height: 60vh;
+        min-height: 400px;
+    }
+}
+
+/* Animación de carga de imagen */
+@keyframes imageLoad {
+    from {
+        opacity: 0;
+        transform: scale(1.1);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.category-img {
+    animation: imageLoad 0.8s ease-out forwards;
+}

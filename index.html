@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aromes De Dieu</title>
+    <!-- Asegurarnos de que los estilos se cargan en el orden correcto -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/cart.css">
+</head>
+<body>
+    <!-- Contenedor para la navbar -->
+    <div id="navbar-container"></div>
+      <!-- Hero Section con Videos -->
+    <section class="video-showcase">
+        <div class="video-container">
+            <video autoplay loop muted playsinline class="video-background">
+                <source src="VIDEOS/Video1_index.mp4" type="video/mp4">
+            </video>
+            <div class="video-content">
+                <h2>Aromes De Dieu</h2>
+                <p>L'art du parfum intemporel</p>
+            </div>
+        </div>
+        
+        <div class="video-grid">
+            <div class="video-item">
+                <video autoplay loop muted playsinline>
+                    <source src="VIDEOS/Video2_index.mp4" type="video/mp4">
+                </video>
+                <div class="video-overlay">
+                    <h3>Collection Exclusive</h3>
+                </div>
+            </div>
+            <div class="video-item">
+                <video autoplay loop muted playsinline>
+                    <source src="VIDEOS/Video3_Index.mp4" type="video/mp4">
+                </video>
+                <div class="video-overlay">
+                    <h3>Essences Précieuses</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cargar los scripts en el orden correcto -->
+    <script src="js/cart.js"></script>
+    <script src="js/cart-error-fixes.js"></script>
+    <script src="js/limpiar-productos-prueba.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Cargar la navbar y luego inicializar la navegación
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('html/navbar.html')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error cargando la navbar');
+                    }
+                    return response.text();
+                })                .then(data => {
+                    document.getElementById('navbar-container').innerHTML = data;
+                    
+                    // Ajustar rutas para navegación desde index.html
+                    const navLinks = document.querySelectorAll('.navbar-menu a[href]:not([href^="http"]):not([href^="#"])');
+                    navLinks.forEach(link => {
+                        const currentHref = link.getAttribute('href');
+                        // Si la ruta no empieza con html/ y no es index.html, añadir html/
+                        if (!currentHref.startsWith('html/') && currentHref !== 'index.html') {
+                            link.setAttribute('href', 'html/' + currentHref);
+                        }
+                    });
+                    
+                    // Ajustar también el logo para que apunte correctamente a index.html
+                    const logoLink = document.querySelector('.navbar-logo');
+                    if (logoLink) {
+                        logoLink.setAttribute('href', '#'); // En index.html, el logo refresca la página
+                        logoLink.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            window.location.reload();
+                        });
+                    }
+                    
+                    // Inicializar la navegación después de cargar el contenido
+                    if (typeof initNavbar === 'function') {
+                        setTimeout(initNavbar, 100); // Dar tiempo al DOM para actualizar
+                    } else {
+                        console.error('Error: función initNavbar no encontrada');
+                    }
+                    
+                    // Inicializar el carrito después de cargar la navbar
+                    setTimeout(() => {
+                        // Usar función singleton para obtener/crear instancia única
+                        if (typeof window.getShoppingCartInstance === 'function') {
+                            console.log('🛒 Obteniendo instancia del carrito desde index.html...');
+                            window.getShoppingCartInstance();
+                        } else if (typeof window.shoppingCart === 'undefined') {
+                            console.log('🛒 Fallback: Inicializando carrito desde index.html...');
+                            if (typeof ShoppingCart !== 'undefined') {
+                                window.shoppingCart = new ShoppingCart();
+                            } else {
+                                console.warn('⚠️ Clase ShoppingCart no disponible');
+                            }
+                        }
+                        
+                        // Reconfigurar event listeners del carrito para el nuevo botón
+                        if (window.shoppingCart && typeof window.shoppingCart.reconfigureEventListeners === 'function') {
+                            window.shoppingCart.reconfigureEventListeners();
+                            console.log('🔄 Event listeners del carrito reconfigurados');
+                        }
+                        
+                        // Verificar que el carrito esté funcionando
+                        if (window.shoppingCart && typeof window.shoppingCart.debugCart === 'function') {
+                            window.shoppingCart.debugCart();
+                        }
+                        
+                        // Verificar específicamente el botón del carrito
+                        const cartButton = document.getElementById('cartButton');
+                        if (cartButton) {
+                            console.log('✅ Botón del carrito encontrado:', cartButton);
+                            console.log('🔧 Event listeners del botón:', getEventListeners ? getEventListeners(cartButton) : 'No disponible');
+                        } else {
+                            console.warn('⚠️ Botón del carrito NO encontrado después de cargar navbar');
+                        }
+                    }, 500);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('navbar-container').innerHTML = 
+                        '<p>Error cargando la navegación. Por favor, recarga la página.</p>';
+                });
+        });
+    </script>
+</body>
+</html>

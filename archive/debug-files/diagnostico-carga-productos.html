@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Diagnóstico: Carga de Productos - Aromes De Dieu</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .status-card {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .status-card.success {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .status-card.error {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        .status-card.warning {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #1e7e34; }
+        .btn-danger { background: #dc3545; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-warning { background: #ffc107; color: #212529; }
+        .btn-warning:hover { background: #e0a800; }
+        .output {
+            background: #2d3748;
+            color: #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 8px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 5px;
+        }
+        .metric-label {
+            font-weight: bold;
+        }
+        .metric-value {
+            font-family: monospace;
+        }
+        .loading {
+            display: none;
+            color: #007bff;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+        }
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Diagnóstico: ¿Por qué se cargan productos locales?</h1>
+        <p>Esta página diagnostica por qué el sistema está cargando productos desde datos locales en lugar de la base de datos.</p>
+        
+        <div class="status-grid">
+            <div class="status-card" id="supabaseStatus">
+                <h3>📡 Estado de Supabase</h3>
+                <div class="metric">
+                    <span class="metric-label">Cliente inicializado:</span>
+                    <span class="metric-value" id="clientStatus">Verificando...</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Librería cargada:</span>
+                    <span class="metric-value" id="libraryStatus">Verificando...</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Configuración:</span>
+                    <span class="metric-value" id="configStatus">Verificando...</span>
+                </div>
+            </div>
+            
+            <div class="status-card" id="connectionStatus">
+                <h3>🔗 Estado de Conexión</h3>
+                <div class="metric">
+                    <span class="metric-label">Ping BD:</span>
+                    <span class="metric-value" id="pingStatus">No probado</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Últimos logs:</span>
+                    <span class="metric-value" id="lastLogs">Sin logs</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Errores recientes:</span>
+                    <span class="metric-value" id="recentErrors">Ninguno</span>
+                </div>
+            </div>
+            
+            <div class="status-card" id="dataStatus">
+                <h3>📊 Estado de Datos</h3>
+                <div class="metric">
+                    <span class="metric-label">Fuente actual:</span>
+                    <span class="metric-value" id="dataSource">Desconocida</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Cache activo:</span>
+                    <span class="metric-value" id="cacheStatus">No verificado</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Productos cargados:</span>
+                    <span class="metric-value" id="productCount">0</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>🧪 Pruebas de Diagnóstico</h3>
+            <button class="btn" onclick="runFullDiagnostic()">
+                🔍 Diagnóstico Completo
+            </button>
+            <button class="btn btn-success" onclick="testSupabaseInit()">
+                🚀 Test Inicialización
+            </button>
+            <button class="btn btn-warning" onclick="testDirectQuery()">
+                📡 Test Query Directa
+            </button>
+            <button class="btn btn-danger" onclick="forceLocalData()">
+                📋 Forzar Datos Locales
+            </button>
+            <button class="btn" onclick="clearOutput()">
+                🗑️ Limpiar Output
+            </button>
+        </div>
+        
+        <div class="loading" id="loading">
+            🔄 Ejecutando diagnóstico...
+        </div>
+        
+        <div class="output" id="diagnosticOutput">Listo para ejecutar diagnóstico...</div>
+        
+        <div class="section">
+            <h3>💡 Posibles Causas y Soluciones</h3>
+            <div id="recommendations">
+                <p><em>Ejecuta el diagnóstico completo para ver recomendaciones específicas.</em></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
+    
+    <script>
+        let output = document.getElementById('diagnosticOutput');
+        let loading = document.getElementById('loading');
+        
+        // Variables para capturar logs
+        let capturedLogs = [];
+        let capturedErrors = [];
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const colorCodes = {
+                info: '\x1b[36m',
+                success: '\x1b[32m',
+                warning: '\x1b[33m',
+                error: '\x1b[31m',
+                reset: '\x1b[0m'
+            };
+            
+            const logMessage = `[${timestamp}] ${message}`;
+            output.textContent += `${logMessage}\n`;
+            output.scrollTop = output.scrollHeight;
+            
+            console.log(message);
+            capturedLogs.push({ timestamp, message, type });
+            
+            if (type === 'error') {
+                capturedErrors.push({ timestamp, message });
+            }
+        }
+        
+        function updateStatus(cardId, status) {
+            const card = document.getElementById(cardId);
+            card.className = `status-card ${status}`;
+        }
+        
+        function updateMetric(id, value) {
+            const element = document.getElementById(id);
+            if (element) element.textContent = value;
+        }
+        
+        function showLoading(show) {
+            loading.style.display = show ? 'block' : 'none';
+        }
+        
+        function clearOutput() {
+            output.textContent = 'Output limpio. Listo para nuevas pruebas...\n';
+            capturedLogs = [];
+            capturedErrors = [];
+        }
+        
+        // Diagnóstico completo
+        async function runFullDiagnostic() {
+            showLoading(true);
+            log('🔍 INICIANDO DIAGNÓSTICO COMPLETO', 'info');
+            log('==========================================');
+            
+            try {
+                // 1. Verificar dependencias
+                await checkDependencies();
+                
+                // 2. Verificar inicialización
+                await checkInitialization();
+                
+                // 3. Probar conexión
+                await testConnection();
+                
+                // 4. Probar carga de productos
+                await testProductLoading();
+                
+                // 5. Analizar resultados
+                await analyzeResults();
+                
+                log('==========================================');
+                log('✅ DIAGNÓSTICO COMPLETO FINALIZADO', 'success');
+                
+            } catch (error) {
+                log(`❌ Error en diagnóstico: ${error.message}`, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        async function checkDependencies() {
+            log('📦 1. VERIFICANDO DEPENDENCIAS...');
+            
+            // Verificar window.supabase
+            const hasSupabaseLib = typeof window.supabase !== 'undefined';
+            log(`   Librería Supabase: ${hasSupabaseLib ? '✅' : '❌'}`, hasSupabaseLib ? 'success' : 'error');
+            updateMetric('libraryStatus', hasSupabaseLib ? '✅ Cargada' : '❌ No cargada');
+            
+            // Verificar configuración
+            const hasConfig = !!(window.SUPABASE_URL || SUPABASE_URL) && !!(window.SUPABASE_ANON_KEY || SUPABASE_ANON_KEY);
+            log(`   Configuración: ${hasConfig ? '✅' : '❌'}`, hasConfig ? 'success' : 'error');
+            updateMetric('configStatus', hasConfig ? '✅ Válida' : '❌ Faltante');
+            
+            // Verificar ProductosService
+            const hasService = typeof ProductosService !== 'undefined';
+            log(`   ProductosService: ${hasService ? '✅' : '❌'}`, hasService ? 'success' : 'error');
+            
+            if (!hasSupabaseLib) {
+                log('   ⚠️ PROBLEMA: La librería de Supabase no está cargada', 'warning');
+                updateStatus('supabaseStatus', 'error');
+                return false;
+            }
+            
+            updateStatus('supabaseStatus', hasConfig ? 'success' : 'warning');
+            return true;
+        }
+        
+        async function checkInitialization() {
+            log('🚀 2. VERIFICANDO INICIALIZACIÓN...');
+            
+            // Verificar cliente
+            const hasClient = typeof supabaseClient !== 'undefined' && supabaseClient !== null;
+            log(`   Cliente existente: ${hasClient ? '✅' : '❌'}`, hasClient ? 'success' : 'error');
+            updateMetric('clientStatus', hasClient ? '✅ Inicializado' : '❌ No inicializado');
+            
+            if (!hasClient) {
+                log('   🔄 Intentando inicializar...', 'warning');
+                try {
+                    const result = initSupabase();
+                    const newClient = typeof supabaseClient !== 'undefined' && supabaseClient !== null;
+                    log(`   Resultado inicialización: ${result ? '✅' : '❌'}`, result ? 'success' : 'error');
+                    log(`   Cliente después de init: ${newClient ? '✅' : '❌'}`, newClient ? 'success' : 'error');
+                    updateMetric('clientStatus', newClient ? '✅ Inicializado' : '❌ Falló');
+                    return newClient;
+                } catch (error) {
+                    log(`   ❌ Error inicializando: ${error.message}`, 'error');
+                    updateMetric('clientStatus', '❌ Error');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        async function testConnection() {
+            log('🔗 3. PROBANDO CONEXIÓN...');
+            
+            if (!supabaseClient) {
+                log('   ❌ No hay cliente para probar', 'error');
+                updateMetric('pingStatus', '❌ Sin cliente');
+                updateStatus('connectionStatus', 'error');
+                return false;
+            }
+            
+            try {
+                log('   📡 Ejecutando ping a base de datos...');
+                const startTime = Date.now();
+                
+                const { data, error } = await supabaseClient
+                    .from('productos')
+                    .select('count')
+                    .limit(1);
+                
+                const endTime = Date.now();
+                const duration = endTime - startTime;
+                
+                if (error) {
+                    log(`   ❌ Error en ping: ${error.message}`, 'error');
+                    log(`   📋 Código de error: ${error.code}`, 'error');
+                    updateMetric('pingStatus', `❌ Error: ${error.code}`);
+                    updateStatus('connectionStatus', 'error');
+                    return false;
+                }
+                
+                log(`   ✅ Ping exitoso en ${duration}ms`, 'success');
+                updateMetric('pingStatus', `✅ ${duration}ms`);
+                updateStatus('connectionStatus', 'success');
+                return true;
+                
+            } catch (error) {
+                log(`   ❌ Excepción en ping: ${error.message}`, 'error');
+                updateMetric('pingStatus', '❌ Excepción');
+                updateStatus('connectionStatus', 'error');
+                return false;
+            }
+        }
+        
+        async function testProductLoading() {
+            log('📊 4. PROBANDO CARGA DE PRODUCTOS...');
+            
+            if (!supabaseClient) {
+                log('   ⚠️ Sin cliente - usando datos locales esperado', 'warning');
+                updateMetric('dataSource', 'Local (sin cliente)');
+                return;
+            }
+            
+            try {
+                log('   🔄 Intentando cargar productos...');
+                const startTime = Date.now();
+                
+                const productos = await ProductosService.obtenerProductos();
+                
+                const endTime = Date.now();
+                const duration = endTime - startTime;
+                
+                log(`   ⏱️ Carga completada en ${duration}ms`, 'info');
+                log(`   📦 Productos obtenidos: ${productos.length}`, 'info');
+                
+                updateMetric('productCount', productos.length);
+                
+                // Analizar origen de los datos
+                if (productos.length > 0) {
+                    const firstProduct = productos[0];
+                    if (firstProduct.id && typeof firstProduct.id === 'number' && firstProduct.id < 10) {
+                        log('   ⚠️ DETECTADO: Datos locales (IDs bajos y secuenciales)', 'warning');
+                        updateMetric('dataSource', '❌ Local');
+                        updateStatus('dataStatus', 'error');
+                    } else {
+                        log('   ✅ Datos de base de datos (IDs de BD)', 'success');
+                        updateMetric('dataSource', '✅ Base de Datos');
+                        updateStatus('dataStatus', 'success');
+                    }
+                    
+                    log(`   📋 Primer producto: ${firstProduct.nombre} (ID: ${firstProduct.id})`, 'info');
+                } else {
+                    log('   ⚠️ No se obtuvieron productos', 'warning');
+                    updateMetric('dataSource', '⚠️ Sin datos');
+                    updateStatus('dataStatus', 'warning');
+                }
+                
+                // Verificar cache
+                const cacheStatus = ProductosService._cache.productos ? 'Activo' : 'Vacío';
+                updateMetric('cacheStatus', cacheStatus);
+                
+            } catch (error) {
+                log(`   ❌ Error cargando productos: ${error.message}`, 'error');
+                updateMetric('dataSource', '❌ Error');
+                updateStatus('dataStatus', 'error');
+            }
+        }
+        
+        async function analyzeResults() {
+            log('🔬 5. ANALIZANDO RESULTADOS...');
+            
+            const recommendations = document.getElementById('recommendations');
+            let html = '<h4>🔍 Análisis:</h4><ul>';
+            
+            // Analizar logs capturados
+            const hasErrors = capturedErrors.length > 0;
+            const hasSupabaseClient = typeof supabaseClient !== 'undefined' && supabaseClient !== null;
+            const dataSource = document.getElementById('dataSource').textContent;
+            
+            if (!hasSupabaseClient) {
+                html += '<li><strong>❌ Problema Principal:</strong> Cliente Supabase no inicializado</li>';
+                html += '<li><strong>💡 Solución:</strong> Verificar que la librería de Supabase esté cargada antes del script de configuración</li>';
+            } else if (dataSource.includes('Local')) {
+                html += '<li><strong>⚠️ Problema:</strong> Se están cargando datos locales en lugar de BD</li>';
+                html += '<li><strong>🔍 Revisar:</strong> Logs de errores en consultas a la base de datos</li>';
+                html += '<li><strong>💡 Posibles causas:</strong> Timeout, errores de columnas faltantes, o problemas de red</li>';
+            } else if (dataSource.includes('Base de Datos')) {
+                html += '<li><strong>✅ Estado:</strong> Sistema funcionando correctamente</li>';
+                html += '<li><strong>📊 Fuente:</strong> Datos cargados desde base de datos</li>';
+            }
+            
+            if (hasErrors) {
+                html += '<li><strong>🚨 Errores encontrados:</strong></li>';
+                capturedErrors.forEach(error => {
+                    html += `<li style="margin-left: 20px;">• ${error.message}</li>`;
+                });
+            }
+            
+            html += '</ul>';
+            html += '<h4>📋 Logs recientes:</h4>';
+            html += '<div style="background: #f8f9fa; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;">';
+            
+            const recentLogs = capturedLogs.slice(-10);
+            recentLogs.forEach(log => {
+                const color = log.type === 'error' ? 'red' : log.type === 'success' ? 'green' : log.type === 'warning' ? 'orange' : 'black';
+                html += `<div style="color: ${color}">[${log.timestamp}] ${log.message}</div>`;
+            });
+            
+            html += '</div>';
+            recommendations.innerHTML = html;
+            
+            updateMetric('lastLogs', `${recentLogs.length} logs capturados`);
+            updateMetric('recentErrors', hasErrors ? `${capturedErrors.length} errores` : 'Ninguno');
+        }
+        
+        // Pruebas individuales
+        async function testSupabaseInit() {
+            showLoading(true);
+            log('🚀 PROBANDO INICIALIZACIÓN DE SUPABASE...');
+            
+            try {
+                log('📋 Estado actual del cliente:', !!supabaseClient);
+                
+                if (typeof initSupabase === 'function') {
+                    const result = initSupabase();
+                    log(`Resultado de inicialización: ${result}`);
+                    log(`Cliente después de init: ${!!supabaseClient}`);
+                    
+                    if (typeof debugSupabaseConnection === 'function') {
+                        await debugSupabaseConnection();
+                    }
+                } else {
+                    log('❌ Función initSupabase no disponible', 'error');
+                }
+                
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        async function testDirectQuery() {
+            showLoading(true);
+            log('📡 PROBANDO QUERY DIRECTA...');
+            
+            try {
+                if (!supabaseClient) {
+                    log('❌ No hay cliente Supabase', 'error');
+                    return;
+                }
+                
+                log('🔄 Ejecutando query directa...');
+                const { data, error } = await supabaseClient
+                    .from('productos')
+                    .select('id, nombre, categoria')
+                    .eq('activo', true)
+                    .limit(5);
+                
+                if (error) {
+                    log(`❌ Error en query: ${error.message}`, 'error');
+                    log(`📋 Código: ${error.code}`, 'error');
+                } else {
+                    log(`✅ Query exitosa: ${data.length} productos`, 'success');
+                    data.forEach((producto, i) => {
+                        log(`   ${i+1}. ${producto.nombre} (ID: ${producto.id})`);
+                    });
+                }
+                
+            } catch (error) {
+                log(`❌ Excepción: ${error.message}`, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        async function forceLocalData() {
+            showLoading(true);
+            log('📋 FORZANDO CARGA DE DATOS LOCALES...');
+            
+            try {
+                const localData = ProductosService.obtenerProductosLocales();
+                log(`📦 Datos locales disponibles: ${localData.length} productos`, 'info');
+                
+                localData.slice(0, 3).forEach((producto, i) => {
+                    log(`   ${i+1}. ${producto.nombre} (ID: ${producto.id})`);
+                });
+                
+                log('ℹ️ Estos son los datos que se cargan cuando no hay conexión a BD', 'info');
+                
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // Inicialización automática
+        document.addEventListener('DOMContentLoaded', async function() {
+            log('🚀 Página de diagnóstico cargada');
+            
+            // Esperar un poco para que se carguen los scripts
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Verificación rápida inicial
+            const hasSupabase = typeof window.supabase !== 'undefined';
+            const hasClient = typeof supabaseClient !== 'undefined' && supabaseClient !== null;
+            
+            log(`📋 Estado inicial: Supabase=${hasSupabase}, Cliente=${hasClient}`);
+            
+            if (!hasSupabase) {
+                log('⚠️ ALERTA: Librería Supabase no detectada', 'warning');
+                updateStatus('supabaseStatus', 'error');
+            }
+            
+            if (!hasClient && hasSupabase) {
+                log('🔄 Intentando inicialización automática...');
+                try {
+                    initSupabase();
+                    const newClient = typeof supabaseClient !== 'undefined' && supabaseClient !== null;
+                    log(`Inicialización automática: ${newClient ? '✅' : '❌'}`, newClient ? 'success' : 'error');
+                } catch (error) {
+                    log(`❌ Error en inicialización automática: ${error.message}`, 'error');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

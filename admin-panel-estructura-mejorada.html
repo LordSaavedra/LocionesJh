@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Aromes De Dieu</title>
+    
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@200;300;400;500;600&family=Italiana&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS del panel -->
+    <link rel="stylesheet" href="css/admin-panel-mejorado.css">
+    
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1><i class="fas fa-crown"></i> Panel de Administración</h1>
+                    <p>Gestión completa de productos - Aromes De Dieu</p>
+                </div>
+                <div class="header-right">
+                    <div class="connection-status" id="connectionStatus">
+                        <i class="fas fa-circle"></i>
+                        <span>Conectando...</span>
+                    </div>
+                    <button class="btn btn-secondary" id="refreshData">
+                        <i class="fas fa-sync-alt"></i> Actualizar
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <nav>
+                <ul class="sidebar-menu">
+                    <li>
+                        <a href="#dashboard" class="active">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#productos">
+                            <i class="fas fa-box"></i>
+                            Productos
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#agregar-producto">
+                            <i class="fas fa-plus-circle"></i>
+                            Agregar Producto
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#categorias">
+                            <i class="fas fa-tags"></i>
+                            Categorías
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#configuracion">
+                            <i class="fas fa-cog"></i>
+                            Configuración
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Dashboard -->
+            <section id="dashboard" class="content-section active">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-line"></i>
+                    Dashboard
+                </h2>
+                
+                <div class="dashboard-cards">
+                    <div class="dashboard-card" data-card="total-productos">
+                        <div class="card-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Total Productos</h3>
+                            <div class="number">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card" data-card="productos-activos">
+                        <div class="card-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Productos Activos</h3>
+                            <div class="number">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card" data-card="total-categorias">
+                        <div class="card-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Categorías</h3>
+                            <div class="number">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card" data-card="total-marcas">
+                        <div class="card-icon">
+                            <i class="fas fa-copyright"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Marcas</h3>
+                            <div class="number">0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-actions">
+                    <button class="btn btn-primary" onclick="adminPanel.showSection('agregar-producto')">
+                        <i class="fas fa-plus"></i>
+                        Agregar Producto
+                    </button>
+                    <button class="btn btn-secondary" onclick="adminPanel.showSection('productos')">
+                        <i class="fas fa-list"></i>
+                        Ver Productos
+                    </button>
+                    <button class="btn btn-success" id="refreshProducts">
+                        <i class="fas fa-sync-alt"></i>
+                        Actualizar Productos
+                    </button>
+                </div>
+            </section>
+
+            <!-- Productos -->
+            <section id="productos" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-box"></i>
+                        Gestión de Productos
+                    </h2>
+                    <div class="section-actions">
+                        <div class="search-container">
+                            <input type="text" id="searchProducts" placeholder="Buscar productos..." class="search-input">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <button class="btn btn-primary" onclick="adminPanel.showSection('agregar-producto')">
+                            <i class="fas fa-plus"></i>
+                            Nuevo Producto
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="products-grid">
+                    <!-- Los productos se cargarán aquí dinámicamente -->
+                </div>
+            </section>
+
+            <!-- Agregar Producto -->
+            <section id="agregar-producto" class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-plus-circle"></i>
+                    Agregar Nuevo Producto
+                </h2>
+                
+                <form id="productForm" class="product-form">
+                    <div class="form-sections">
+                        <!-- Información Básica -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">
+                                <i class="fas fa-info-circle"></i>
+                                Información Básica
+                            </h3>
+                            
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="nombre">Nombre del Producto *</label>
+                                    <input type="text" id="nombre" name="nombre" required>
+                                    <div class="help-text">Nombre completo del producto</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="marca">Marca *</label>
+                                    <input type="text" id="marca" name="marca" required>
+                                    <div class="help-text">Marca del producto</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="precio">Precio (COP) *</label>
+                                    <input type="number" id="precio" name="precio" required step="1000" min="0" max="2147483647" 
+                                           placeholder="Ej: 50000" 
+                                           oninput="adminPanel.validatePrice(this)">
+                                    <div class="help-text">Precio en pesos colombianos</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="ml">Tamaño (ML) *</label>
+                                    <input type="number" id="ml" name="ml" required min="1" max="1000" 
+                                           placeholder="Ej: 100" value="100">
+                                    <div class="help-text">Tamaño en mililitros</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Categorización -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">
+                                <i class="fas fa-tags"></i>
+                                Categorización
+                            </h3>
+                            
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="categoria">Categoría *</label>
+                                    <select id="categoria" name="categoria" required>
+                                        <option value="">Seleccionar categoría</option>
+                                        <option value="para-ellos">Para Ellos</option>
+                                        <option value="para-ellas">Para Ellas</option>
+                                        <option value="unisex">Unisex</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="subcategoria">Subcategoría</label>
+                                    <select id="subcategoria" name="subcategoria">
+                                        <option value="">Seleccionar subcategoría</option>
+                                        <option value="designer">Marcas de Diseñador</option>
+                                        <option value="arabic">Marcas Árabes</option>
+                                        <option value="contemporary">Perfumería Contemporánea</option>
+                                        <option value="vintage">Vintage</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Imagen del Producto -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">
+                                <i class="fas fa-image"></i>
+                                Imagen del Producto
+                            </h3>
+                            
+                            <div class="image-upload-container">
+                                <div class="input-group">
+                                    <input type="url" id="imagen_url" name="imagen_url" 
+                                           placeholder="https://images.unsplash.com/photo-1234567890/image.jpg" 
+                                           class="form-control" required>
+                                    <button type="button" class="btn btn-secondary" onclick="adminPanel.previewImageFromUrl()">
+                                        <i class="fas fa-eye"></i> Vista Previa
+                                    </button>
+                                </div>
+                                
+                                <div class="help-text">
+                                    <strong>Usa URLs directas de imágenes.</strong> Ejemplos:
+                                    <ul>
+                                        <li>Unsplash: https://images.unsplash.com/photo-xxxxx?w=400&h=400</li>
+                                        <li>Pexels: https://images.pexels.com/photos/xxxxx/image.jpg?w=400&h=400</li>
+                                        <li>Directa: https://tu-dominio.com/imagen.jpg</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="quick-images">
+                                    <div class="quick-images-title">
+                                        <i class="fas fa-images"></i> Imágenes de Ejemplo (Clic para usar):
+                                    </div>
+                                    <div class="quick-images-grid">
+                                        <div class="quick-image" onclick="adminPanel.useQuickImage('https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=400&fit=crop')">
+                                            <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=100&h=100&fit=crop" alt="Perfume 1">
+                                        </div>
+                                        <div class="quick-image" onclick="adminPanel.useQuickImage('https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=400&h=400&fit=crop')">
+                                            <img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=100&h=100&fit=crop" alt="Perfume 2">
+                                        </div>
+                                        <div class="quick-image" onclick="adminPanel.useQuickImage('https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&h=400&fit=crop')">
+                                            <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?w=100&h=100&fit=crop" alt="Perfume 3">
+                                        </div>
+                                        <div class="quick-image" onclick="adminPanel.useQuickImage('https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?w=400&h=400&fit=crop')">
+                                            <img src="https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?w=100&h=100&fit=crop" alt="Perfume 4">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="image-preview" id="imagePreview" style="display: none;">
+                                    <div class="preview-header">
+                                        <span><i class="fas fa-eye"></i> Vista previa:</span>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="adminPanel.clearImagePreview()">
+                                            <i class="fas fa-times"></i> Limpiar
+                                        </button>
+                                    </div>
+                                    <img id="previewImg" src="" alt="Vista previa" class="preview-image">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Descripción -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">
+                                <i class="fas fa-align-left"></i>
+                                Descripción y Notas
+                            </h3>
+                            
+                            <div class="form-group">
+                                <label for="descripcion">Descripción del Producto</label>
+                                <textarea id="descripcion" name="descripcion" rows="3" 
+                                          placeholder="Descripción detallada del producto que aparecerá en las tarjetas"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="notas">Notas Olfativas</label>
+                                <textarea id="notas" name="notas" rows="3" 
+                                          placeholder="Ej: Bergamota, Rosa, Sándalo (separadas por comas)"></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Estado y Configuración -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">
+                                <i class="fas fa-cog"></i>
+                                Estado y Configuración
+                            </h3>
+                            
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="estado">Estado del Producto *</label>
+                                    <select id="estado" name="estado" required onchange="adminPanel.handleEstadoChange()">
+                                        <option value="disponible">Disponible</option>
+                                        <option value="agotado">Agotado</option>
+                                        <option value="proximo">Disponible Próximamente</option>
+                                        <option value="oferta">En Oferta</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group" id="descuentoGroup" style="display: none;">
+                                    <label for="descuento">Descuento (%) *</label>
+                                    <input type="number" id="descuento" name="descuento" min="1" max="99" step="1" 
+                                           placeholder="Ej: 15" oninput="adminPanel.updatePrecioConDescuento()">
+                                    <div class="help-text">Porcentaje de descuento sobre el precio original</div>
+                                    <div class="precio-info" id="precioInfo" style="display: none;">
+                                        <small>Precio original: <span id="precioOriginal">$0</span></small><br>
+                                        <small>Precio con descuento: <span id="precioConDescuento">$0</span></small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="luxury" name="luxury">
+                                        <span class="checkmark"></span>
+                                        Producto de lujo (mostrará la etiqueta LUXURY)
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="activo" name="activo" checked>
+                                        <span class="checkmark"></span>
+                                        Producto activo (visible en la tienda)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Guardar Producto
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-undo"></i>
+                            Limpiar Formulario
+                        </button>
+                        <button type="button" class="btn btn-info" onclick="adminPanel.showSection('productos')">
+                            <i class="fas fa-list"></i>
+                            Ver Productos
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Categorías -->
+            <section id="categorias" class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-tags"></i>
+                    Gestión de Categorías
+                </h2>
+                
+                <div class="categories-grid">
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-male"></i>
+                        </div>
+                        <h3>Para Ellos</h3>
+                        <p>Fragancias masculinas</p>
+                        <div class="category-stats">
+                            <span id="stats-para-ellos">0 productos</span>
+                        </div>
+                    </div>
+                    
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-female"></i>
+                        </div>
+                        <h3>Para Ellas</h3>
+                        <p>Fragancias femeninas</p>
+                        <div class="category-stats">
+                            <span id="stats-para-ellas">0 productos</span>
+                        </div>
+                    </div>
+                    
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Unisex</h3>
+                        <p>Fragancias para todos</p>
+                        <div class="category-stats">
+                            <span id="stats-unisex">0 productos</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Configuración -->
+            <section id="configuracion" class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-cog"></i>
+                    Configuración del Sistema
+                </h2>
+                
+                <div class="config-sections">
+                    <div class="config-section">
+                        <h3>Estado de la Conexión</h3>
+                        <div class="connection-info" id="connectionInfo">
+                            <div class="connection-item">
+                                <span class="label">Supabase:</span>
+                                <span class="status" id="supabaseStatus">Verificando...</span>
+                            </div>
+                            <div class="connection-item">
+                                <span class="label">Servicio de Productos:</span>
+                                <span class="status" id="productServiceStatus">Verificando...</span>
+                            </div>
+                            <div class="connection-item">
+                                <span class="label">Última sincronización:</span>
+                                <span class="status" id="lastSync">Nunca</span>
+                            </div>
+                        </div>
+                        
+                        <div class="config-actions">
+                            <button class="btn btn-primary" onclick="adminPanel.checkConnection()">
+                                <i class="fas fa-sync-alt"></i>
+                                Verificar Conexión
+                            </button>
+                            <button class="btn btn-secondary" onclick="adminPanel.clearCache()">
+                                <i class="fas fa-trash"></i>
+                                Limpiar Cache
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="config-section">
+                        <h3>Información del Sistema</h3>
+                        <div class="system-info">
+                            <div class="info-item">
+                                <span class="label">Versión del Panel:</span>
+                                <span class="value">2.0.0</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Última actualización:</span>
+                                <span class="value">2025-01-08</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Productos cargados:</span>
+                                <span class="value" id="loadedProducts">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Cargando...</p>
+        </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div id="alertContainer" class="alert-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/supabase-config-optimized.js"></script>
+    <script src="js/admin-panel-mejorado.js"></script>
+    <script>
+        // Inicializar el panel de administración
+        let adminPanel;
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Iniciando Panel de Administración...');
+            
+            try {
+                // Esperar a que Supabase esté disponible
+                let attempts = 0;
+                const maxAttempts = 50;
+                
+                while (attempts < maxAttempts && typeof window.supabase === 'undefined') {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    attempts++;
+                }
+                
+                if (typeof window.supabase === 'undefined') {
+                    throw new Error('Supabase no pudo cargarse después de 5 segundos');
+                }
+                
+                // Inicializar el panel
+                adminPanel = new AdminPanel();
+                window.adminPanel = adminPanel;
+                
+                console.log('✅ Panel de Administración inicializado correctamente');
+                
+            } catch (error) {
+                console.error('❌ Error inicializando el panel:', error);
+                
+                // Mostrar mensaje de error al usuario
+                const alertContainer = document.getElementById('alertContainer');
+                if (alertContainer) {
+                    alertContainer.innerHTML = `
+                        <div class="alert alert-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Error inicializando el panel: ${error.message}
+                        </div>
+                    `;
+                }
+            }
+        });
+        
+        // Funciones globales adicionales
+        window.adminPanelUtils = {
+            formatPrice: (price) => {
+                return new Intl.NumberFormat('es-CO', {
+                    style: 'currency',
+                    currency: 'COP',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(price);
+            },
+            
+            formatDate: (date) => {
+                return new Intl.DateTimeFormat('es-CO', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }).format(new Date(date));
+            },
+            
+            debounce: (func, wait) => {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+        };
+    </script>
+</body>
+</html>

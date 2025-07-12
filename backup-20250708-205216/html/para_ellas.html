@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pour Elle - Aromes De Dieu</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/para_ellas.css">
+    <link rel="stylesheet" href="../css/cart.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&family=Italiana&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar container -->
+    <div id="navbar-container"></div>
+
+    <main class="magazine-main">
+        <!-- Collection Grid -->
+        <section class="collection-grid">
+            <div class="video-title-section">
+                <video autoplay muted loop class="hero-video">
+                    <source src="../VIDEOS/Video2_index.mp4" type="video/mp4">
+                    Tu navegador no soporta el elemento de video.
+                </video>
+                <div class="video-overlay">
+                    <div class="video-text-content">
+                        <h1 class="video-title">Fragancias Femeninas</h1>
+                        <p class="video-subtitle">Descubre nuestra colección exclusiva de perfumes para dama</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search and Filter Section -->
+            <div class="index-header">
+                <!-- Combined Search and Price Filter -->
+                <div class="search-and-filters-container">
+                    <!-- Search Bar -->
+                    <div class="search-container">
+                        <div class="search-wrapper">
+                            <input type="text" 
+                                   id="searchInput" 
+                                   class="search-input" 
+                                   placeholder="Buscar fragancia o marca...">
+                            <div class="search-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.35-4.35"></path>
+                                </svg>
+                            </div>
+                            <button class="clear-search" id="clearSearch" style="display: none;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Inline Price Filter -->
+                    <div class="price-filter-inline">
+                        <div class="price-filter-header-inline">
+                            <span class="price-label">Precio</span>
+                            <span class="price-range-display" id="priceRangeDisplay">$0 - $500</span>
+                        </div>
+                        <div class="price-slider-container">
+                            <div class="price-slider-track"></div>
+                            <div class="price-slider-range" id="priceSliderRange"></div>
+                            <input type="range" 
+                                   id="minPriceSlider" 
+                                   class="price-slider price-slider-min" 
+                                   min="0" 
+                                   max="500" 
+                                   value="0">
+                            <input type="range" 
+                                   id="maxPriceSlider" 
+                                   class="price-slider price-slider-max" 
+                                   min="0" 
+                                   max="500" 
+                                   value="500">
+                        </div>
+                        <button class="reset-price-filter-inline" id="resetPriceFilter">
+                            Reiniciar
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Search Results Count -->
+                <div class="search-results-count" id="searchResults" style="display: none;"></div>
+                
+                <!-- Category Filters -->
+                <div class="index-filters">
+                    <button class="index-filter active" data-category="">Todas</button>
+                    <button class="index-filter" data-category="perfume">Perfumes</button>
+                    <button class="index-filter" data-category="eau-de-toilette">Eau de Toilette</button>
+                    <button class="index-filter" data-category="eau-de-parfum">Eau de Parfum</button>
+                    <button class="index-filter" data-category="colonia">Colonias</button>
+                    <button class="index-filter" data-category="splash">Splash</button>
+                </div>
+                
+                <!-- Dynamic Filters (will be populated by JavaScript) -->
+                <div class="dynamic-filters">
+                    <div class="filter-section filter-brands">
+                        <!-- Brand filters will be populated by JavaScript -->
+                    </div>
+                    <div class="filter-section filter-subcategories">
+                        <!-- Subcategory filters will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Cargando fragancias...</div>
+                <div class="loading-details" id="loadingDetails">Conectando con la base de datos...</div>
+            </div>
+            
+            <!-- Products Grid -->
+            <div class="index-grid">
+                <!-- Products will be populated by JavaScript -->
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <div class="pagination-info" id="paginationInfo">
+                    Mostrando productos...
+                </div>
+                <div class="pagination-controls">
+                    <button class="pagination-btn" id="prevPage">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m15 18-6-6 6-6"/>
+                        </svg>
+                        Anterior
+                    </button>
+                    
+                    <div class="pagination-numbers" id="paginationNumbers">
+                        <!-- Page numbers will be populated by JavaScript -->
+                    </div>
+                    
+                    <button class="pagination-btn" id="nextPage">
+                        Siguiente
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m9 18 6-6-6-6"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Quick View Modal -->
+    <div class="quick-view-modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <div class="modal-body">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Supabase CDN -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <!-- Scripts de la aplicación -->
+    <script src="../js/supabase-config-optimized.js"></script>
+    <script src="../js/cart.js"></script>
+    <script src="../js/navbar.js"></script>
+    <script src="../js/para_ellas.js"></script>
+    
+    
+    <!-- Verificación de inicialización del carrito -->
+    <script>
+        // Asegurar que el carrito esté inicializado antes de renderizar productos
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Iniciando verificación del carrito...');
+            
+            let cartCheckInterval;
+            let timeoutId;
+            let checkCount = 0;
+            const maxChecks = 100; // 10 segundos máximo
+            
+            const checkCart = () => {
+                checkCount++;
+                console.log(`🔍 Verificando carrito (intento ${checkCount}/${maxChecks})...`);
+                
+                // Verificar múltiples condiciones
+                const hasShoppingCartClass = typeof ShoppingCart !== 'undefined';
+                const hasShoppingCartInstance = window.shoppingCart && typeof window.shoppingCart === 'object';
+                const hasIncreaseQuantity = hasShoppingCartInstance && typeof window.shoppingCart.increaseQuantity === 'function';
+                const hasAddItem = hasShoppingCartInstance && typeof window.shoppingCart.addItem === 'function';
+                const isInitialized = hasShoppingCartInstance && window.shoppingCart.isInitialized === true;
+                
+                console.log('📊 Estado del carrito:', {
+                    hasShoppingCartClass,
+                    hasShoppingCartInstance,
+                    hasIncreaseQuantity,
+                    hasAddItem,
+                    isInitialized
+                });
+                
+                if (hasShoppingCartInstance && hasIncreaseQuantity && hasAddItem) {
+                    console.log('✅ Carrito verificado y listo para Para Ellas');
+                    clearInterval(cartCheckInterval);
+                    clearTimeout(timeoutId);
+                    return true;
+                }
+                
+                // Intentar inicializar si la clase existe pero no la instancia
+                if (hasShoppingCartClass && !hasShoppingCartInstance) {
+                    console.log('🛒 Inicializando carrito manualmente...');
+                    try {
+                        window.shoppingCart = new ShoppingCart();
+                        console.log('✅ Carrito inicializado manualmente');
+                    } catch (error) {
+                        console.error('❌ Error inicializando carrito:', error);
+                    }
+                }
+                
+                if (checkCount >= maxChecks) {
+                    console.warn('⚠️ Límite de verificaciones alcanzado');
+                    clearInterval(cartCheckInterval);
+                    clearTimeout(timeoutId);
+                    return false;
+                }
+                
+                return false;
+            };
+            
+            // Verificación inicial inmediata
+            if (!checkCart()) {
+                // Configurar verificación periódica
+                cartCheckInterval = setInterval(checkCart, 100);
+                
+                // Timeout de seguridad más largo
+                timeoutId = setTimeout(() => {
+                    if (cartCheckInterval) {
+                        clearInterval(cartCheckInterval);
+                        console.warn('⏰ Timeout de verificación del carrito (10s)');
+                        
+                        // Último intento de rescate
+                        if (typeof ShoppingCart !== 'undefined' && !window.shoppingCart) {
+                            console.log('🔄 Último intento de inicialización...');
+                            try {
+                                window.shoppingCart = new ShoppingCart();
+                                console.log('✅ Carrito inicializado en último intento');
+                            } catch (error) {
+                                console.error('❌ Error en último intento:', error);
+                            }
+                        }
+                    }
+                }, 10000); // 10 segundos
+            }
+        });
+    </script>
+    
+    <script>
+        // Load navbar
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('navbar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('navbar-container').innerHTML = data;
+                    if (typeof initNavbar === 'function') {
+                        setTimeout(initNavbar, 100);
+                    }
+                    
+                    // Reconfigurar event listeners del carrito después de cargar navbar
+                    setTimeout(() => {
+                        if (window.shoppingCart && typeof window.shoppingCart.reconfigureEventListeners === 'function') {
+                            window.shoppingCart.reconfigureEventListeners();
+                            console.log('✅ Event listeners del carrito reconfigurados en Para Ellas');
+                        }
+                    }, 500);
+                })
+                .catch(error => {
+                    console.error('Error loading navbar:', error);
+                });
+        });
+    </script>
+</body>
+</html>

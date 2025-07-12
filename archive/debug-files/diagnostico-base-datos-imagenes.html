@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico - Base de Datos Imágenes</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #764ba2;
+            margin-bottom: 30px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+          .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .status {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .warning {
+            border-left-color: #ffc107;
+            background: #fff3cd;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .imagen-preview {
+            max-width: 60px;
+            max-height: 60px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .campo-imagen {
+            max-width: 200px;
+            word-break: break-all;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        
+        .log-container {
+            background: #1e1e1e;
+            color: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        .log-info { background: rgba(0, 123, 255, 0.2); }
+        .log-warning { background: rgba(255, 193, 7, 0.2); }
+        .log-error { background: rgba(220, 53, 69, 0.2); }
+        .log-success { background: rgba(40, 167, 69, 0.2); }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Diagnóstico - Base de Datos e Imágenes</h1>
+        
+        <div class="controls">            <button class="btn btn-primary" onclick="conectarBaseDatos()">🔌 Conectar Base de Datos</button>
+            <button class="btn btn-secondary" onclick="obtenerEstructuraTabla()">📋 Ver Estructura Tabla</button>
+            <button class="btn btn-success" onclick="analizarProductosParaEllos()">👔 Analizar Productos Para Ellos</button>
+            <button class="btn btn-secondary" onclick="probarImagenes()">🖼️ Probar Carga Imágenes</button>
+            <button class="btn btn-warning" onclick="verificarCategorias()">🏷️ Verificar Categorías</button>
+            <button class="btn btn-danger" onclick="migrarDatosImagen()">🔄 Migrar Datos Imagen</button>
+            <button class="btn btn-secondary" onclick="limpiarLog()">🧹 Limpiar Log</button>
+        </div>
+        
+        <div id="status" class="status">
+            ⏳ Esperando acción...
+        </div>
+        
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-number" id="totalProductos">0</div>
+                <div class="stat-label">Total Productos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="conImagen">0</div>
+                <div class="stat-label">Con Imagen</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="sinImagen">0</div>
+                <div class="stat-label">Sin Imagen</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="imagenesValidas">0</div>
+                <div class="stat-label">Imágenes Válidas</div>
+            </div>
+        </div>
+        
+        <div id="tablaProductos"></div>
+        
+        <div class="log-container" id="logContainer">
+            <div class="log-entry log-info">🚀 Sistema de diagnóstico inicializado</div>
+        </div>
+    </div>
+
+    <script src="js/supabase-config.js"></script>
+    <script>
+        let supabaseClient = null;
+        let productosData = [];
+        
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            
+            let icon = '💬';
+            switch(type) {
+                case 'error': icon = '❌'; break;
+                case 'warning': icon = '⚠️'; break;
+                case 'success': icon = '✅'; break;
+                case 'info': icon = '💡'; break;
+            }
+            
+            entry.innerHTML = `[${timestamp}] ${icon} ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+        
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${type}`;
+            statusDiv.innerHTML = message;
+        }
+        
+        async function conectarBaseDatos() {
+            try {
+                updateStatus('🔌 Conectando a la base de datos...', 'info');
+                log('Iniciando conexión a Supabase...', 'info');
+                
+                if (!window.supabaseUrl || !window.supabaseAnonKey) {
+                    throw new Error('Configuración de Supabase no encontrada');
+                }
+                
+                supabaseClient = window.supabase.createClient(window.supabaseUrl, window.supabaseAnonKey);
+                
+                // Hacer una consulta simple para probar la conexión
+                const { data, error } = await supabaseClient
+                    .from('productos')
+                    .select('count')
+                    .limit(1);
+                
+                if (error) {
+                    throw error;
+                }
+                
+                updateStatus('✅ Conectado exitosamente a la base de datos', 'success');
+                log('Conexión establecida correctamente', 'success');
+                log(`URL: ${window.supabaseUrl}`, 'info');
+                
+            } catch (error) {
+                updateStatus(`❌ Error de conexión: ${error.message}`, 'error');
+                log(`Error de conexión: ${error.message}`, 'error');
+                console.error('Error de conexión:', error);
+            }
+        }
+        
+        async function obtenerEstructuraTabla() {
+            if (!supabaseClient) {
+                updateStatus('❌ Primero debes conectar a la base de datos', 'error');
+                return;
+            }
+            
+            try {
+                updateStatus('📋 Analizando estructura de la tabla productos...', 'info');
+                log('Obteniendo estructura de la tabla productos', 'info');
+                
+                // Obtener un producto de muestra para ver las columnas
+                const { data, error } = await supabaseClient
+                    .from('productos')
+                    .select('*')
+                    .limit(1);
+                
+                if (error) {
+                    throw error;
+                }
+                
+                if (data && data.length > 0) {
+                    const columnas = Object.keys(data[0]);
+                    log(`Columnas encontradas: ${columnas.join(', ')}`, 'info');
+                    
+                    // Verificar columnas de imagen específicamente
+                    const columnasImagen = columnas.filter(col => 
+                        col.includes('imagen') || col.includes('image')
+                    );
+                    
+                    if (columnasImagen.length > 0) {
+                        log(`Columnas de imagen: ${columnasImagen.join(', ')}`, 'success');
+                    } else {
+                        log('⚠️ No se encontraron columnas de imagen', 'warning');
+                    }
+                    
+                    updateStatus(`📋 Estructura analizada. ${columnas.length} columnas encontradas`, 'success');
+                } else {
+                    log('No se encontraron productos en la tabla', 'warning');
+                    updateStatus('⚠️ La tabla productos está vacía', 'warning');
+                }
+                
+            } catch (error) {
+                updateStatus(`❌ Error al obtener estructura: ${error.message}`, 'error');
+                log(`Error: ${error.message}`, 'error');
+                console.error('Error:', error);
+            }
+        }
+        
+        async function analizarProductosParaEllos() {
+            if (!supabaseClient) {
+                updateStatus('❌ Primero debes conectar a la base de datos', 'error');
+                return;
+            }
+            
+            try {
+                updateStatus('👔 Analizando productos para ellos...', 'info');
+                log('Obteniendo productos de la categoría "para ellos"', 'info');
+                
+                const { data, error } = await supabaseClient
+                    .from('productos')
+                    .select('*')
+                    .eq('categoria', 'para ellos');
+                
+                if (error) {
+                    throw error;
+                }
+                
+                productosData = data || [];
+                log(`Total productos encontrados: ${productosData.length}`, 'info');
+                
+                // Analizar campos de imagen
+                let conImagen = 0;
+                let sinImagen = 0;
+                let imagenesValidas = 0;
+                
+                const analisisDetallado = productosData.map((producto, index) => {
+                    const imagen = producto.imagen_url || producto.imagen;
+                    const tieneImagen = imagen && imagen.trim() !== '';
+                    
+                    if (tieneImagen) {
+                        conImagen++;
+                        // Verificar si es una URL válida o base64
+                        const esUrl = imagen.startsWith('http') || imagen.startsWith('/') || imagen.startsWith('./');
+                        const esBase64 = imagen.startsWith('data:image/');
+                        
+                        if (esUrl || esBase64) {
+                            imagenesValidas++;
+                        }
+                    } else {
+                        sinImagen++;
+                    }
+                    
+                    log(`Producto ${index + 1}: ${producto.nombre} | Imagen: ${imagen ? 'SÍ' : 'NO'} | Valor: ${imagen || 'NULL'}`, tieneImagen ? 'success' : 'warning');
+                    
+                    return {
+                        id: producto.id,
+                        nombre: producto.nombre,
+                        marca: producto.marca,
+                        precio: producto.precio,
+                        imagen: producto.imagen || 'NULL',
+                        imagen_url: producto.imagen_url || 'NULL',
+                        tieneImagen,
+                        valorImagen: imagen || 'NULL'
+                    };
+                });
+                
+                // Actualizar estadísticas
+                document.getElementById('totalProductos').textContent = productosData.length;
+                document.getElementById('conImagen').textContent = conImagen;
+                document.getElementById('sinImagen').textContent = sinImagen;
+                document.getElementById('imagenesValidas').textContent = imagenesValidas;
+                document.getElementById('stats').style.display = 'grid';
+                
+                // Mostrar tabla de resultados
+                mostrarTablaProductos(analisisDetallado);
+                
+                updateStatus(`✅ Análisis completado: ${productosData.length} productos`, 'success');
+                log(`Resumen: ${conImagen} con imagen, ${sinImagen} sin imagen, ${imagenesValidas} válidas`, 'info');
+                
+            } catch (error) {
+                updateStatus(`❌ Error al analizar productos: ${error.message}`, 'error');
+                log(`Error: ${error.message}`, 'error');
+                console.error('Error:', error);
+            }
+        }
+        
+        function mostrarTablaProductos(productos) {
+            const container = document.getElementById('tablaProductos');
+            
+            let html = `
+                <h3>📊 Detalles de Productos - Para Ellos</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Marca</th>
+                            <th>Precio</th>
+                            <th>Campo imagen</th>
+                            <th>Campo imagen_url</th>
+                            <th>Estado</th>
+                            <th>Preview</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            productos.forEach(producto => {
+                const estado = producto.tieneImagen ? '✅ Con imagen' : '❌ Sin imagen';
+                const estadoClass = producto.tieneImagen ? 'success' : 'error';
+                
+                html += `
+                    <tr>
+                        <td>${producto.id}</td>
+                        <td>${producto.nombre}</td>
+                        <td>${producto.marca}</td>
+                        <td>$${producto.precio}</td>
+                        <td class="campo-imagen">${producto.imagen}</td>
+                        <td class="campo-imagen">${producto.imagen_url}</td>
+                        <td class="${estadoClass}">${estado}</td>
+                        <td>
+                            ${producto.tieneImagen ? 
+                                `<img src="${producto.valorImagen}" class="imagen-preview" onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"60\" height=\"60\"><rect width=\"60\" height=\"60\" fill=\"%23ddd\"/><text x=\"30\" y=\"35\" text-anchor=\"middle\" fill=\"%23999\" font-size=\"10\">Error</text></svg>'" alt="Imagen producto">` 
+                                : '❌ Sin imagen'
+                            }
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = html;
+        }
+        
+        async function probarImagenes() {
+            if (productosData.length === 0) {
+                updateStatus('❌ Primero debes analizar los productos', 'error');
+                return;
+            }
+            
+            updateStatus('🖼️ Probando carga de imágenes...', 'info');
+            log('Iniciando prueba de carga de imágenes', 'info');
+            
+            const productosConImagen = productosData.filter(p => {
+                const imagen = p.imagen_url || p.imagen;
+                return imagen && imagen.trim() !== '';
+            });
+            
+            log(`Probando ${productosConImagen.length} productos con imagen`, 'info');
+            
+            for (const producto of productosConImagen) {
+                const imagen = producto.imagen_url || producto.imagen;
+                
+                try {
+                    // Probar si la imagen se puede cargar
+                    const img = new Image();
+                    
+                    await new Promise((resolve, reject) => {
+                        img.onload = () => {
+                            log(`✅ Imagen cargada: ${producto.nombre} (${imagen})`, 'success');
+                            resolve();
+                        };
+                        
+                        img.onerror = () => {
+                            log(`❌ Error carga: ${producto.nombre} (${imagen})`, 'error');
+                            reject(new Error('No se pudo cargar la imagen'));
+                        };
+                        
+                        img.src = imagen;
+                        
+                        // Timeout de 5 segundos
+                        setTimeout(() => {
+                            reject(new Error('Timeout'));
+                        }, 5000);
+                    });
+                    
+                } catch (error) {
+                    log(`❌ Fallo prueba: ${producto.nombre} - ${error.message}`, 'error');
+                }
+            }
+            
+            updateStatus('✅ Prueba de imágenes completada', 'success');
+            log('Prueba de carga de imágenes finalizada', 'info');
+        }
+        
+        async function verificarCategorias() {
+            if (!supabaseClient) {
+                updateStatus('❌ Primero debes conectar a la base de datos', 'error');
+                return;
+            }
+            
+            try {
+                updateStatus('🏷️ Verificando categorías de productos...', 'info');
+                log('Analizando categorías existentes en la base de datos', 'info');
+                
+                // Obtener todas las categorías únicas
+                const { data, error } = await supabaseClient
+                    .from('productos')
+                    .select('categoria')
+                    .not('categoria', 'is', null);
+                
+                if (error) {
+                    throw error;
+                }
+                
+                // Contar ocurrencias de cada categoría
+                const categorias = {};
+                data.forEach(item => {
+                    const cat = item.categoria || 'NULL';
+                    categorias[cat] = (categorias[cat] || 0) + 1;
+                });
+                
+                log('Categorías encontradas:', 'info');
+                Object.entries(categorias).forEach(([categoria, count]) => {
+                    log(`  - "${categoria}": ${count} productos`, categoria.includes('ellos') ? 'success' : 'info');
+                });
+                
+                // Verificar específicamente las categorías relacionadas con "ellos"
+                const categoriasEllos = Object.entries(categorias).filter(([cat]) => 
+                    cat.toLowerCase().includes('ellos')
+                );
+                
+                if (categoriasEllos.length > 1) {
+                    log('⚠️ Se encontraron múltiples categorías para "ellos":', 'warning');
+                    categoriasEllos.forEach(([cat, count]) => {
+                        log(`  - "${cat}": ${count} productos`, 'warning');
+                    });
+                } else if (categoriasEllos.length === 1) {
+                    log(`✅ Categoría única para ellos: "${categoriasEllos[0][0]}"`, 'success');
+                } else {
+                    log('❌ No se encontraron productos para ellos', 'error');
+                }
+                
+                updateStatus(`✅ Análisis completado: ${Object.keys(categorias).length} categorías encontradas`, 'success');
+                
+            } catch (error) {
+                updateStatus(`❌ Error verificando categorías: ${error.message}`, 'error');
+                log(`Error: ${error.message}`, 'error');
+                console.error('Error:', error);
+            }
+        }
+        
+        async function migrarDatosImagen() {
+            if (!supabaseClient) {
+                updateStatus('❌ Primero debes conectar a la base de datos', 'error');
+                return;
+            }
+            
+            try {
+                updateStatus('🔄 Migrando datos de imagen...', 'info');
+                log('Iniciando migración de datos de imagen para productos para ellos', 'info');
+                
+                // 1. Obtener productos que necesitan migración
+                const { data: productosParaMigrar, error: errorConsulta } = await supabaseClient
+                    .from('productos')
+                    .select('*')
+                    .or('categoria.eq.para-ellos,categoria.eq.para ellos')
+                    .or('imagen_url.is.null,imagen_url.eq.')
+                    .not('imagen', 'is', null)
+                    .neq('imagen', '');
+                
+                if (errorConsulta) {
+                    throw errorConsulta;
+                }
+                
+                log(`Productos que necesitan migración: ${productosParaMigrar.length}`, 'info');
+                
+                if (productosParaMigrar.length === 0) {
+                    log('✅ No hay productos que necesiten migración', 'success');
+                    updateStatus('✅ No se requiere migración', 'success');
+                    return;
+                }
+                
+                // 2. Migrar datos del campo imagen a imagen_url
+                for (const producto of productosParaMigrar) {
+                    log(`Migrando producto: ${producto.nombre}`, 'info');
+                    
+                    let nuevaImagenUrl = producto.imagen;
+                    
+                    // Aplicar correcciones específicas para productos conocidos
+                    if (producto.nombre && producto.marca) {
+                        if (producto.nombre.toLowerCase().includes('212') && producto.marca.toLowerCase().includes('carolina')) {
+                            nuevaImagenUrl = 'LOCIONES_PARA _ELLOS/212_CAROLINA_HERRERA.png';
+                        } else if (producto.marca.toLowerCase().includes('versace') && producto.nombre.toLowerCase().includes('eros')) {
+                            nuevaImagenUrl = 'LOCIONES_PARA _ELLOS/VERSACE_EROS_BLUE.png';
+                        } else if (producto.nombre.toLowerCase().includes('one million') && producto.marca.toLowerCase().includes('paco')) {
+                            nuevaImagenUrl = 'LOCIONES_PARA _ELLOS/ONE_MILLON_PACO_RABANE.png';
+                        } else if (producto.marca.toLowerCase().includes('montblanc') && producto.nombre.toLowerCase().includes('legend')) {
+                            nuevaImagenUrl = 'LOCIONES_PARA _ELLOS/MONTBLACK_LEGEND_NIGH.png';
+                        } else if (producto.marca.toLowerCase().includes('givenchy') && producto.nombre.toLowerCase().includes('blue')) {
+                            nuevaImagenUrl = 'LOCIONES_PARA _ELLOS/GIVENCHY_BLUE_LABEL.png';
+                        }
+                    }
+                    
+                    // Actualizar el producto
+                    const { error: errorActualizacion } = await supabaseClient
+                        .from('productos')
+                        .update({
+                            imagen_url: nuevaImagenUrl,
+                            categoria: 'para-ellos' // Normalizar categoría
+                        })
+                        .eq('id', producto.id);
+                    
+                    if (errorActualizacion) {
+                        log(`❌ Error actualizando ${producto.nombre}: ${errorActualizacion.message}`, 'error');
+                    } else {
+                        log(`✅ ${producto.nombre} actualizado: ${nuevaImagenUrl}`, 'success');
+                    }
+                }
+                
+                updateStatus('✅ Migración completada', 'success');
+                log('Migración de datos completada', 'success');
+                
+                // Reanalizar productos después de la migración
+                setTimeout(() => {
+                    analizarProductosParaEllos();
+                }, 1000);
+                
+            } catch (error) {
+                updateStatus(`❌ Error en la migración: ${error.message}`, 'error');
+                log(`Error de migración: ${error.message}`, 'error');
+                console.error('Error:', error);
+            }
+        }
+        
+        function limpiarLog() {
+            const logContainer = document.getElementById('logContainer');
+            logContainer.innerHTML = '<div class="log-entry log-info">🚀 Log limpiado</div>';
+        }
+        
+        // Inicialización automática
+        window.addEventListener('load', () => {
+            log('Sistema de diagnóstico listo', 'success');
+            log('Haz clic en "Conectar Base de Datos" para comenzar', 'info');
+        });
+    </script>
+</body>
+</html>

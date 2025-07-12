@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Panel Admin Navegación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .debug-panel {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .log {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .panel-link {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px;
+        }
+        .panel-link:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Debug - Panel Admin Navegación</h1>
+    
+    <div class="debug-panel">
+        <h2>Abrir Panel de Administración</h2>
+        <a href="html/admin-panel.html" target="_blank" class="panel-link">🔗 Abrir Panel</a>
+        <a href="html/admin-panel.html?debug=true" target="_blank" class="panel-link">🔧 Abrir Panel (Debug)</a>
+    </div>
+
+    <div class="debug-panel">
+        <h2>Test estructura HTML</h2>
+        <button class="btn" onclick="testPanelStructure()">🔍 Verificar Estructura</button>
+        <button class="btn" onclick="testNavigation()">🧭 Test Navegación</button>
+        <button class="btn" onclick="clearLog()">🗑️ Limpiar</button>
+    </div>
+
+    <div class="debug-panel">
+        <h2>Log</h2>
+        <div id="log" class="log">Esperando pruebas...\n</div>
+    </div>
+
+    <!-- Scripts directos -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    
+    <script>
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+        
+        function clearLog() {
+            document.getElementById('log').textContent = 'Log limpiado...\n';
+        }
+
+        function testPanelStructure() {
+            log('🔍 Verificando estructura del panel...');
+            
+            // Abrir panel en iframe para testear
+            const iframe = document.createElement('iframe');
+            iframe.src = 'html/admin-panel.html';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            
+            iframe.onload = function() {
+                try {
+                    const doc = iframe.contentDocument || iframe.contentWindow.document;
+                    
+                    // Verificar elementos clave
+                    const checks = {
+                        'sidebar-menu': doc.querySelectorAll('.sidebar-menu a').length,
+                        'content-sections': doc.querySelectorAll('.content-section').length,
+                        'products-grid': doc.querySelector('.products-grid') ? 1 : 0,
+                        'dashboard': doc.getElementById('dashboard') ? 1 : 0,
+                        'productos': doc.getElementById('productos') ? 1 : 0,
+                        'agregar-producto': doc.getElementById('agregar-producto') ? 1 : 0
+                    };
+                    
+                    log('📋 Estructura encontrada:');
+                    Object.entries(checks).forEach(([element, count]) => {
+                        log(`  ${element}: ${count > 0 ? '✅' : '❌'} (${count})`);
+                    });
+                    
+                    // Verificar CSS
+                    const style = doc.defaultView.getComputedStyle(doc.querySelector('.content-section'));
+                    log(`🎨 CSS display por defecto: ${style.display}`);
+                    
+                    const activeStyle = doc.defaultView.getComputedStyle(doc.querySelector('.content-section.active') || doc.createElement('div'));
+                    log(`🎨 CSS display activo: ${activeStyle.display}`);
+                    
+                } catch (error) {
+                    log(`❌ Error accediendo al iframe: ${error.message}`);
+                }
+                
+                // Limpiar
+                setTimeout(() => {
+                    document.body.removeChild(iframe);
+                }, 1000);
+            };
+        }
+
+        function testNavigation() {
+            log('🧭 Probando navegación del panel...');
+            
+            // Simular carga del panel
+            log('📄 Simulando carga del panel...');
+            
+            // Verificar dependencias primero
+            const deps = {
+                'ProductosService': typeof ProductosService !== 'undefined',
+                'supabaseClient': typeof supabaseClient !== 'undefined'
+            };
+            
+            log('🔍 Dependencias disponibles:');
+            Object.entries(deps).forEach(([name, available]) => {
+                log(`  ${name}: ${available ? '✅' : '❌'}`);
+            });
+            
+            if (!deps.ProductosService) {
+                log('⚠️ ProductosService no disponible - puede causar problemas de navegación');
+            }
+            
+            if (!deps.supabaseClient) {
+                log('⚠️ supabaseClient no disponible - inicializando...');
+                if (typeof initSupabase === 'function') {
+                    const initialized = initSupabase();
+                    log(`🔄 Supabase inicializado: ${initialized ? '✅' : '❌'}`);
+                }
+            }
+            
+            log('✅ Verificación completada');
+        }
+
+        // Test automático al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Iniciando debug del panel...');
+            
+            setTimeout(() => {
+                if (typeof initSupabase === 'function') {
+                    initSupabase();
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>

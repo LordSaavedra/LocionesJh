@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Aromes De Dieu | Perfumería de Lujo</title>
+    <meta name="description" content="Contáctanos para consultas sobre nuestras fragancias exclusivas. Atención personalizada y asesoramiento profesional en perfumería de lujo.">
+    
+    <!-- Fuentes elegantes -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500;600&family=Italiana&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/cart.css">
+    <link rel="stylesheet" href="../css/contacto.css">
+</head>
+<body>
+    <!-- Navbar container -->
+    <div id="navbar-container"></div>
+
+    <!-- Hero Section con diseño moderno -->
+    <section class="hero-modern">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">Contáctanos</h1>
+                <p class="hero-subtitle">Conecta con nosotros y descubre el mundo de las fragancias de lujo</p>
+                <div class="hero-buttons">
+                    <button class="cta-btn primary" onclick="scrollToForm()">
+                        <i class="fas fa-paper-plane"></i>
+                        Enviar Mensaje
+                    </button>
+                    <button class="cta-btn secondary" onclick="openWhatsApp()">
+                        <i class="fab fa-whatsapp"></i>
+                        WhatsApp
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-card">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Respuesta Rápida</h3>
+                    <p>En menos de 2 horas</p>
+                </div>
+                <div class="floating-card delay-1">
+                    <i class="fas fa-star"></i>
+                    <h3>Atención Premium</h3>
+                    <p>Servicio personalizado</p>
+                </div>
+                <div class="floating-card delay-2">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>100% Confiable</h3>
+                    <p>Soporte garantizado</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contenedor principal -->
+    <div class="main-container">
+        
+        <!-- Sección de contacto principal -->
+        <section class="contact-section">
+            
+            <!-- Formulario flotante -->
+            <div class="form-container" id="contactFormSection">
+                <div class="form-header">
+                    <h2>Cuéntanos tu historia</h2>
+                    <p>Cada fragancia cuenta una historia única. ¿Cuál será la tuya?</p>
+                </div>
+                
+                <form id="contactForm" class="modern-form">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <input type="text" name="firstName" required>
+                            <label>Nombre</label>
+                            <div class="input-line"></div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <input type="text" name="lastName" required>
+                            <label>Apellido</label>
+                            <div class="input-line"></div>
+                        </div>
+                        
+                        <div class="input-group full-width">
+                            <input type="email" name="email" required>
+                            <label>Email</label>
+                            <div class="input-line"></div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <input type="tel" name="phone">
+                            <label>Teléfono</label>
+                            <div class="input-line"></div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <select name="subject" required>
+                                <option value="" disabled selected></option>
+                                <option value="consulta">Consulta General</option>
+                                <option value="asesoramiento">Asesoramiento</option>
+                                <option value="productos">Sobre Productos</option>
+                                <option value="envios">Envíos</option>
+                                <option value="reclamo">Reclamo</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                            <label>Asunto</label>
+                            <div class="input-line"></div>
+                        </div>
+                        
+                        <div class="input-group full-width">
+                            <textarea name="message" required rows="4"></textarea>
+                            <label>Tu mensaje</label>
+                            <div class="input-line"></div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-modern">
+                        <span>Enviar Mensaje</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Panel de información -->
+            <div class="info-panel">
+                <h3>Múltiples formas de conectar</h3>
+                
+                <div class="contact-methods">
+                    <div class="method-card whatsapp">
+                        <div class="method-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="method-info">
+                            <h4>WhatsApp</h4>
+                            <p>+1 (555) 987-6543</p>
+                            <span>Respuesta inmediata</span>
+                        </div>
+                        <button class="method-btn">Chatear</button>
+                    </div>
+                    
+                    <div class="method-card phone">
+                        <div class="method-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="method-info">
+                            <h4>Teléfono</h4>
+                            <p>+1 (555) 123-4567</p>
+                            <span>Lun - Sáb: 9AM - 8PM</span>
+                        </div>
+                        <button class="method-btn">Llamar</button>
+                    </div>
+                    
+                    <div class="method-card email">
+                        <div class="method-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="method-info">
+                            <h4>Email</h4>
+                            <p>info@aromesdedieu.com</p>
+                            <span>Respuesta en 2-4 horas</span>
+                        </div>
+                        <button class="method-btn">Escribir</button>
+                    </div>
+                    
+                    <div class="method-card location">
+                        <div class="method-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="method-info">
+                            <h4>Ubicación</h4>
+                            <p>Av. Perfumería 123</p>
+                            <span>Centro Comercial Luxury</span>
+                        </div>
+                        <button class="method-btn">Ver Mapa</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de ventajas -->
+        <section class="advantages-section">
+            <div class="section-header">
+                <h2>¿Por qué elegirnos?</h2>
+                <p>Descubre lo que nos hace únicos en el mundo de las fragancias</p>
+            </div>
+            
+            <div class="advantages-grid">
+                <div class="advantage-card">
+                    <div class="advantage-icon gradient-1">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <h3>Experiencia Premium</h3>
+                    <p>Más de 10 años creando experiencias olfativas únicas para clientes exigentes.</p>
+                </div>
+                
+                <div class="advantage-card">
+                    <div class="advantage-icon gradient-2">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h3>Entrega Express</h3>
+                    <p>Recibe tu fragancia en 24-48 horas con embalaje especial de protección.</p>
+                </div>
+                
+                <div class="advantage-card">
+                    <div class="advantage-icon gradient-3">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3>Autenticidad Garantizada</h3>
+                    <p>Cada producto viene con certificado de originalidad y garantía de calidad.</p>
+                </div>
+                
+                <div class="advantage-card">
+                    <div class="advantage-icon gradient-4">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Asesoría Experta</h3>
+                    <p>Perfumistas certificados te ayudan a encontrar tu fragancia ideal.</p>
+                </div>
+                
+                <div class="advantage-card">
+                    <div class="advantage-icon gradient-5">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h3>Envoltura Elegante</h3>
+                    <p>Presentación de lujo gratuita para hacer cada compra memorable.</p>
+                </div>
+                
+                <div class="advantage-card">
+                    <div class="advantage-icon gradient-6">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Satisfacción Total</h3>
+                    <p>30 días para cambios. Tu felicidad es nuestra mayor prioridad.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ moderno -->
+        <section class="faq-modern">
+            <div class="section-header">
+                <h2>Preguntas Frecuentes</h2>
+                <p>Resolvemos tus dudas más comunes</p>
+            </div>
+            
+            <div class="faq-container">
+                <div class="faq-item-modern" data-faq="1">
+                    <div class="faq-question-modern">
+                        <h4>¿Todas las fragancias son originales?</h4>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer-modern">
+                        <p>Absolutamente. Trabajamos exclusivamente con distribuidores autorizados y cada fragancia incluye certificado de autenticidad. Nuestra reputación se basa en la confianza de nuestros clientes.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item-modern" data-faq="2">
+                    <div class="faq-question-modern">
+                        <h4>¿Cuál es el tiempo de entrega?</h4>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer-modern">
+                        <p>Ofrecemos entrega express en 24-48 horas para ciudades principales. Zonas rurales 3-5 días. Todos los envíos incluyen tracking y seguro completo.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item-modern" data-faq="3">
+                    <div class="faq-question-modern">
+                        <h4>¿Puedo devolver si no me gusta el producto?</h4>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer-modern">
+                        <p>Tienes 30 días para devoluciones sin complicaciones. Solo requiere condiciones originales y mínimo 80% del contenido. Tu satisfacción es garantizada.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item-modern" data-faq="4">
+                    <div class="faq-question-modern">
+                        <h4>¿Ofrecen asesoramiento personalizado?</h4>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer-modern">
+                        <p>Nuestros perfumistas certificados están disponibles por WhatsApp, teléfono o consulta presencial. Creamos perfiles olfativos únicos para cada cliente.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item-modern" data-faq="5">
+                    <div class="faq-question-modern">
+                        <h4>¿Realizan envíos internacionales?</h4>
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="faq-answer-modern">
+                        <p>Actualmente servimos todo el territorio nacional. Próximamente expandiremos internacionalmente. Consulta sobre envíos especiales para casos únicos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/cart.js"></script>
+    <script src="../js/cart-error-fixes.js"></script>
+    <script src="../js/limpiar-productos-prueba.js"></script>
+    <script src="../js/navbar.js"></script>
+    <script src="../js/contacto-modern.js"></script>
+</body>
+</html>

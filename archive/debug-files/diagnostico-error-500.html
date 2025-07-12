@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico Error 500</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .log-output {
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 11px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .error { color: #dc3545; }
+        .success { color: #28a745; }
+        .warning { color: #ffc107; }
+        .info { color: #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Diagnóstico Error 500 - Productos</h1>
+        <p>Esta herramienta diagnostica el error 500 que está impidiendo cargar y guardar productos.</p>
+
+        <div class="test-section">
+            <h3>🔗 Tests de Conexión</h3>
+            <button onclick="testConnection()">1. Test Conexión Básica</button>
+            <button onclick="testSupabaseClient()">2. Test Cliente Supabase</button>
+            <button onclick="testTableAccess()">3. Test Acceso a Tabla</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Tests de Productos</h3>
+            <button onclick="testSelectProducts()">4. Test SELECT Productos</button>
+            <button onclick="testSelectProductsSimple()">5. Test SELECT Simple</button>
+            <button onclick="testInsertSimple()">6. Test INSERT Simple</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🖼️ Tests de Imágenes</h3>
+            <button onclick="testImageProduct()">7. Test Producto con Imagen</button>
+            <button onclick="testBase64Validation()">8. Test Validación Base64</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Log de Resultados</h3>
+            <div id="logOutput" class="log-output">Esperando tests...\n</div>
+            <button onclick="clearLog()">🧹 Limpiar Log</button>
+        </div>
+    </div>
+
+    <!-- Scripts necesarios -->
+    <script src="js/supabase-config.js"></script>
+    
+    <script>
+        function log(message, type = 'info') {
+            const logOutput = document.getElementById('logOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                'info': '#00ffff',
+                'success': '#00ff00', 
+                'warning': '#ffff00',
+                'error': '#ff0000',
+                'debug': '#ff00ff'
+            };
+            
+            const coloredMessage = `[${timestamp}] ${message}\n`;
+            logOutput.innerHTML += `<span style="color: ${colors[type] || '#00ffff'}">${coloredMessage}</span>`;
+            logOutput.scrollTop = logOutput.scrollHeight;
+            console.log(`[DIAGNÓSTICO] ${message}`);
+        }
+        
+        function clearLog() {
+            document.getElementById('logOutput').innerHTML = 'Log limpiado...\n';
+        }
+        
+        // 1. Test conexión básica
+        async function testConnection() {
+            log('=== TEST 1: CONEXIÓN BÁSICA ===', 'debug');
+            
+            try {
+                // Verificar variables globales
+                log(`window.supabase: ${typeof window.supabase}`, 'info');
+                log(`supabaseClient: ${typeof supabaseClient}`, 'info');
+                log(`ProductosService: ${typeof ProductosService}`, 'info');
+                
+                if (typeof supabaseClient === 'undefined') {
+                    throw new Error('supabaseClient no está definido');
+                }
+                
+                log('✅ Variables globales disponibles', 'success');
+                
+                // Test de configuración básica
+                const { data, error } = await supabaseClient.from('productos').select('count');
+                
+                if (error) {
+                    log(`❌ Error en query básico: ${error.message}`, 'error');
+                    log(`   - Código: ${error.code}`, 'error');
+                    log(`   - Detalles: ${error.details}`, 'error');
+                } else {
+                    log('✅ Query básico exitoso', 'success');
+                }
+                
+            } catch (error) {
+                log(`❌ Error en test de conexión: ${error.message}`, 'error');
+            }
+            
+            log('=== FIN TEST 1 ===', 'debug');
+        }
+        
+        // 2. Test cliente Supabase
+        async function testSupabaseClient() {
+            log('=== TEST 2: CLIENTE SUPABASE ===', 'debug');
+            
+            try {
+                if (!supabaseClient) {
+                    throw new Error('Cliente Supabase no disponible');
+                }
+                
+                // Test de autenticación (si aplica)
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                log(`Usuario autenticado: ${user ? 'SÍ' : 'NO'}`, 'info');
+                
+                // Test de configuración del proyecto
+                const projectUrl = supabaseClient.supabaseUrl;
+                const projectKey = supabaseClient.supabaseKey;
+                
+                log(`URL del proyecto: ${projectUrl ? 'CONFIGURADA' : 'NO CONFIGURADA'}`, projectUrl ? 'success' : 'error');
+                log(`API Key: ${projectKey ? 'CONFIGURADA' : 'NO CONFIGURADA'}`, projectKey ? 'success' : 'error');
+                
+                if (projectUrl) {
+                    log(`   - URL: ${projectUrl.substring(0, 30)}...`, 'info');
+                }
+                
+            } catch (error) {
+                log(`❌ Error en test de cliente: ${error.message}`, 'error');
+            }
+            
+            log('=== FIN TEST 2 ===', 'debug');
+        }
+        
+        // 3. Test acceso a tabla
+        async function testTableAccess() {
+            log('=== TEST 3: ACCESO A TABLA ===', 'debug');
+            
+            try {
+                // Test simple de acceso a tabla
+                const { data, error, count } = await supabaseClient
+                    .from('productos')
+                    .select('*', { count: 'exact', head: true });
+                
+                if (error) {
+                    log(`❌ Error accediendo a tabla productos:`, 'error');
+                    log(`   - Mensaje: ${error.message}`, 'error');
+                    log(`   - Código: ${error.code}`, 'error');
+                    log(`   - Hint: ${error.hint || 'No disponible'}`, 'error');
+                    log(`   - Detalles: ${error.details || 'No disponible'}`, 'error');
+                    
+                    if (error.message.includes('permission denied')) {
+                        log('   ⚠️ PROBLEMA: Permisos insuficientes (RLS)', 'warning');
+                    }
+                    
+                    if (error.message.includes('relation') && error.message.includes('does not exist')) {
+                        log('   ⚠️ PROBLEMA: Tabla no existe', 'warning');
+                    }
+                } else {
+                    log(`✅ Acceso a tabla exitoso`, 'success');
+                    log(`   - Cantidad de productos: ${count || 'No disponible'}`, 'success');
+                }
+                
+            } catch (error) {
+                log(`❌ Error en test de tabla: ${error.message}`, 'error');
+            }
+            
+            log('=== FIN TEST 3 ===', 'debug');
+        }
+        
+        // 4. Test SELECT productos
+        async function testSelectProducts() {
+            log('=== TEST 4: SELECT PRODUCTOS ===', 'debug');
+            
+            try {
+                // Test con todas las columnas
+                const { data, error } = await supabaseClient
+                    .from('productos')
+                    .select('*')
+                    .limit(5);
+                
+                if (error) {
+                    log(`❌ Error en SELECT completo: ${error.message}`, 'error');
+                    
+                    // Intentar con columnas básicas
+                    log('🔄 Intentando con columnas básicas...', 'info');
+                    
+                    const { data: basicData, error: basicError } = await supabaseClient
+                        .from('productos')
+                        .select('id, nombre, marca, precio, categoria')
+                        .limit(5);
+                    
+                    if (basicError) {
+                        log(`❌ Error en SELECT básico: ${basicError.message}`, 'error');
+                    } else {
+                        log(`✅ SELECT básico exitoso: ${basicData.length} productos`, 'success');
+                        basicData.forEach((producto, index) => {
+                            log(`   ${index + 1}. ${producto.nombre} (ID: ${producto.id})`, 'info');
+                        });
+                    }
+                } else {
+                    log(`✅ SELECT completo exitoso: ${data.length} productos`, 'success');
+                    
+                    if (data.length > 0) {
+                        const primer = data[0];
+                        log('📋 Estructura del primer producto:', 'info');
+                        Object.keys(primer).forEach(key => {
+                            const value = primer[key];
+                            const tipo = typeof value;
+                            const tamaño = typeof value === 'string' ? ` (${value.length} chars)` : '';
+                            log(`   - ${key}: ${tipo}${tamaño}`, 'info');
+                        });
+                    }
+                }
+                
+            } catch (error) {
+                log(`❌ Error en test SELECT: ${error.message}`, 'error');
+            }
+            
+            log('=== FIN TEST 4 ===', 'debug');
+        }
+        
+        // 5. Test SELECT simple
+        async function testSelectProductsSimple() {
+            log('=== TEST 5: SELECT SIMPLE ===', 'debug');
+            
+            try {
+                // Test muy básico
+                const { data, error } = await supabaseClient
+                    .from('productos')
+                    .select('id, nombre')
+                    .limit(3);
+                
+                if (error) {
+                    log(`❌ Error en SELECT simple: ${error.message}`, 'error');
+                } else {
+                    log(`✅ SELECT simple exitoso: ${data.length} productos`, 'success');
+                    data.forEach(p => {
+                        log(`   - ID ${p.id}: ${p.nombre}`, 'info');
+                    });
+                }
+                
+            } catch (error) {
+                log(`❌ Error en test SELECT simple: ${error.message}`, 'error');
+            }
+            
+            log('=== FIN TEST 5 ===', 'debug');
+        }
+        
+        // 6. Test INSERT simple
+        async function testInsertSimple() {
+            log('=== TEST 6: INSERT SIMPLE ===', 'debug');
+            
+            try {
+                const testProduct = {
+                    nombre: 'TEST DIAGNÓSTICO',
+                    marca: 'TEST MARCA',
+                    precio: 50000,
+                    categoria: 'para-ellos'
+                };
+                
+                log('📤 Intentando INSERT con datos mínimos...', 'info');
+                log(`Datos: ${JSON.stringify(testProduct)}`, 'info');
+                
+                const { data, error } = await supabaseClient
+                    .from('productos')
+                    .insert([testProduct])
+                    .select();
+                
+                if (error) {
+                    log(`❌ Error en INSERT: ${error.message}`, 'error');
+                    log(`   - Código: ${error.code}`, 'error');
+                    log(`   - Detalles: ${error.details || 'No disponible'}`, 'error');
+                    log(`   - Hint: ${error.hint || 'No disponible'}`, 'error');
+                    
+                    if (error.message.includes('permission denied')) {
+                        log('   ⚠️ PROBLEMA: Sin permisos de INSERT', 'warning');
+                    }
+                    
+                    if (error.message.includes('null value')) {
+                        log('   ⚠️ PROBLEMA: Campo requerido faltante', 'warning');
+                    }
+                } else {
+                    log(`✅ INSERT exitoso`, 'success');
+                    log(`   - Producto creado con ID: ${data[0].id}`, 'success');
+                    
+                    // Limpiar el producto de prueba
+                    await supabaseClient
+                        .from('productos')
+                        .delete()
+                        .eq('id', data[0].id);
+                    
+                    log('🧹 Producto de prueba eliminado', 'info');
+                }
+                
+            } catch (error) {
+                log(`❌ Error en test INSERT: ${error.message}`, 'error');
+            }
+            
+            log('=== FIN TEST 6 ===', 'debug');
+        }
+        
+        // 7. Test producto con imagen
+        async function testImageProduct() {
+            log('=== TEST 7: PRODUCTO CON IMAGEN ===', 'debug');
+            
+            try {
+                // Crear imagen base64 pequeña de prueba
+                const testImageBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+                
+                const testProduct = {
+                    nombre: 'TEST IMAGEN',
+                    marca: 'TEST MARCA',
+                    precio: 75000,
+                    categoria: 'para-ellos',
+                    imagen_url: testImageBase64
+                };
+                
+                log('📤 Intentando INSERT con imagen base64...', 'info');
+                log(`Tamaño imagen: ${testImageBase64.length} caracteres`, 'info');
+                
+                const { data, error } = await supabaseClient
+                    .from('productos')
+                    .insert([testProduct])
+                    .select();
+                
+                if (error) {
+                    log(`❌ Error en INSERT con imagen: ${error.message}`, 'error');
+                    log(`   - Código: ${error.code}`, 'error');
+                    
+                    if (error.message.includes('too long')) {
+                        log('   ⚠️ PROBLEMA: Imagen demasiado grande para la columna', 'warning');
+                    }
+                    
+                    if (error.message.includes('invalid input')) {
+                        log('   ⚠️ PROBLEMA: Formato de imagen inválido', 'warning');
+                    }
+                } else {
+                    log(`✅ INSERT con imagen exitoso`, 'success');
+                    log(`   - Producto creado con ID: ${data[0].id}`, 'success');
+                    log(`   - Imagen guardada: ${data[0].imagen_url ? 'SÍ' : 'NO'}`, data[0].imagen_url ? 'success' : 'error');
+                    
+                    if (data[0].imagen_url) {
+                        log(`   - Tamaño imagen guardada: ${data[0].imagen_url.length} chars`, 'info');
+                    }
+                    
+                    // Limpiar producto de prueba
+                    await supabaseClient
+                        .from('productos')
+                        .delete()
+                        .eq('id', data[0].id);
+                    
+                    log('🧹 Producto de prueba con imagen eliminado', 'info');
+                }
+                
+            } catch (error) {
+                log(`❌ Error en test imagen: ${error.message}`, 'error');
+            }
+            
+            log('=== FIN TEST 7 ===', 'debug');
+        }
+        
+        // 8. Test validación base64
+        async function testBase64Validation() {
+            log('=== TEST 8: VALIDACIÓN BASE64 ===', 'debug');
+            
+            try {
+                // Test de diferentes formatos de imagen
+                const testImages = [
+                    {
+                        name: 'Base64 válido pequeño',
+                        data: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='
+                    },
+                    {
+                        name: 'Base64 inválido',
+                        data: 'data:image/png;base64,invalid_base64_data'
+                    },
+                    {
+                        name: 'URL normal',
+                        data: 'https://example.com/image.jpg'
+                    },
+                    {
+                        name: 'Texto plano',
+                        data: 'esto_no_es_una_imagen'
+                    }
+                ];
+                
+                for (const test of testImages) {
+                    log(`🧪 Probando: ${test.name}`, 'info');
+                    log(`   - Datos: ${test.data.substring(0, 50)}...`, 'info');
+                    log(`   - Longitud: ${test.data.length}`, 'info');
+                    log(`   - Es data URL: ${test.data.startsWith('data:') ? 'SÍ' : 'NO'}`, 'info');
+                    log(`   - Es base64: ${test.data.includes('base64,') ? 'SÍ' : 'NO'}`, 'info');
+                    
+                    if (test.data.startsWith('data:image/') && test.data.includes('base64,')) {
+                        const base64Part = test.data.split('base64,')[1];
+                        try {
+                            atob(base64Part);
+                            log(`   - Base64 válido: SÍ`, 'success');
+                        } catch {
+                            log(`   - Base64 válido: NO`, 'warning');
+                        }
+                    }
+                    
+                    log('---', 'info');
+                }
+                
+            } catch (error) {
+                log(`❌ Error en validación base64: ${error.message}`, 'error');
+            }
+            
+            log('=== FIN TEST 8 ===', 'debug');
+        }
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Herramienta de diagnóstico lista', 'success');
+            log('Ejecuta los tests en orden para identificar el problema', 'info');
+        });
+    </script>
+</body>
+</html>
