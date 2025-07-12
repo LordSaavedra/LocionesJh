@@ -1,322 +1,428 @@
-// Catálogo General - Integración con Supabase
+// Catálogo General - Integración con Supabase - REDISEÑADO
 class CatalogoManager {
     constructor() {
         this.productos = [];
         this.productosFiltrados = [];
-        this.paginaActual = 1;
-        this.productosPorPagina = 12;
-        this.filtrosActivos = {
-            categoria: '',
-            busqueda: '',
-            precioMin: 0,
-            precioMax: 2000000
-        };
+        this.filtroActivo = 'all';
+        this.busquedaActiva = '';
+        this.vistaActual = 'grid';
         
         this.init();
     }
 
     async init() {
+        console.log('🚀 Inicializando catálogo rediseñado...');
         await this.cargarProductos();
         this.configurarEventos();
-        this.renderizarCatalogo();
-        this.configurarFiltros();
+        this.mostrarProductos();
     }
 
     async cargarProductos() {
         try {
+            // Mostrar loading state
+            this.mostrarLoading();
+            
             this.productos = await ProductosService.obtenerProductos();
             this.productosFiltrados = [...this.productos];
-            console.log('Productos cargados:', this.productos.length);
+            console.log('🎉 Productos cargados:', this.productos.length);
+            
+            // Ocultar loading state
+            this.ocultarLoading();
         } catch (error) {
-            console.error('Error cargando productos:', error);
+            console.error('❌ Error cargando productos:', error);
             this.productos = [];
             this.productosFiltrados = [];
+            this.ocultarLoading();
+            this.mostrarError();
         }
     }
 
     configurarEventos() {
-        // Buscador
-        const buscador = document.getElementById('buscador');
-        if (buscador) {
-            buscador.addEventListener('input', (e) => {
-                this.filtrosActivos.busqueda = e.target.value;
-                this.aplicarFiltros();
-            });
-        }
-
-        // Filtros de categoría
-        const filtrosCategoria = document.querySelectorAll('.filtro-categoria');
-        filtrosCategoria.forEach(filtro => {
-            filtro.addEventListener('click', (e) => {
+        // Filtros de categoría rediseñados
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 
-                // Remover active de todos
-                filtrosCategoria.forEach(f => f.classList.remove('active'));
+                // Remover clase active de todos los botones
+                filterButtons.forEach(b => b.classList.remove('active'));
                 
-                // Activar el clickeado
-                filtro.classList.add('active');
+                // Agregar clase active al botón clickeado
+                btn.classList.add('active');
                 
-                this.filtrosActivos.categoria = filtro.dataset.categoria || '';
+                // Obtener el filtro
+                const filtro = btn.getAttribute('data-filter');
+                this.filtroActivo = filtro;
+                
+                console.log('🔍 Filtro aplicado:', filtro);
                 this.aplicarFiltros();
             });
         });
 
-        // Slider de precio
-        const sliderPrecio = document.getElementById('slider-precio');
-        if (sliderPrecio && typeof noUiSlider !== 'undefined') {
-            noUiSlider.create(sliderPrecio, {
-                start: [0, 2000000],
-                connect: true,
-                range: {
-                    'min': 0,
-                    'max': 2000000
-                },
-                format: {
-                    to: function (value) {
-                        return Math.round(value);
-                    },
-                    from: function (value) {
-                        return Number(value);
-                    }
-                }
-            });
-
-            sliderPrecio.noUiSlider.on('update', (values) => {
-                this.filtrosActivos.precioMin = parseInt(values[0]);
-                this.filtrosActivos.precioMax = parseInt(values[1]);
-                
-                // Actualizar labels
-                const precioMinEl = document.getElementById('precio-min');
-                const precioMaxEl = document.getElementById('precio-max');
-                if (precioMinEl) precioMinEl.textContent = formatearPrecio(parseInt(values[0]));
-                if (precioMaxEl) precioMaxEl.textContent = formatearPrecio(parseInt(values[1]));
-            });
-
-            sliderPrecio.noUiSlider.on('change', () => {
+        // Buscador rediseñado
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                this.busquedaActiva = e.target.value.toLowerCase();
+                console.log('🔍 Búsqueda:', this.busquedaActiva);
                 this.aplicarFiltros();
             });
         }
 
-        // Botón limpiar filtros
-        const btnLimpiar = document.getElementById('limpiar-filtros');
-        if (btnLimpiar) {
-            btnLimpiar.addEventListener('click', () => {
-                this.limpiarFiltros();
+        // Cambio de vista
+        const viewButtons = document.querySelectorAll('.view-btn');
+        viewButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                viewButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                this.vistaActual = btn.getAttribute('data-view');
+                this.actualizarVista();
+            });
+        });
+
+        // Botón reset filtros
+        const resetBtn = document.querySelector('.reset-filters-btn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                this.resetearFiltros();
             });
         }
+
+        // Modal de vista rápida
+        this.configurarModal();
     }
 
-    async aplicarFiltros() {
-        try {
-            this.productosFiltrados = await ProductosService.obtenerProductos(this.filtrosActivos);
-            this.paginaActual = 1;
-            this.renderizarCatalogo();
-            this.actualizarContadores();
-        } catch (error) {
-            console.error('Error aplicando filtros:', error);
+    aplicarFiltros() {
+        let productosFiltrados = [...this.productos];
+
+        // Filtro por categoría
+        if (this.filtroActivo && this.filtroActivo !== 'all') {
+            productosFiltrados = productosFiltrados.filter(producto => {
+                const categoria = producto.categoria ? producto.categoria.toLowerCase() : '';
+                return categoria === this.filtroActivo;
+            });
         }
+
+        // Filtro por búsqueda
+        if (this.busquedaActiva) {
+            productosFiltrados = productosFiltrados.filter(producto => {
+                const nombre = producto.nombre ? producto.nombre.toLowerCase() : '';
+                const marca = producto.marca ? producto.marca.toLowerCase() : '';
+                const descripcion = producto.descripcion ? producto.descripcion.toLowerCase() : '';
+                
+                return nombre.includes(this.busquedaActiva) ||
+                       marca.includes(this.busquedaActiva) ||
+                       descripcion.includes(this.busquedaActiva);
+            });
+        }
+
+        this.productosFiltrados = productosFiltrados;
+        this.mostrarProductos();
     }
 
-    limpiarFiltros() {
-        // Resetear filtros
-        this.filtrosActivos = {
-            categoria: '',
-            busqueda: '',
-            precioMin: 0,
-            precioMax: 2000000
-        };
+    resetearFiltros() {
+        // Reset filtro de categoría
+        this.filtroActivo = 'all';
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        document.querySelector('.filter-btn[data-filter="all"]')?.classList.add('active');
 
-        // Resetear UI
-        const buscador = document.getElementById('buscador');
-        if (buscador) buscador.value = '';
+        // Reset búsqueda
+        this.busquedaActiva = '';
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) searchInput.value = '';
 
-        const filtrosCategoria = document.querySelectorAll('.filtro-categoria');
-        filtrosCategoria.forEach(f => f.classList.remove('active'));
-        
-        const filtroTodos = document.querySelector('.filtro-categoria[data-categoria=""]');
-        if (filtroTodos) filtroTodos.classList.add('active');
-
-        const sliderPrecio = document.getElementById('slider-precio');
-        if (sliderPrecio && sliderPrecio.noUiSlider) {
-            sliderPrecio.noUiSlider.set([0, 2000000]);
-        }
-
+        // Aplicar filtros
         this.aplicarFiltros();
     }
 
-    renderizarCatalogo() {
-        const contenedor = document.getElementById('productos-grid');
-        if (!contenedor) return;
+    mostrarProductos() {
+        const grid = document.getElementById('productsGrid');
+        const emptyState = document.getElementById('emptyState');
+        
+        if (!grid) return;
 
-        const inicio = (this.paginaActual - 1) * this.productosPorPagina;
-        const fin = inicio + this.productosPorPagina;
-        const productosEnPagina = this.productosFiltrados.slice(inicio, fin);
-
-        if (productosEnPagina.length === 0) {
-            contenedor.innerHTML = `
-                <div class="no-productos">
-                    <div class="no-productos-content">
-                        <i class="fas fa-search"></i>
-                        <h3>No se encontraron productos</h3>
-                        <p>Intenta ajustar los filtros o realiza una nueva búsqueda</p>
-                        <button class="btn-primary" onclick="catalogoManager.limpiarFiltros()">
-                            Limpiar filtros
-                        </button>
-                    </div>
-                </div>
-            `;
+        if (this.productosFiltrados.length === 0) {
+            grid.innerHTML = '';
+            if (emptyState) emptyState.style.display = 'flex';
             return;
         }
 
-        const productosHTML = productosEnPagina.map(producto => this.crearTarjetaProducto(producto)).join('');
-        contenedor.innerHTML = productosHTML;
+        if (emptyState) emptyState.style.display = 'none';
 
-        this.renderizarPaginacion();
-        this.configurarModales();
+        grid.innerHTML = this.productosFiltrados.map(producto => 
+            this.crearTarjetaProducto(producto)
+        ).join('');
+
+        // Configurar eventos de las tarjetas
+        this.configurarEventosProductos();
     }
 
     crearTarjetaProducto(producto) {
-        const precio = formatearPrecio(producto.precio);
-        const imagen = producto.imagen_principal || producto.imagen;
-        const marca = producto.marcas?.nombre || producto.marca;
-        const categoria = producto.categorias?.nombre || producto.categoria;
+        const imagen = producto.imagen_url || '../IMAGENES/default-perfume.jpg';
+        const precio = producto.precio ? `$${Number(producto.precio).toLocaleString()}` : 'Precio no disponible';
+        const categoria = producto.categoria || 'Sin categoría';
+        const descripcion = producto.descripcion || 'Sin descripción disponible';
 
         return `
-            <div class="producto-card" data-id="${producto.id}">
-                <div class="producto-imagen">
-                    <img src="${imagen}" alt="${producto.nombre}" loading="lazy">
-                    <div class="producto-overlay">
-                        <button class="btn-ver-mas" onclick="catalogoManager.abrirModal(${producto.id})">
+            <div class="product-card" data-id="${producto.id}">
+                <div class="product-image-container">
+                    <img src="${imagen}" alt="${producto.nombre}" class="product-image" loading="lazy">
+                    <span class="product-badge">${categoria}</span>
+                    <div class="product-actions">
+                        <button class="action-btn quick-view-btn" data-id="${producto.id}" title="Vista rápida">
                             <i class="fas fa-eye"></i>
-                            Ver detalles
+                        </button>
+                        <button class="action-btn wishlist-btn" data-id="${producto.id}" title="Agregar a favoritos">
+                            <i class="fas fa-heart"></i>
                         </button>
                     </div>
                 </div>
-                <div class="producto-info">
-                    <div class="producto-marca">${marca}</div>
-                    <h3 class="producto-nombre">${producto.nombre}</h3>
-                    <p class="producto-descripcion">${producto.descripcion_corta || producto.descripcionCorta || ''}</p>
-                    <div class="producto-precio">${precio}</div>
-                    <div class="producto-categoria">${categoria}</div>
+                <div class="product-info">
+                    <div class="product-brand">${producto.marca || 'Marca Premium'}</div>
+                    <h3 class="product-name">${producto.nombre}</h3>
+                    <p class="product-description">${descripcion}</p>
+                    <div class="product-footer">
+                        <span class="product-price">${precio}</span>
+                        <button class="add-to-cart-btn" data-id="${producto.id}">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Agregar</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
     }
-    },
-    {
-        id: 5,
-        name: 'Versace Eros',
-        description: 'El poder y la seducción del mediterráneo en estado puro.',
-        category: 'homme',
-        image: '../LOCIONES_PARA _ELLOS/VERSACE_EROS_BLUE.png',
-        notes: ['Menta', 'Vainilla', 'Tonka']
-    }
-];
 
-function initializeCollectionIndex() {
-    const indexGrid = document.querySelector('.index-grid');
-    if (!indexGrid) return;
-    
-    // Filtros
-    document.querySelectorAll('.index-filter').forEach(filter => {
-        filter.addEventListener('click', function() {
-            const category = this.dataset.filter;
-            
-            // Actualizar filtros activos
-            document.querySelectorAll('.index-filter').forEach(f => {
-                f.classList.remove('active');
+    configurarEventosProductos() {
+        // Botones de agregar al carrito
+        const addToCartBtns = document.querySelectorAll('.add-to-cart-btn');
+        addToCartBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const productId = btn.getAttribute('data-id');
+                this.agregarAlCarrito(productId);
             });
-            this.classList.add('active');
-            
-            // Filtrar y renderizar
-            renderIndexGrid(category);
         });
-    });
-    
-    // Renderizar grid inicial
-    renderIndexGrid('all');
-}
 
-function renderIndexGrid(category) {
-    const indexGrid = document.querySelector('.index-grid');
-    const filtered = category === 'all' ? fragrances : fragrances.filter(f => f.category === category);
-    
-    indexGrid.innerHTML = '';
-    filtered.forEach(fragrance => {
-        const indexItem = document.createElement('div');
-        indexItem.className = 'index-item';
-        indexItem.innerHTML = `
-            <div class="index-image">
-                <img src="${fragrance.image}" alt="${fragrance.name}">
-            </div>
-            <div class="index-info">
-                <h3>${fragrance.name}</h3>
-                <p class="index-category">${getCategoryName(fragrance.category)}</p>
-                <p class="index-description">${fragrance.description}</p>
-                <p class="index-notes">${fragrance.notes.join(' · ')}</p>
+        // Botones de vista rápida
+        const quickViewBtns = document.querySelectorAll('.quick-view-btn');
+        quickViewBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const productId = btn.getAttribute('data-id');
+                this.mostrarVistaRapida(productId);
+            });
+        });
+
+        // Botones de wishlist
+        const wishlistBtns = document.querySelectorAll('.wishlist-btn');
+        wishlistBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const productId = btn.getAttribute('data-id');
+                this.toggleWishlist(productId);
+            });
+        });
+    }
+
+    async agregarAlCarrito(productId) {
+        try {
+            const producto = this.productos.find(p => p.id == productId);
+            if (!producto) return;
+
+            // Usar el sistema de carrito existente
+            if (window.shoppingCart) {
+                await window.shoppingCart.agregarProducto(productId, 1);
+                console.log('✅ Producto agregado al carrito:', producto.nombre);
+                
+                // Mostrar feedback visual
+                this.mostrarNotificacion('Producto agregado al carrito', 'success');
+            } else {
+                console.error('❌ Sistema de carrito no disponible');
+                this.mostrarNotificacion('Error al agregar al carrito', 'error');
+            }
+        } catch (error) {
+            console.error('❌ Error agregando al carrito:', error);
+            this.mostrarNotificacion('Error al agregar al carrito', 'error');
+        }
+    }
+
+    mostrarVistaRapida(productId) {
+        const producto = this.productos.find(p => p.id == productId);
+        if (!producto) return;
+
+        const modal = document.getElementById('quickViewModal');
+        const modalContent = document.getElementById('modalContent');
+        
+        if (!modal || !modalContent) return;
+
+        const imagen = producto.imagen_url || '../IMAGENES/default-perfume.jpg';
+        const precio = producto.precio ? `$${Number(producto.precio).toLocaleString()}` : 'Precio no disponible';
+
+        modalContent.innerHTML = `
+            <div class="quick-view-content">
+                <div class="quick-view-image">
+                    <img src="${imagen}" alt="${producto.nombre}">
+                </div>
+                <div class="quick-view-info">
+                    <div class="product-brand">${producto.marca || 'Marca Premium'}</div>
+                    <h2>${producto.nombre}</h2>
+                    <p class="product-description">${producto.descripcion || 'Sin descripción disponible'}</p>
+                    <div class="product-price">${precio}</div>
+                    <div class="quick-view-actions">
+                        <button class="add-to-cart-btn" data-id="${producto.id}">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Agregar al Carrito</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         `;
-        
-        // Quick view
-        indexItem.addEventListener('click', () => showQuickView(fragrance));
-        
-        indexGrid.appendChild(indexItem);
-    });
-}
 
-function getCategoryName(category) {
-    return {
-        'homme': 'Pour Homme',
-        'femme': 'Pour Femme',
-        'unisexe': 'Unisexe'
-    }[category] || category;
-}
+        modal.classList.add('active');
 
-function initializeModal() {
-    const modal = document.querySelector('.quick-view-modal');
-    const closeBtn = modal.querySelector('.close-modal');
-    
-    closeBtn.addEventListener('click', () => {
-        modal.classList.remove('active');
-    });
-    
-    // Cerrar con Escape
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.classList.contains('active')) {
+        // Configurar eventos del modal
+        modalContent.querySelector('.add-to-cart-btn')?.addEventListener('click', () => {
+            this.agregarAlCarrito(productId);
+            this.cerrarModal();
+        });
+    }
+
+    configurarModal() {
+        const modal = document.getElementById('quickViewModal');
+        const closeBtn = document.getElementById('closeModal');
+        const backdrop = modal?.querySelector('.modal-backdrop');
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.cerrarModal());
+        }
+
+        if (backdrop) {
+            backdrop.addEventListener('click', () => this.cerrarModal());
+        }
+
+        // Cerrar con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal?.classList.contains('active')) {
+                this.cerrarModal();
+            }
+        });
+    }
+
+    cerrarModal() {
+        const modal = document.getElementById('quickViewModal');
+        if (modal) {
             modal.classList.remove('active');
         }
-    });
-    
-    // Cerrar al hacer click fuera del contenido
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.classList.remove('active');
+    }
+
+    toggleWishlist(productId) {
+        // Implementar lógica de wishlist
+        console.log('💝 Toggle wishlist para producto:', productId);
+        this.mostrarNotificacion('Función de favoritos próximamente', 'info');
+    }
+
+    actualizarVista() {
+        const grid = document.getElementById('productsGrid');
+        if (!grid) return;
+
+        if (this.vistaActual === 'list') {
+            grid.classList.add('list-view');
+        } else {
+            grid.classList.remove('list-view');
         }
-    });
+    }
+
+    mostrarLoading() {
+        const loadingState = document.getElementById('loadingState');
+        const grid = document.getElementById('productsGrid');
+        
+        if (loadingState) loadingState.style.display = 'flex';
+        if (grid) grid.style.display = 'none';
+    }
+
+    ocultarLoading() {
+        const loadingState = document.getElementById('loadingState');
+        const grid = document.getElementById('productsGrid');
+        
+        if (loadingState) loadingState.style.display = 'none';
+        if (grid) grid.style.display = 'grid';
+    }
+
+    mostrarError() {
+        const grid = document.getElementById('productsGrid');
+        if (!grid) return;
+
+        grid.innerHTML = `
+            <div class="error-state">
+                <div class="error-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>Error al cargar productos</h3>
+                <p>No se pudieron cargar los productos. Por favor, recarga la página.</p>
+                <button class="retry-btn" onclick="location.reload()">
+                    <i class="fas fa-refresh"></i>
+                    <span>Reintentar</span>
+                </button>
+            </div>
+        `;
+    }
+
+    mostrarNotificacion(mensaje, tipo = 'info') {
+        // Crear notificación toast simple
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${tipo}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="fas fa-${tipo === 'success' ? 'check' : tipo === 'error' ? 'times' : 'info'}"></i>
+                <span>${mensaje}</span>
+            </div>
+        `;
+
+        // Agregar estilos inline para la notificación
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${tipo === 'success' ? '#4CAF50' : tipo === 'error' ? '#f44336' : '#2196F3'};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        `;
+
+        document.body.appendChild(notification);
+
+        // Animar entrada
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+
+        // Remover después de 3 segundos
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
 }
 
-function showQuickView(fragrance) {
-    const modal = document.querySelector('.quick-view-modal');
-    const modalBody = modal.querySelector('.modal-body');
-    
-    modalBody.innerHTML = `
-        <div class="modal-left">
-            <img src="${fragrance.image}" alt="${fragrance.name}" class="modal-image">
-        </div>
-        <div class="modal-right">
-            <h2>${fragrance.name}</h2>
-            <p class="modal-category">${getCategoryName(fragrance.category)}</p>
-            <p class="modal-description">${fragrance.description}</p>
-            <div class="modal-notes">
-                <h4>Notes de Tête</h4>
-                <p>${fragrance.notes.join(' · ')}</p>
-            </div>
-            <div class="modal-actions">
-                <button class="modal-btn discover">Découvrir</button>
-                <button class="modal-btn reserve">Réserver</button>
-            </div>
-        </div>
-    `;
-    
-    modal.classList.add('active');
-}
+// Inicializar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+    // Esperar a que se carguen las dependencias
+    setTimeout(() => {
+        if (typeof ProductosService !== 'undefined') {
+            window.catalogoManager = new CatalogoManager();
+        } else {
+            console.error('❌ ProductosService no disponible');
+        }
+    }, 500);
+});

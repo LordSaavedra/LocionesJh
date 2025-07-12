@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Open Vintage Collection",
+			"type": "shell",
+			"command": "start",
+			"args": [
+				"html/colecciones/vintage.html"
+			],
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

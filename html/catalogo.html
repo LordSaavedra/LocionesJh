@@ -3,86 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Collection - Aromes De Dieu</title>
+    <title>Catálogo Exclusivo - Aromes De Dieu | Perfumería de Lujo</title>
+    <meta name="description" content="Descubre nuestra exclusiva colección de fragancias de lujo. Perfumes auténticos de las mejores casas del mundo con entrega especializada.">
+    
+    <!-- Fuentes elegantes -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Estilos -->
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/cart.css">
+    <link rel="stylesheet" href="../css/slide-cart.css">
     <link rel="stylesheet" href="../css/catalogo.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&family=Italiana&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Contenedor de la navbar -->
-    <div id="navbar-container">
-        <!-- La navbar se cargará aquí dinámicamente -->
+    <!-- Navbar container -->
+    <div id="navbar-container"></div>
+    
+    <!-- Carrito deslizante -->
+    <div id="cart-slide" class="cart-slide">
+        <div class="cart-header">
+            <h3 class="cart-title">Mi Carrito</h3>
+            <button id="cart-close" class="cart-close">&times;</button>
+        </div>
+        <div class="cart-content">
+            <div class="cart-items" id="cart-items">
+                <!-- Los productos se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total: $<span id="cart-total">0</span></span>
+            </div>
+            <button class="checkout-btn">Proceder al Pago</button>
+        </div>
     </div>
+    
+    <!-- Overlay del carrito -->
+    <div id="cart-overlay" class="cart-overlay"></div>
 
-    <main class="magazine-main">
-        <!-- Portada -->
-        <section class="magazine-cover">
-            <span class="issue-number">N° 01</span>
-            <div class="cover-content">
-                <h1 class="magazine-title">La Collection</h1>
-                <p class="edition">Été 2025</p>
-                <div class="cover-description">
-                    <p class="tagline">L'art de la parfumerie</p>
-                    <p class="subtitle">Une expérience sensorielle unique</p>
+    <!-- Hero Section espectacular -->
+    <section class="hero-section">
+        <div class="hero-background"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <span class="hero-badge">Colección Exclusiva</span>
+                <h1 class="hero-title">Catálogo de Lujo</h1>
+                <p class="hero-subtitle">Fragancias auténticas de las casas más prestigiosas del mundo</p>
+                <div class="hero-divider"></div>
+                <p class="hero-description">Cada fragancia cuenta una historia única. Descubre tu aroma perfecto en nuestra curaduría especializada.</p>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">500+</span>
+                    <span class="stat-label">Fragancias Exclusivas</span>
                 </div>
-            </div>
-        </section>
-
-        <!-- Collection Grid -->
-        <section class="collection-grid">
-            <div class="grid-title">
-                <h2>La Collection</h2>
-                <p>Découvrez notre sélection exclusive de parfums</p>
-            </div>
-            
-            <!-- Filter Section -->
-            <div class="index-header">
-                <div class="index-filters">
-                    <button class="index-filter active" data-filter="all">Tous</button>
-                    <button class="index-filter" data-filter="homme">Pour Homme</button>
-                    <button class="index-filter" data-filter="femme">Pour Femme</button>
-                    <button class="index-filter" data-filter="unisexe">Unisexe</button>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Auténticas</span>
                 </div>
-            </div>
-
-            <!-- Product Grid -->
-            <div class="index-grid">
-                <!-- Products will be rendered here by JavaScript -->
-            </div>
-        </section>
-
-        <!-- Quick View Modal -->
-        <div class="quick-view-modal">
-            <div class="modal-content">
-                <button class="close-modal" aria-label="Cerrar">×</button>
-                <div class="modal-body">
-                    <!-- Modal content will be rendered here by JavaScript -->
+                <div class="stat-item">
+                    <span class="stat-number">24/48h</span>
+                    <span class="stat-label">Entrega Premium</span>
                 </div>
             </div>
         </div>
-    </main>
+    </section>
+
+    <!-- Contenedor principal -->
+    <div class="main-container">
+        
+        <!-- Sección de filtros elegante -->
+        <section class="filters-section">
+            <div class="filters-header">
+                <h2>Explora Nuestra Colección</h2>
+                <p>Filtra por categoría para encontrar tu fragancia ideal</p>
+            </div>
+            
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label class="filter-label">Categoría</label>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">
+                            <i class="fas fa-star"></i>
+                            <span>Todas</span>
+                        </button>
+                        <button class="filter-btn" data-filter="homme">
+                            <i class="fas fa-user-tie"></i>
+                            <span>Para Él</span>
+                        </button>
+                        <button class="filter-btn" data-filter="femme">
+                            <i class="fas fa-crown"></i>
+                            <span>Para Ella</span>
+                        </button>
+                        <button class="filter-btn" data-filter="unisexe">
+                            <i class="fas fa-gem"></i>
+                            <span>Unisex</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="search-container">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Buscar fragancia o marca...">
+                    </div>
+                </div>
+                
+                <div class="view-options">
+                    <button class="view-btn active" data-view="grid" title="Vista en cuadrícula">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button class="view-btn" data-view="list" title="Vista en lista">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grid de productos rediseñado -->
+        <section class="products-section">
+            <div class="products-container">
+                <div class="products-grid" id="productsGrid">
+                    <!-- Los productos se cargarán aquí dinámicamente -->
+                </div>
+                
+                <!-- Loading state elegante -->
+                <div class="loading-state" id="loadingState">
+                    <div class="loading-animation">
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                    </div>
+                    <p>Cargando fragancias exclusivas...</p>
+                </div>
+                
+                <!-- Empty state elegante -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>No se encontraron fragancias</h3>
+                    <p>Intenta ajustar los filtros o el término de búsqueda</p>
+                    <button class="reset-filters-btn">
+                        <i class="fas fa-refresh"></i>
+                        <span>Limpiar filtros</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal de vista rápida rediseñado -->
+        <div class="quick-view-modal" id="quickViewModal">
+            <div class="modal-backdrop"></div>
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h3>Vista Rápida</h3>
+                    <button class="modal-close" id="closeModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-content" id="modalContent">
+                    <!-- El contenido se cargará dinámicamente -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    </div>
 
     <!-- Scripts -->
     <script>
-        // Asegurar que los recursos se carguen
-        window.addEventListener('load', function() {
-            document.body.classList.add('resources-loaded');
-        });
-
         // Cargar la navbar
         document.addEventListener('DOMContentLoaded', function() {
             fetch('navbar.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('navbar-container').innerHTML = data;
-                    if (typeof initNavbar === 'function') {
-                        setTimeout(initNavbar, 100);
-                    }
+                    // Inicializar navbar después de un pequeño delay
+                    setTimeout(() => {
+                        if (typeof initNavbar === 'function') {
+                            initNavbar();
+                        }
+                    }, 150);
+                    
+                    // Reconfigurar event listeners del carrito después de cargar navbar
+                    setTimeout(() => {
+                        if (window.shoppingCart && typeof window.shoppingCart.reconfigureEventListeners === 'function') {
+                            console.log('🔄 Reconfigurando carrito en Catálogo...');
+                            window.shoppingCart.reconfigureEventListeners();
+                            console.log('✅ Event listeners del carrito reconfigurados en Catálogo');
+                        } else {
+                            console.warn('⚠️ Carrito no disponible para reconfigurar en Catálogo');
+                        }
+                    }, 800);
                 })
                 .catch(error => console.error('Error cargando navbar:', error));
         });
     </script>
+    <script src="../js/cart.js"></script>
+    <script src="../js/cart-error-fixes.js"></script>
+    <script src="../js/limpiar-productos-prueba.js"></script>
     <script src="../js/navbar.js"></script>
     <script src="../js/catalogo.js"></script>
 </body>

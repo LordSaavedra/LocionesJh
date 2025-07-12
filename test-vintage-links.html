@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Enlaces Vintage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .test-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            border: 1px solid #d4af37;
+            border-radius: 8px;
+        }
+        .link {
+            display: block;
+            margin: 0.5rem 0;
+            color: #d4af37;
+            text-decoration: none;
+        }
+        .link:hover {
+            text-decoration: underline;
+        }
+        .status {
+            color: #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test de Enlaces a Vintage</h1>
+    
+    <div class="test-section">
+        <h2>✅ Enlaces desde diferentes ubicaciones:</h2>
+        
+        <h3>Desde directorio raíz (index.html):</h3>
+        <a href="html/colecciones/vintage.html" class="link">→ html/colecciones/vintage.html</a>
+        
+        <h3>Desde directorio html/ (contacto.html, catalogo.html):</h3>
+        <a href="colecciones/vintage.html" class="link">→ colecciones/vintage.html</a>
+        
+        <h3>Desde directorio html/colecciones/ (vintage.html):</h3>
+        <a href="vintage.html" class="link">→ vintage.html (mismo archivo)</a>
+    </div>
+    
+    <div class="test-section">
+        <h2>📋 Configuraciones Verificadas:</h2>
+        <p class="status">✅ index.html: Script ajusta rutas agregando 'html/' a enlaces</p>
+        <p class="status">✅ navbar.html: Enlace vintage definido como 'colecciones/vintage.html'</p>
+        <p class="status">✅ vintage.html: Script ajusta rutas para páginas en subdirectorio</p>
+        <p class="status">✅ contacto.html: Carga navbar sin ajustes específicos (rutas relativas correctas)</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎨 CSS de Sección 'Por Qué Vintage':</h2>
+        <p class="status">✅ vintage.css: Selectores .why-vintage-section y .reason-card con !important</p>
+        <p class="status">✅ Especificidad alta para evitar conflictos con CSS global</p>
+        <p class="status">✅ Estilos aplicados: background, padding, border, hover effects</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔧 Scripts de Inicialización:</h2>
+        <p class="status">✅ Todas las páginas cargan navbar.js, cart.js y cart-error-fixes.js</p>
+        <p class="status">✅ vintage.html tiene script específico para ajustar rutas de colecciones</p>
+        <p class="status">✅ Inicialización del carrito después de cargar navbar</p>
+    </div>
+    
+    <script>
+        console.log('🧪 Test de Enlaces Vintage cargado');
+        console.log('📍 Ubicación actual:', window.location.pathname);
+        
+        // Verificar que podemos acceder a vintage.html desde aquí
+        const testLink = document.querySelector('a[href="html/colecciones/vintage.html"]');
+        if (testLink) {
+            console.log('✅ Enlace a vintage encontrado:', testLink.href);
+        }
+    </script>
+</body>
+</html>

@@ -1,16 +1,485 @@
 <!DOCTYPE html>
-<html lang="es"    <script>
-        // Cargar la navbar
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colección Exclusiva - Aromes De Dieu</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/navbar.css">
+    <link rel="stylesheet" href="../../css/cart.css">
+    <link rel="stylesheet" href="../../css/slide-cart.css">
+    <link rel="stylesheet" href="../../css/colecciones/exclusivas.css">
+</head>
+<body>
+    <!-- Navbar Container -->
+    <div id="navbar-container"></div>
+
+    <!-- Hero Section Ultra Elegante -->
+    <section class="exclusive-hero">
+        <div class="hero-background">
+            <div class="floating-elements">
+                <div class="gold-particle"></div>
+                <div class="gold-particle"></div>
+                <div class="gold-particle"></div>
+                <div class="gold-particle"></div>
+                <div class="gold-particle"></div>
+            </div>
+        </div>
+        
+        <div class="hero-content">
+            <div class="luxury-badge">
+                <i class="fas fa-crown"></i>
+                <span>Colección Exclusiva</span>
+            </div>
+            
+            <h1 class="hero-title">
+                <span class="title-line">Aromas</span>
+                <span class="title-line golden">Exclusivos</span>
+                <span class="title-line">para Almas</span>
+                <span class="title-line">Extraordinarias</span>
+            </h1>
+            
+            <p class="hero-subtitle">
+                Descubre fragancias únicas, creadas en ediciones limitadas para quienes comprenden que el verdadero lujo no se posee, se vive.
+            </p>
+            
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">12</span>
+                    <span class="stat-label">Fragancias Únicas</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">500</span>
+                    <span class="stat-label">Unidades Limitadas</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Ingredientes Premium</span>
+                </div>
+            </div>
+            
+            <div class="hero-cta">
+                <button class="cta-primary">
+                    <span>Explorar Colección</span>
+                    <i class="fas fa-arrow-down"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Sección de Storytelling Exclusivo -->
+    <section class="exclusive-story">
+        <div class="story-container">
+            <div class="story-content">
+                <div class="section-badge">
+                    <i class="fas fa-gem"></i>
+                    <span>El Arte de lo Exclusivo</span>
+                </div>
+                
+                <h2>Donde la Perfección se Encuentra con la Rareza</h2>
+                
+                <div class="story-text">
+                    <p class="lead">
+                        Cada fragancia de nuestra colección exclusiva nace de una búsqueda incansable por la perfección. 
+                        Son el resultado de años de investigación, creadas por maestros perfumistas que han dedicado 
+                        sus vidas al arte olfativo más refinado.
+                    </p>
+                    
+                    <p>
+                        Utilizamos ingredientes tan raros y preciosos que su disponibilidad es limitada por la naturaleza misma. 
+                        Rosa de Damasco cosechada al amanecer, oud de 30 años de antigüedad, vainilla de Madagascar 
+                        seleccionada grano a grano.
+                    </p>
+                </div>
+                
+                <div class="signature">
+                    <div class="signature-line"></div>
+                    <span class="signature-text">Maestro Jean-Baptiste Dubois</span>
+                    <span class="signature-title">Director Creativo</span>
+                </div>
+            </div>
+            
+            <div class="story-visual">
+                <div class="visual-grid">
+                    <div class="visual-item large">
+                        <div class="visual-content">
+                            <i class="fas fa-flask"></i>
+                            <h4>Proceso Artesanal</h4>
+                            <p>6 meses de maceración</p>
+                        </div>
+                    </div>
+                    <div class="visual-item">
+                        <div class="visual-content">
+                            <i class="fas fa-leaf"></i>
+                            <h4>Ingredientes Raros</h4>
+                            <p>De 7 continentes</p>
+                        </div>
+                    </div>
+                    <div class="visual-item">
+                        <div class="visual-content">
+                            <i class="fas fa-certificate"></i>
+                            <h4>Certificación</h4>
+                            <p>Autenticidad garantizada</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galería de Productos Exclusivos -->
+    <section class="exclusive-gallery">
+        <div class="gallery-header">
+            <h2>Nuestras Creaciones Excepcionales</h2>
+            <p>Cada fragancia cuenta una historia única, creada para ser inolvidable</p>
+        </div>
+        
+        <div class="products-showcase">
+            <!-- Producto 1: L'Essence Divine -->
+            <div class="exclusive-product" data-product="divine">
+                <div class="product-media">
+                    <div class="product-video">
+                        <video autoplay loop muted playsinline>
+                            <source src="../../VIDEOS/Bleu_Desierto.MP4" type="video/mp4">
+                        </video>
+                        <div class="product-overlay">
+                            <div class="limited-badge">
+                                <span>Edición Limitada</span>
+                                <span class="units">50 unidades</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h3>L'Essence Divine</h3>
+                            <div class="product-price">
+                                <span class="price-amount">$2,850</span>
+                                <span class="price-currency">USD</span>
+                            </div>
+                        </div>
+                        
+                        <p class="product-description">
+                            Una sinfonía olfativa que combina rosa búlgara centenaria con oud real de Camboya. 
+                            Cada gota contiene la esencia de 1,000 pétalos de rosa y 3 gramos de oud puro.
+                        </p>
+                        
+                        <div class="fragrance-notes">
+                            <div class="note">
+                                <span class="note-type">Salida</span>
+                                <span class="note-desc">Rosa Búlgara, Bergamota de Calabria</span>
+                            </div>
+                            <div class="note">
+                                <span class="note-type">Corazón</span>
+                                <span class="note-desc">Oud de Camboya, Jazmín Sambac</span>
+                            </div>
+                            <div class="note">
+                                <span class="note-type">Fondo</span>
+                                <span class="note-desc">Sándalo, Ámbar Gris</span>
+                            </div>
+                        </div>
+                        
+                        <div class="product-actions">
+                            <button class="add-to-cart-btn">
+                                <i class="fas fa-shopping-bag"></i>
+                                <span>Adquirir Ahora</span>
+                            </button>
+                            <button class="wishlist-btn">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="exclusivity-info">
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Tiempo de creación: 6 meses</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-award"></i>
+                                <span>Certificado de autenticidad incluido</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 2: Mystique Royale -->
+            <div class="exclusive-product reverse" data-product="mystique">
+                <div class="product-media">
+                    <div class="product-video">
+                        <video autoplay loop muted playsinline>
+                            <source src="../../VIDEOS/Video2_index.mp4" type="video/mp4">
+                        </video>
+                        <div class="product-overlay">
+                            <div class="limited-badge">
+                                <span>Edición Limitada</span>
+                                <span class="units">75 unidades</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h3>Mystique Royale</h3>
+                            <div class="product-price">
+                                <span class="price-amount">$3,200</span>
+                                <span class="price-currency">USD</span>
+                            </div>
+                        </div>
+                        
+                        <p class="product-description">
+                            Inspirada en los jardines secretos de Versalles, esta fragancia combina iris florentino 
+                            con orquídea negra, creando una experiencia olfativa de realeza contemporánea.
+                        </p>
+                        
+                        <div class="fragrance-notes">
+                            <div class="note">
+                                <span class="note-type">Salida</span>
+                                <span class="note-desc">Iris Florentino, Pimienta Rosa</span>
+                            </div>
+                            <div class="note">
+                                <span class="note-type">Corazón</span>
+                                <span class="note-desc">Orquídea Negra, Violeta de Parma</span>
+                            </div>
+                            <div class="note">
+                                <span class="note-type">Fondo</span>
+                                <span class="note-desc">Vetiver de Haití, Pachulí</span>
+                            </div>
+                        </div>
+                        
+                        <div class="product-actions">
+                            <button class="add-to-cart-btn">
+                                <i class="fas fa-shopping-bag"></i>
+                                <span>Adquirir Ahora</span>
+                            </button>
+                            <button class="wishlist-btn">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="exclusivity-info">
+                            <div class="info-item">
+                                <i class="fas fa-crown"></i>
+                                <span>Inspirada en la realeza francesa</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-gem"></i>
+                                <span>Frasco con detalles en oro 24k</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto 3: Elixir Éternel -->
+            <div class="exclusive-product" data-product="eternal">
+                <div class="product-media">
+                    <div class="product-video">
+                        <video autoplay loop muted playsinline>
+                            <source src="../../VIDEOS/Video3_Index.mp4" type="video/mp4">
+                        </video>
+                        <div class="product-overlay">
+                            <div class="limited-badge sold-out">
+                                <span>Agotado</span>
+                                <span class="units">Próxima edición 2026</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-details">
+                        <div class="product-header">
+                            <h3>Elixir Éternel</h3>
+                            <div class="product-price">
+                                <span class="price-amount">$4,500</span>
+                                <span class="price-currency">USD</span>
+                            </div>
+                        </div>
+                        
+                        <p class="product-description">
+                            La fragancia más exclusiva de nuestra colección. Creada con ambergris natural de 50 años 
+                            y vainilla de Madagascar fermentada durante 2 años. Solo 25 frascos fueron creados.
+                        </p>
+                        
+                        <div class="fragrance-notes">
+                            <div class="note">
+                                <span class="note-type">Salida</span>
+                                <span class="note-desc">Cardamomo, Azafrán de Cachemira</span>
+                            </div>
+                            <div class="note">
+                                <span class="note-type">Corazón</span>
+                                <span class="note-desc">Rosa de Damasco, Incienso</span>
+                            </div>
+                            <div class="note">
+                                <span class="note-type">Fondo</span>
+                                <span class="note-desc">Ambergris, Vainilla Fermentada</span>
+                            </div>
+                        </div>
+                        
+                        <div class="product-actions">
+                            <button class="notify-btn" disabled>
+                                <i class="fas fa-bell"></i>
+                                <span>Notificarme Próxima Edición</span>
+                            </button>
+                        </div>
+                        
+                        <div class="exclusivity-info">
+                            <div class="info-item">
+                                <i class="fas fa-star"></i>
+                                <span>La más exclusiva de nuestra historia</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-infinity"></i>
+                                <span>Duración: más de 24 horas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Experiencia VIP -->
+    <section class="vip-experience">
+        <div class="vip-container">
+            <div class="vip-content">
+                <div class="section-badge">
+                    <i class="fas fa-star"></i>
+                    <span>Experiencia VIP</span>
+                </div>
+                
+                <h2>Más que una Compra, una Experiencia</h2>
+                
+                <div class="vip-features">
+                    <div class="vip-feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-concierge-bell"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Servicio de Conserjería Personal</h4>
+                            <p>Un experto en fragancias te acompañará en todo el proceso de selección</p>
+                        </div>
+                    </div>
+                    
+                    <div class="vip-feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Entrega Premium</h4>
+                            <p>Entrega en cofre de lujo con certificado de autenticidad y guía de uso</p>
+                        </div>
+                    </div>
+                    
+                    <div class="vip-feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-redo-alt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Garantía de Satisfacción</h4>
+                            <p>30 días para devolución si la fragancia no supera tus expectativas</p>
+                        </div>
+                    </div>
+                    
+                    <div class="vip-feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Club Exclusivo</h4>
+                            <p>Acceso prioritario a nuevas ediciones y eventos privados</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="vip-visual">
+                <div class="luxury-box">
+                    <div class="box-content">
+                        <i class="fas fa-gift"></i>
+                        <h4>Experiencia de Unboxing Única</h4>
+                        <p>Cada detalle está pensado para crear un momento inolvidable</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Final -->
+    <section class="final-cta">
+        <div class="cta-container">
+            <div class="cta-content">
+                <h2>¿Estás Listo para lo Extraordinario?</h2>
+                <p>Únete a un selecto grupo de conocedores que entienden que el verdadero lujo no tiene precio</p>
+                
+                <div class="cta-buttons">
+                    <a href="../../html/catalogo.html" class="cta-btn primary">
+                        <span>Ver Toda la Colección</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a href="../../html/contacto.html" class="cta-btn secondary">
+                        <span>Consulta Personalizada</span>
+                        <i class="fas fa-phone"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="cta-guarantee">
+                <div class="guarantee-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Autenticidad Garantizada</span>
+                </div>
+                <div class="guarantee-item">
+                    <i class="fas fa-truck"></i>
+                    <span>Envío Asegurado</span>
+                </div>
+                <div class="guarantee-item">
+                    <i class="fas fa-headset"></i>
+                    <span>Soporte 24/7</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Carrito de Compras -->
+    <div id="slideCart" class="slide-cart">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h3>Tu Selección Exclusiva</h3>
+                <button class="close-cart">&times;</button>
+            </div>
+            <div class="cart-items" id="cartItems"></div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total: $<span id="cartTotal">0</span></span>
+                </div>
+                <button class="checkout-btn">Proceder al Pago</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('../navbar.html')
+            console.log('🏛️ Cargando página Exclusivas...');
+            
+            fetch('../../html/navbar.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('navbar-container').innerHTML = data;
-                      // Ajustar rutas para navegación desde colecciones/
                     
-                    // Ajustar logo
+                    // Ajustar rutas para navegación desde colecciones/exclusivas.html
                     const logo = document.querySelector('.navbar-logo');
-                    if (logo && logo.getAttribute('href') === '../index.html') {
+                    if (logo) {
                         logo.setAttribute('href', '../../index.html');
                     }
                     
@@ -18,18 +487,35 @@
                     const navLinks = document.querySelectorAll('.navbar-menu a[href]');
                     navLinks.forEach(link => {
                         const currentHref = link.getAttribute('href');
+                        console.log('🔗 Procesando enlace desde exclusivas.html:', currentHref);
                         
-                        // Para el enlace de Inicio
-                        if (currentHref === '../index.html') {
-                            link.setAttribute('href', '../../index.html');
+                        // Caso especial para enlace de exclusivas (no modificar si ya estamos en exclusivas)
+                        if (link.textContent.includes('Exclusivas')) {
+                            link.setAttribute('href', 'exclusivas.html');
+                            console.log('🏛️ Enlace Exclusivas ajustado para autoreferencia: exclusivas.html');
+                            return;
                         }
-                        // Para enlaces que van a páginas en html/ (pero no son colecciones)
-                        else if (!currentHref.startsWith('http') && 
-                                !currentHref.startsWith('../../') && 
-                                !currentHref.startsWith('#') &&
-                                !currentHref.startsWith('colecciones/') &&
-                                currentHref.includes('.html')) {
-                            link.setAttribute('href', '../' + currentHref);
+                        
+                        // Para enlaces a páginas en html/
+                        if (!currentHref.startsWith('http') && 
+                            !currentHref.startsWith('../../') && 
+                            !currentHref.startsWith('#') &&
+                            currentHref.endsWith('.html')) {
+                            
+                            // Si es un enlace a una colección
+                            if (currentHref.startsWith('colecciones/')) {
+                                // Desde exclusivas.html, las otras colecciones están en la misma carpeta
+                                const collectionPage = currentHref.replace('colecciones/', '');
+                                link.setAttribute('href', collectionPage);
+                                console.log('✅ Enlace colección ajustado:', currentHref, '→', collectionPage);
+                            } else {
+                                // Para otras páginas, agregar ../../html/
+                                const newHref = '../../html/' + currentHref;
+                                link.setAttribute('href', newHref);
+                                console.log('✅ Enlace página ajustado:', currentHref, '→', newHref);
+                            }
+                        } else {
+                            console.log('⏭️ Enlace no modificado:', currentHref);
                         }
                     });
                     
@@ -39,53 +525,74 @@
                             initNavbar();
                         }
                     }, 150);
-                })
-                .catch(error => console.error('Error cargando navbar:', error));
-        });meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colección Exclusiva - Aromes De Dieu</title>
-    <link rel="stylesheet" href="../../css/style.css">
-    <link rel="stylesheet" href="../../css/navbar.css">
-    <link rel="stylesheet" href="../../css/para_ellos.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-</head>
-<body>
-    <!-- Contenedor para la navbar -->
-    <div id="navbar-container"></div>
-
-    <main class="magazine-main">
-        <section class="collection-grid">
-            <div class="grid-title">
-                <h1>Colección Exclusiva</h1>
-                <p>Fragancias únicas y ediciones limitadas para los conocedores más exigentes</p>
-            </div>
-
-            <div class="index-header">
-                <p style="text-align: center; font-size: 1.2rem; color: #4A4A4A; font-style: italic; margin: 3rem 0;">
-                    Próximamente disponible.<br>
-                    Una selección cuidadosamente curada de las fragancias más exclusivas del mundo.
-                </p>
-            </div>
-        </section>
-    </main>
-
-    <script src="../../js/navbar.js"></script>
-    <script>
-        // Cargar la navbar
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('../navbar.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('navbar-container').innerHTML = data;
-                    // Inicializar navbar después de un pequeño delay
+                    
+                    // Reconfigurar event listeners del carrito después de cargar navbar
                     setTimeout(() => {
-                        if (typeof initNavbar === 'function') {
-                            initNavbar();
+                        if (window.shoppingCart && typeof window.shoppingCart.reconfigureEventListeners === 'function') {
+                            console.log('🔄 Reconfigurando carrito en Exclusivas...');
+                            window.shoppingCart.reconfigureEventListeners();
+                            console.log('✅ Event listeners del carrito reconfigurados en Exclusivas');
+                        } else {
+                            console.warn('⚠️ Carrito no disponible para reconfigurar en Exclusivas');
                         }
-                    }, 150);
+                    }, 800);
                 })
                 .catch(error => console.error('Error cargando navbar:', error));
+
+            // Configurar videos con observador de intersección
+            const videoCards = document.querySelectorAll('.product-video video');
+            
+            const observerOptions = {
+                threshold: 0.3
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target;
+                    if (entry.isIntersecting) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                });
+            }, observerOptions);
+
+            videoCards.forEach(video => {
+                observer.observe(video);
+            });
+
+            // Scroll suave para CTA del hero
+            const heroCtaBtn = document.querySelector('.cta-primary');
+            if (heroCtaBtn) {
+                heroCtaBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector('.exclusive-gallery').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            }
+
+            // Animaciones de aparición
+            const animateOnScroll = () => {
+                const elements = document.querySelectorAll('.exclusive-product, .vip-feature, .story-content');
+                
+                elements.forEach(element => {
+                    const elementTop = element.getBoundingClientRect().top;
+                    const elementVisible = 150;
+                    
+                    if (elementTop < window.innerHeight - elementVisible) {
+                        element.classList.add('animate-in');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll(); // Ejecutar al cargar
         });
     </script>
+    <script src="../../js/cart.js"></script>
+    <script src="../../js/cart-error-fixes.js"></script>
+    <script src="../../js/limpiar-productos-prueba.js"></script>
+    <script src="../../js/navbar.js"></script>
 </body>
 </html>

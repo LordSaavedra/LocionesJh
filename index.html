@@ -66,9 +66,22 @@
                     const navLinks = document.querySelectorAll('.navbar-menu a[href]:not([href^="http"]):not([href^="#"])');
                     navLinks.forEach(link => {
                         const currentHref = link.getAttribute('href');
+                        console.log('🔗 Procesando enlace desde index.html:', currentHref);
+                        
+                        // Caso especial para enlace de vintage
+                        if (link.hasAttribute('data-vintage-link')) {
+                            link.setAttribute('href', 'html/colecciones/vintage.html');
+                            console.log('🍇 Enlace Vintage ajustado específicamente: html/colecciones/vintage.html');
+                            return;
+                        }
+                        
                         // Si la ruta no empieza con html/ y no es index.html, añadir html/
                         if (!currentHref.startsWith('html/') && currentHref !== 'index.html') {
-                            link.setAttribute('href', 'html/' + currentHref);
+                            const newHref = 'html/' + currentHref;
+                            link.setAttribute('href', newHref);
+                            console.log('✅ Enlace ajustado:', currentHref, '→', newHref);
+                        } else {
+                            console.log('⏭️ Enlace no modificado:', currentHref);
                         }
                     });
                     

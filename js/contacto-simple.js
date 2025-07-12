@@ -1,4 +1,4 @@
-// Funcionalidad para la página de contacto elegante
+// Funcionalidad para la página de contacto
 
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializar componentes
@@ -36,6 +36,20 @@ function initContactForm() {
     if (form) {
         form.addEventListener('submit', handleFormSubmit);
     }
+    
+    // Mejorar la experiencia de los inputs
+    const inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            input.parentElement.classList.add('focused');
+        });
+        
+        input.addEventListener('blur', () => {
+            if (!input.value) {
+                input.parentElement.classList.remove('focused');
+            }
+        });
+    });
 }
 
 // Manejar envío del formulario
@@ -59,6 +73,10 @@ function handleFormSubmit(e) {
         hideLoadingState();
         showNotification('¡Mensaje enviado exitosamente! Nos pondremos en contacto pronto.', 'success');
         e.target.reset();
+        
+        // Limpiar estados de focus
+        const inputGroups = document.querySelectorAll('.input-group');
+        inputGroups.forEach(group => group.classList.remove('focused'));
     }, 2000);
 }
 
@@ -90,10 +108,19 @@ function showNotification(message, type = 'success') {
     
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    // Estilos en línea para las notificaciones
     notification.style.cssText = `
         position: fixed;
         top: 100px;
         right: 20px;
+        background: ${type === 'success' ? '#10B981' : '#EF4444'};
         color: white;
         padding: 15px 25px;
         border-radius: 12px;
@@ -103,14 +130,6 @@ function showNotification(message, type = 'success') {
         transform: translateX(100%);
         opacity: 0;
         transition: all 0.3s ease;
-        background: ${type === 'success' ? 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' : 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'};
-    `;
-    
-    notification.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
-            <span>${message}</span>
-        </div>
     `;
     
     document.body.appendChild(notification);
@@ -203,7 +222,7 @@ function initContactMethods() {
 // Funciones auxiliares para botones de contacto
 function openWhatsApp() {
     const phoneNumber = '+15559876543'; // Reemplazar con el número real
-    const message = encodeURIComponent('Hola, me interesa obtener más información sobre sus fragancias exclusivas.');
+    const message = encodeURIComponent('Hola, me interesa obtener más información sobre sus fragancias.');
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
 }
 

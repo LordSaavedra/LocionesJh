@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nosotros - Aromes De Dieu | Perfumería de Lujo</title>
+    <meta name="description" content="Descubre nuestra historia, pasión y excelencia en el mundo de la perfumería de lujo. Más de una década creando experiencias olfativas únicas.">
+    
+    <!-- Fuentes elegantes -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/cart.css">
+    <link rel="stylesheet" href="../css/slide-cart.css">
+    <link rel="stylesheet" href="../css/sobre-nosotros.css">
+</head>
+<body>
+    <!-- Navbar container -->
+    <div id="navbar-container"></div>
+    
+    <!-- Carrito deslizante -->
+    <div id="cart-slide" class="cart-slide">
+        <div class="cart-header">
+            <h3 class="cart-title">Mi Carrito</h3>
+            <button id="cart-close" class="cart-close">&times;</button>
+        </div>
+        <div class="cart-content">
+            <div class="cart-items" id="cart-items">
+                <!-- Los productos se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total: $<span id="cart-total">0</span></span>
+            </div>
+            <button class="checkout-btn">Proceder al Pago</button>
+        </div>
+    </div>
+    
+    <!-- Overlay del carrito -->
+    <div id="cart-overlay" class="cart-overlay"></div>
+
+    <!-- Hero Section elegante -->
+    <section class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">Sobre Nosotros</h1>
+                <p class="hero-subtitle">Una historia de pasión, excelencia y dedicación a la perfumería de lujo</p>
+                <div class="hero-divider"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contenedor principal -->
+    <div class="main-container">
+        
+        <!-- Línea del Tiempo Futurista -->
+        <section class="futuristic-timeline-section">
+            <div class="timeline-header">
+                <h2 class="timeline-title">Nuestra Evolución</h2>
+                <p class="timeline-subtitle">Un viaje a través del tiempo hacia la excelencia</p>
+                <div class="progress-indicator">
+                    <div class="progress-bar" id="progress-bar"></div>
+                    <div class="progress-dots">
+                        <div class="progress-dot active" data-year="2010"></div>
+                        <div class="progress-dot" data-year="2015"></div>
+                        <div class="progress-dot" data-year="2020"></div>
+                        <div class="progress-dot" data-year="2025"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-container">
+                <div class="timeline-line">
+                    <div class="timeline-progress" id="timeline-progress"></div>
+                </div>
+
+                <div class="timeline-events">
+                    <!-- Evento 2010 -->
+                    <div class="timeline-event" data-year="2010" data-index="0">
+                        <div class="event-node">
+                            <div class="node-inner">
+                                <div class="node-pulse"></div>
+                                <i class="fas fa-seedling"></i>
+                            </div>
+                            <div class="node-year">2010</div>
+                        </div>
+                        <div class="event-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <h3>Los Inicios</h3>
+                                <p>Aromes De Dieu nació de la visión de crear una experiencia olfativa única y exclusiva. Fundada por reconocidos especialistas en perfumería.</p>
+                                <div class="card-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-number">1</span>
+                                        <span class="stat-label">Fundador</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-number">50</span>
+                                        <span class="stat-label">Fragancias</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Evento 2015 -->
+                    <div class="timeline-event reverse" data-year="2015" data-index="1">
+                        <div class="event-node">
+                            <div class="node-inner">
+                                <div class="node-pulse"></div>
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div class="node-year">2015</div>
+                        </div>
+                        <div class="event-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-handshake"></i>
+                                </div>
+                                <h3>Expansión Global</h3>
+                                <p>Establecimos alianzas estratégicas con las casas perfumistas más prestigiosas del mundo, garantizando autenticidad y exclusividad.</p>
+                                <div class="card-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-number">25</span>
+                                        <span class="stat-label">Marcas</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-number">200</span>
+                                        <span class="stat-label">Fragancias</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Evento 2020 -->
+                    <div class="timeline-event" data-year="2020" data-index="2">
+                        <div class="event-node">
+                            <div class="node-inner">
+                                <div class="node-pulse"></div>
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div class="node-year">2020</div>
+                        </div>
+                        <div class="event-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <h3>Liderazgo del Mercado</h3>
+                                <p>Nos consolidamos como líderes en la curaduría de fragancias exclusivas, siendo reconocidos por nuestra excelencia y autenticidad.</p>
+                                <div class="card-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-number">50+</span>
+                                        <span class="stat-label">Marcas</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-number">5K</span>
+                                        <span class="stat-label">Clientes</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Evento 2025 -->
+                    <div class="timeline-event reverse" data-year="2025" data-index="3">
+                        <div class="event-node">
+                            <div class="node-inner">
+                                <div class="node-pulse"></div>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="node-year">2025</div>
+                        </div>
+                        <div class="event-card">
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-gem"></i>
+                                </div>
+                                <h3>Innovación y Futuro</h3>
+                                <p>Combinamos tradición artesanal con tecnología de vanguardia, estableciendo nuevos estándares en la experiencia de la perfumería de lujo.</p>
+                                <div class="card-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-number">100+</span>
+                                        <span class="stat-label">Marcas</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-number">10K+</span>
+                                        <span class="stat-label">Clientes</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Indicador de navegación -->
+                <div class="timeline-navigation">
+                    <button class="nav-btn prev-btn" id="prev-btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="nav-counter">
+                        <span class="current-step">1</span>
+                        <span class="separator">/</span>
+                        <span class="total-steps">4</span>
+                    </div>
+                    <button class="nav-btn next-btn" id="next-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nuestra Misión -->
+        <section class="mission-section">
+            <div class="mission-content">
+                <div class="mission-card">
+                    <div class="mission-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>Nuestra Misión</h3>
+                    <p>Democratizar el acceso a fragancias de lujo auténticas, ofreciendo una experiencia de compra excepcional que combine excelencia, confianza y asesoramiento personalizado para cada cliente.</p>
+                </div>
+                
+                <div class="mission-card">
+                    <div class="mission-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>Nuestra Visión</h3>
+                    <p>Ser la casa de perfumería de lujo más reconocida y confiable, estableciendo el estándar de excelencia en curaduría, autenticidad y experiencia al cliente en el mercado de fragancias premium.</p>
+                </div>
+                
+                <div class="mission-card">
+                    <div class="mission-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Nuestros Valores</h3>
+                    <p>Autenticidad, excelencia, confianza, pasión por la perfumería, atención personalizada y compromiso inquebrantable con la satisfacción de nuestros clientes más exigentes.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nuestro Equipo -->
+        <section class="team-section">
+            <div class="section-header">
+                <h2>Nuestro Equipo</h2>
+                <p>Especialistas apasionados por la perfumería de lujo</p>
+            </div>
+            
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-image">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h4>Isabella Martínez</h4>
+                    <p class="member-role">Directora General & Fundadora</p>
+                    <p class="member-description">Especialista en perfumería con más de 15 años de experiencia en casas de lujo internacionales.</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-image">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h4>Ricardo Valdés</h4>
+                    <p class="member-role">Master Perfumista</p>
+                    <p class="member-description">Certificado por escuelas francesas de perfumería, experto en identificación y curaduría de fragancias exclusivas.</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-image">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4>Camila Torres</h4>
+                    <p class="member-role">Consultora Senior</p>
+                    <p class="member-description">Especialista en asesoramiento personalizado y desarrollo de perfiles olfativos únicos para cada cliente.</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-image">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h4>Diego Morales</h4>
+                    <p class="member-role">Curador de Colecciones</p>
+                    <p class="member-description">Responsable de la selección y autenticación de fragancias exclusivas y ediciones limitadas.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nuestros Logros -->
+        <section class="achievements-section">
+            <div class="section-header">
+                <h2>Nuestros Logros</h2>
+                <p>Reconocimientos que respaldan nuestra excelencia</p>
+            </div>
+            
+            <div class="achievements-grid">
+                <div class="achievement-card">
+                    <div class="achievement-number">15+</div>
+                    <h4>Años de Experiencia</h4>
+                    <p>Perfeccionando el arte de la perfumería de lujo</p>
+                </div>
+                
+                <div class="achievement-card">
+                    <div class="achievement-number">10K+</div>
+                    <h4>Clientes Satisfechos</h4>
+                    <p>Experiencias únicas creadas para clientes distinguidos</p>
+                </div>
+                
+                <div class="achievement-card">
+                    <div class="achievement-number">500+</div>
+                    <h4>Fragancias Exclusivas</h4>
+                    <p>Colección curada de las mejores casas del mundo</p>
+                </div>
+                
+                <div class="achievement-card">
+                    <div class="achievement-number">99.8%</div>
+                    <h4>Satisfacción del Cliente</h4>
+                    <p>Compromiso inquebrantable con la excelencia</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nuestro Compromiso -->
+        <section class="commitment-section">
+            <div class="commitment-content">
+                <div class="commitment-text">
+                    <h2>Nuestro Compromiso con la Excelencia</h2>
+                    <p>En Aromes De Dieu, cada fragancia cuenta una historia única. Nuestro compromiso va más allá de la venta; creamos experiencias memorables que conectan emociones con los aromas más exquisitos del mundo.</p>
+                    
+                    <div class="commitment-points">
+                        <div class="commitment-point">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>100% Garantía de Autenticidad</span>
+                        </div>
+                        
+                        <div class="commitment-point">
+                            <i class="fas fa-clock"></i>
+                            <span>Atención Personalizada 24/7</span>
+                        </div>
+                        
+                        <div class="commitment-point">
+                            <i class="fas fa-award"></i>
+                            <span>Certificaciones Internacionales</span>
+                        </div>
+                        
+                        <div class="commitment-point">
+                            <i class="fas fa-handshake"></i>
+                            <span>Satisfacción Garantizada</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="commitment-cta">
+                    <h3>¿Listo para descubrir tu fragancia perfecta?</h3>
+                    <p>Permítenos guiarte en este viaje olfativo único</p>
+                    <div class="cta-buttons">
+                        <a href="contacto.html" class="cta-btn primary">
+                            <span>Contactar Especialista</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="../index.html" class="cta-btn secondary">
+                            <span>Explorar Catálogo</span>
+                            <i class="fas fa-search"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Cargar la navbar
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('navbar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('navbar-container').innerHTML = data;
+                    // Inicializar navbar después de un pequeño delay
+                    setTimeout(() => {
+                        if (typeof initNavbar === 'function') {
+                            initNavbar();
+                        }
+                    }, 150);
+                    
+                    // Reconfigurar event listeners del carrito después de cargar navbar
+                    setTimeout(() => {
+                        if (window.shoppingCart && typeof window.shoppingCart.reconfigureEventListeners === 'function') {
+                            console.log('🔄 Reconfigurando carrito en Sobre Nosotros...');
+                            window.shoppingCart.reconfigureEventListeners();
+                            console.log('✅ Event listeners del carrito reconfigurados en Sobre Nosotros');
+                        } else {
+                            console.warn('⚠️ Carrito no disponible para reconfigurar en Sobre Nosotros');
+                        }
+                    }, 800);
+                })
+                .catch(error => console.error('Error cargando navbar:', error));
+
+            // Inicializar Timeline Futurista
+            initFuturisticTimeline();
+        });
+
+        // Sistema de Timeline Futurista con Animaciones Innovadoras
+        function initFuturisticTimeline() {
+            let currentStep = 0;
+            const totalSteps = 4;
+            const events = document.querySelectorAll('.timeline-event');
+            const progressBar = document.getElementById('progress-bar');
+            const timelineProgress = document.getElementById('timeline-progress');
+            const progressDots = document.querySelectorAll('.progress-dot');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const currentStepSpan = document.querySelector('.current-step');
+
+            // Animación de entrada inicial
+            setTimeout(() => {
+                showEvent(0);
+                updateProgress(0);
+            }, 500);
+
+            // Event listeners para navegación
+            nextBtn.addEventListener('click', () => {
+                if (currentStep < totalSteps - 1) {
+                    hideEvent(currentStep);
+                    currentStep++;
+                    showEvent(currentStep);
+                    updateProgress(currentStep);
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    hideEvent(currentStep);
+                    currentStep--;
+                    showEvent(currentStep);
+                    updateProgress(currentStep);
+                }
+            });
+
+            // Navegación por teclado
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' && currentStep < totalSteps - 1) {
+                    nextBtn.click();
+                } else if (e.key === 'ArrowLeft' && currentStep > 0) {
+                    prevBtn.click();
+                }
+            });
+
+            // Click en dots para navegación directa
+            progressDots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    if (index !== currentStep) {
+                        hideEvent(currentStep);
+                        currentStep = index;
+                        showEvent(currentStep);
+                        updateProgress(currentStep);
+                    }
+                });
+            });
+
+            // Scroll automático para revelar eventos
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const eventIndex = parseInt(entry.target.dataset.index);
+                        if (eventIndex !== currentStep) {
+                            hideEvent(currentStep);
+                            currentStep = eventIndex;
+                            showEvent(currentStep);
+                            updateProgress(currentStep);
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.5,
+                rootMargin: '-20% 0px -20% 0px'
+            });
+
+            events.forEach(event => observer.observe(event));
+
+            function showEvent(index) {
+                const event = events[index];
+                if (!event) return;
+
+                // Animación de entrada del nodo
+                const node = event.querySelector('.event-node');
+                const card = event.querySelector('.event-card');
+                const nodeInner = event.querySelector('.node-inner');
+                const cardContent = event.querySelector('.card-content');
+                const stats = event.querySelectorAll('.stat-number');
+
+                // Reset y animación del nodo
+                node.style.transform = 'scale(0) rotate(-180deg)';
+                node.style.opacity = '0';
+                
+                setTimeout(() => {
+                    node.style.transition = 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    node.style.transform = 'scale(1) rotate(0deg)';
+                    node.style.opacity = '1';
+                }, 100);
+
+                // Animación de la tarjeta
+                setTimeout(() => {
+                    card.style.transform = 'translateY(50px) scale(0.8)';
+                    card.style.opacity = '0';
+                    card.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    
+                    setTimeout(() => {
+                        card.style.transform = 'translateY(0) scale(1)';
+                        card.style.opacity = '1';
+                    }, 50);
+                }, 400);
+
+                // Animación del contenido de la tarjeta
+                setTimeout(() => {
+                    const elements = cardContent.children;
+                    Array.from(elements).forEach((el, i) => {
+                        el.style.transform = 'translateY(20px)';
+                        el.style.opacity = '0';
+                        el.style.transition = `all 0.4s ease ${i * 0.1}s`;
+                        
+                        setTimeout(() => {
+                            el.style.transform = 'translateY(0)';
+                            el.style.opacity = '1';
+                        }, 50);
+                    });
+                }, 800);
+
+                // Animación de números (counter effect)
+                setTimeout(() => {
+                    stats.forEach(stat => {
+                        const target = parseInt(stat.textContent.replace(/\D/g, ''));
+                        const suffix = stat.textContent.replace(/[\d]/g, '');
+                        animateCounter(stat, target, suffix, 1000);
+                    });
+                }, 1200);
+
+                // Efecto de pulso en el nodo
+                setTimeout(() => {
+                    nodeInner.classList.add('active-pulse');
+                }, 1000);
+
+                // Activar efectos de glow
+                setTimeout(() => {
+                    event.classList.add('active');
+                }, 600);
+            }
+
+            function hideEvent(index) {
+                const event = events[index];
+                if (!event) return;
+
+                const node = event.querySelector('.event-node');
+                const card = event.querySelector('.event-card');
+                const nodeInner = event.querySelector('.node-inner');
+
+                // Remover clases activas
+                event.classList.remove('active');
+                nodeInner.classList.remove('active-pulse');
+
+                // Animación de salida
+                card.style.transition = 'all 0.3s ease';
+                card.style.transform = 'translateY(-20px) scale(0.95)';
+                card.style.opacity = '0.3';
+
+                node.style.transition = 'all 0.3s ease';
+                node.style.transform = 'scale(0.8)';
+                node.style.opacity = '0.6';
+            }
+
+            function updateProgress(index) {
+                const progressPercent = (index / (totalSteps - 1)) * 100;
+                
+                // Actualizar barra de progreso principal
+                progressBar.style.transition = 'width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                progressBar.style.width = `${progressPercent}%`;
+
+                // Actualizar progreso de timeline
+                timelineProgress.style.transition = 'height 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                timelineProgress.style.height = `${progressPercent}%`;
+
+                // Actualizar dots
+                progressDots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i <= index);
+                    dot.classList.toggle('completed', i < index);
+                });
+
+                // Actualizar contador
+                currentStepSpan.textContent = index + 1;
+
+                // Actualizar botones
+                prevBtn.style.opacity = index === 0 ? '0.5' : '1';
+                nextBtn.style.opacity = index === totalSteps - 1 ? '0.5' : '1';
+                prevBtn.style.pointerEvents = index === 0 ? 'none' : 'auto';
+                nextBtn.style.pointerEvents = index === totalSteps - 1 ? 'none' : 'auto';
+            }
+
+            function animateCounter(element, target, suffix = '', duration = 1000) {
+                let start = 0;
+                const increment = target / (duration / 16);
+                
+                const timer = setInterval(() => {
+                    start += increment;
+                    if (start >= target) {
+                        element.textContent = target + suffix;
+                        clearInterval(timer);
+                    } else {
+                        element.textContent = Math.floor(start) + suffix;
+                    }
+                }, 16);
+            }
+
+            // Efectos de mouse para interactividad
+            events.forEach((event, index) => {
+                const card = event.querySelector('.event-card');
+                const glow = event.querySelector('.card-glow');
+
+                card.addEventListener('mouseenter', () => {
+                    if (index === currentStep) {
+                        glow.style.opacity = '0.6';
+                        card.style.transform += ' translateY(-5px)';
+                    }
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    if (index === currentStep) {
+                        glow.style.opacity = '0.3';
+                        card.style.transform = card.style.transform.replace(' translateY(-5px)', '');
+                    }
+                });
+            });
+
+            // Auto-play opcional (descomenta para activar)
+            /*
+            setInterval(() => {
+                if (currentStep < totalSteps - 1) {
+                    nextBtn.click();
+                } else {
+                    hideEvent(currentStep);
+                    currentStep = 0;
+                    showEvent(currentStep);
+                    updateProgress(currentStep);
+                }
+            }, 5000);
+            */
+        }
+    </script>
+    <script src="../js/cart.js"></script>
+    <script src="../js/cart-error-fixes.js"></script>
+    <script src="../js/limpiar-productos-prueba.js"></script>
+    <script src="../js/navbar.js"></script>
+</body>
+</html>

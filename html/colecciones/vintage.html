@@ -3,133 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colección Vintage - Aromes De Dieu</title>    <link rel="stylesheet" href="../../css/style.css">
+    <title>Colección Vintage - Aromes De Dieu | Fragancias Atemporales</title>
+    <meta name="description" content="Descubre nuestra exclusiva colección de fragancias vintage. Aromas atemporales que han perdurado a través de las décadas, creando historias únicas.">
+    
+    <!-- Fuentes elegantes -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/navbar.css">
-    <link rel="stylesheet" href="../../css/colecciones/elements.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/cart.css">
+    <link rel="stylesheet" href="../../css/slide-cart.css">
+    <link rel="stylesheet" href="../../css/colecciones/vintage.css">
 </head>
 <body>
-    <!-- Contenedor para la navbar -->
-    <div id="navbar-container"></div>    <main class="vintage-main">
-        <div class="vintage-content">
-            <h1>Colección Vintage</h1>
-            <p>Fragancias atemporales que han definido épocas</p>
+    <!-- Navbar container -->
+    <div id="navbar-container"></div>
+    
+    <!-- Carrito deslizante -->
+    <div id="cart-slide" class="cart-slide">
+        <div class="cart-header">
+            <h3 class="cart-title">Mi Carrito</h3>
+            <button id="cart-close" class="cart-close">&times;</button>
         </div>
+        <div class="cart-content">
+            <div class="cart-items" id="cart-items">
+                <!-- Los productos se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total: $<span id="cart-total">0</span></span>
+            </div>
+            <button class="checkout-btn">Proceder al Pago</button>
+        </div>
+    </div>
+    
+    <!-- Overlay del carrito -->
+    <div id="cart-overlay" class="cart-overlay"></div>
 
-        <section class="vintage-fragrances">
-            <!-- Bleu Desierto -->
-            <article class="fragrance-card desert">
-                <div class="video-container">
-                    <video autoplay loop muted playsinline>
-                        <source src="../../VIDEOS/Bleu Desierto.MP4" type="video/mp4">
-                    </video>
-                    <div class="overlay"></div>
-                </div>
-                <div class="fragrance-info">
-                    <div class="fragrance-title">
-                        <h2>Bleu Desierto</h2>
-                        <span class="vintage-year">2025</span>
-                    </div>
-                    <p class="fragrance-description">La esencia mística del desierto capturada en una fragancia que evoca el misterio de las dunas doradas bajo el sol ardiente.</p>
-                    <div class="fragrance-notes">
-                        <span>Notas de Salida: Arena cálida, Especias exóticas</span>
-                        <span>Notas de Corazón: Rosa del desierto, Ámbar solar</span>
-                        <span>Notas de Fondo: Madera de oud, Vainilla aromática</span>
-                    </div>
-                </div>
-            </article>
+    <!-- Hero Section Vintage -->
+    <section class="vintage-hero">
+        <div class="hero-background">
+            <div class="vintage-pattern"></div>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="vintage-badge">
+                <i class="fas fa-crown"></i>
+                <span>Colección Exclusiva</span>
+            </div>
+            <h1 class="hero-title">Vintage Collection</h1>
+            <p class="hero-subtitle">Fragancias Atemporales que Han Perdurado a Través de las Décadas</p>
+            <div class="hero-divider"></div>
+            <p class="hero-description">Cada gota cuenta una historia. Cada aroma trasciende el tiempo.</p>
+        </div>
+    </section>
 
-            <!-- CREED SILVER HIELO -->
-            <article class="fragrance-card ice">
-                <div class="video-container">
-                    <video autoplay loop muted playsinline>
-                        <source src="../../VIDEOS/CREED_SILVER_HIELO.MP4" type="video/mp4">
-                    </video>
-                    <div class="overlay"></div>
-                </div>
-                <div class="fragrance-info">
-                    <div class="fragrance-title">
-                        <h2>CREED Silver Hielo</h2>
-                        <span class="vintage-year">2025</span>
+    <!-- Contenedor principal -->
+    <div class="main-container">
+        
+        <!-- Sección Sobre Vintage -->
+        <section class="vintage-story-section">
+            <div class="story-content">
+                <div class="story-text">
+                    <span class="section-badge">Legado Atemporal</span>
+                    <h2>El Arte de las Fragancias Vintage</h2>
+                    <p class="intro-text">Las fragancias vintage representan más que simples aromas; son cápsulas del tiempo que encapsulan épocas, emociones y memorias colectivas que han perdurado a través de generaciones.</p>
+                    
+                    <div class="story-highlights">
+                        <div class="highlight-item">
+                            <div class="highlight-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div class="highlight-content">
+                                <h3>Herencia Temporal</h3>
+                                <p>Cada fragancia vintage lleva consigo décadas de historia, representando momentos icónicos que han marcado la evolución de la perfumería mundial.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="highlight-item">
+                            <div class="highlight-icon">
+                                <i class="fas fa-gem"></i>
+                            </div>
+                            <div class="highlight-content">
+                                <h3>Ingredientes Raros</h3>
+                                <p>Formulaciones exclusivas con ingredientes que ya no se producen comercialmente, haciendo de cada botella una pieza de colección única e irreemplazable.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="highlight-item">
+                            <div class="highlight-icon">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                            <div class="highlight-content">
+                                <h3>Autenticidad Garantizada</h3>
+                                <p>Cada fragancia vintage en nuestra colección está certificada por expertos en perfumería, garantizando su originalidad y procedencia impecable.</p>
+                            </div>
+                        </div>
                     </div>
-                    <p class="fragrance-description">La pureza cristalina del hielo eterno, una fragancia que captura la esencia de los glaciares milenarios.</p>
-                    <div class="fragrance-notes">
-                        <span>Notas de Salida: Menta glacial, Bergamota helada</span>
-                        <span>Notas de Corazón: Iris ártico, Violeta nevada</span>
-                        <span>Notas de Fondo: Ámbar blanco, Almizcle helado</span>
+                </div>
+                
+                <div class="story-visual">
+                    <div class="vintage-showcase">
+                        <div class="showcase-image">
+                            <div class="vintage-bottle">
+                                <i class="fas fa-flask"></i>
+                            </div>
+                        </div>
+                        <div class="vintage-timeline">
+                            <div class="timeline-item">
+                                <span class="year">1920s</span>
+                                <span class="era">Era Dorada</span>
+                            </div>
+                            <div class="timeline-item">
+                                <span class="year">1950s</span>
+                                <span class="era">Elegancia Clásica</span>
+                            </div>
+                            <div class="timeline-item">
+                                <span class="year">1980s</span>
+                                <span class="era">Sofisticación Moderna</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </article>
-
-            <!-- JeanPaul Mar -->
-            <article class="fragrance-card ocean">
-                <div class="video-container">
-                    <video autoplay loop muted playsinline>
-                        <source src="../../VIDEOS/JeanPaul_Mar.MP4" type="video/mp4">
-                    </video>
-                    <div class="overlay"></div>
-                </div>
-                <div class="fragrance-info">
-                    <div class="fragrance-title">
-                        <h2>JeanPaul Mar</h2>
-                        <span class="vintage-year">2025</span>
-                    </div>
-                    <p class="fragrance-description">Las profundidades del océano encapsuladas en una fragancia que evoca la majestuosidad del mar infinito.</p>
-                    <div class="fragrance-notes">
-                        <span>Notas de Salida: Brisa marina, Sal del océano</span>
-                        <span>Notas de Corazón: Algas marinas, Neroli acuático</span>
-                        <span>Notas de Fondo: Ámbar marino, Musgo de mar</span>
-                    </div>
-                </div>
-            </article>
+            </div>
         </section>
-    </main>
 
-    <script src="../../js/navbar.js"></script>
+        <!-- Sección Por Qué Vintage -->
+        <section class="why-vintage-section">
+            <div class="section-header">
+                <h2>¿Por Qué Elegir Fragancias Vintage?</h2>
+                <p>Descubre las razones que hacen únicas a estas joyas olfativas</p>
+            </div>
+            
+            <div class="reasons-grid">
+                <div class="reason-card">
+                    <div class="card-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Perdurabilidad Excepcional</h3>
+                    <p>Las fragancias vintage fueron creadas en épocas donde la calidad prevalecía sobre la cantidad. Sus fórmulas concentradas ofrecen una longevidad y proyección superiores a muchas creaciones contemporáneas.</p>
+                </div>
+                
+                <div class="reason-card">
+                    <div class="card-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3>Complejidad Olfativa</h3>
+                    <p>Desarrolladas cuando no existían restriciones modernas, estas fragancias presentan composiciones complejas y ricas que evolucionan de manera fascinante a lo largo del día.</p>
+                </div>
+                
+                <div class="reason-card">
+                    <div class="card-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>Exclusividad Absoluta</h3>
+                    <p>Muchas de estas fragancias ya no se producen, convirtiendo cada botella en una pieza de colección que incrementa su valor tanto económico como sentimental con el tiempo.</p>
+                </div>
+                
+                <div class="reason-card">
+                    <div class="card-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Conexión Emocional</h3>
+                    <p>Cada fragancia vintage evoca memorias colectivas y personales, creando una conexión emocional profunda que trasciende la simple experiencia olfativa.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Colección Destacada -->
+        <section class="featured-collection-section">
+            <div class="section-header">
+                <h2>Nuestras Fragancias Vintage Destacadas</h2>
+                <p>Descubre las joyas más preciadas de nuestra colección atemporal</p>
+            </div>
+            
+            <div class="featured-fragrances">
+                <div class="fragrance-showcase">
+                    <div class="fragrance-card premium">
+                        <div class="fragrance-video">
+                            <video autoplay loop muted playsinline>
+                                <source src="../../VIDEOS/Bleu_Desierto.MP4" type="video/mp4">
+                            </video>
+                            <div class="vintage-overlay">
+                                <div class="vintage-year">Est. 1925</div>
+                            </div>
+                        </div>
+                        <div class="fragrance-info">
+                            <h3>Bleu Desierto</h3>
+                            <p class="fragrance-heritage">Una composición mística que captura la esencia eterna del desierto, creada originalmente en los talleres artesanales de Grasse en 1925.</p>
+                            <div class="fragrance-notes">
+                                <span><strong>Salida:</strong> Arena cálida, Especias orientales</span>
+                                <span><strong>Corazón:</strong> Rosa del desierto, Ámbar solar</span>
+                                <span><strong>Fondo:</strong> Oud milenario, Vainilla de Madagascar</span>
+                            </div>
+                            <div class="fragrance-footer">
+                                <span class="rarity-badge">Edición Limitada</span>
+                                <button class="discover-btn">
+                                    <span>Descubrir</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="fragrance-card premium">
+                        <div class="fragrance-video">
+                            <video autoplay loop muted playsinline>
+                                <source src="../../VIDEOS/CREED_SILVER_HIELO.MP4" type="video/mp4">
+                            </video>
+                            <div class="vintage-overlay">
+                                <div class="vintage-year">Est. 1932</div>
+                            </div>
+                        </div>
+                        <div class="fragrance-info">
+                            <h3>CREED Silver Hielo</h3>
+                            <p class="fragrance-heritage">La pureza cristalina de los glaciares árticos, una creación legendaria que representa la perfección olfativa de la casa CREED desde 1932.</p>
+                            <div class="fragrance-notes">
+                                <span><strong>Salida:</strong> Menta glacial, Bergamota siberiana</span>
+                                <span><strong>Corazón:</strong> Iris ártico, Violeta de los Alpes</span>
+                                <span><strong>Fondo:</strong> Ámbar blanco, Almizcle polar</span>
+                            </div>
+                            <div class="fragrance-footer">
+                                <span class="rarity-badge">Obra Maestra</span>
+                                <button class="discover-btn">
+                                    <span>Descubrir</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="fragrance-card premium">
+                        <div class="fragrance-video">
+                            <video autoplay loop muted playsinline>
+                                <source src="../../VIDEOS/JeanPaul_Mar.MP4" type="video/mp4">
+                            </video>
+                            <div class="vintage-overlay">
+                                <div class="vintage-year">Est. 1948</div>
+                            </div>
+                        </div>
+                        <div class="fragrance-info">
+                            <h3>JeanPaul Mar</h3>
+                            <p class="fragrance-heritage">Las profundidades infinitas del océano Atlántico, una composición marina que evoca la libertad y majestuosidad del mar desde 1948.</p>
+                            <div class="fragrance-notes">
+                                <span><strong>Salida:</strong> Brisa atlántica, Sal marina</span>
+                                <span><strong>Corazón:</strong> Algas de profundidad, Neroli costero</span>
+                                <span><strong>Fondo:</strong> Ámbar oceánico, Musgo de coral</span>
+                            </div>
+                            <div class="fragrance-footer">
+                                <span class="rarity-badge">Tesoro Marino</span>
+                                <button class="discover-btn">
+                                    <span>Descubrir</span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Vintage -->
+        <section class="vintage-cta-section">
+            <div class="cta-content">
+                <div class="cta-text">
+                    <h2>Únete al Círculo Exclusivo de Coleccionistas</h2>
+                    <p>Accede a fragancias vintage únicas que no encontrarás en ningún otro lugar. Cada botella cuenta una historia que merece ser vivida.</p>
+                    <div class="cta-benefits">
+                        <div class="benefit-item">
+                            <i class="fas fa-certificate"></i>
+                            <span>Certificado de Autenticidad</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-shipping-fast"></i>
+                            <span>Envío Especializado Gratuito</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Garantía de Satisfacción</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="cta-actions">
+                    <a href="../../html/catalogo.html" class="cta-btn primary">
+                        <span>Explorar Colección Completa</span>
+                        <i class="fas fa-gem"></i>
+                    </a>
+                    <a href="../../html/contacto.html" class="cta-btn secondary">
+                        <span>Consultar Especialista</span>
+                        <i class="fas fa-user-tie"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Scripts -->
     <script>
+        // Cargar la navbar
         document.addEventListener('DOMContentLoaded', function() {
-            // Cargar la navbar
             fetch('../../html/navbar.html')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('navbar-container').innerHTML = data;
-                });
-
-            // Efecto de reproducción de video al hacer scroll
-            const videoCards = document.querySelectorAll('.fragrance-card');
-            
-            const observerOptions = {
-                threshold: 0.5
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    const video = entry.target.querySelector('video');
-                    if (entry.isIntersecting) {
-                        video.play();
-                    } else {
-                        video.pause();
-                    }
-                });
-            }, observerOptions);
-
-            videoCards.forEach(card => {
-                observer.observe(card);
-            });        });
-    </script>
-    
-    <script src="../../js/navbar.js"></script>    <script>
-        // Cargar la navbar
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('../navbar.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('navbar-container').innerHTML = data;
-                      // Ajustar rutas para navegación desde colecciones/
                     
+                    // Ajustar rutas para navegación desde colecciones/vintage.html
                     // Ajustar logo
                     const logo = document.querySelector('.navbar-logo');
-                    if (logo && logo.getAttribute('href') === '../index.html') {
+                    if (logo) {
                         logo.setAttribute('href', '../../index.html');
                     }
                     
@@ -137,18 +324,36 @@
                     const navLinks = document.querySelectorAll('.navbar-menu a[href]');
                     navLinks.forEach(link => {
                         const currentHref = link.getAttribute('href');
+                        console.log('🔗 Procesando enlace desde vintage.html:', currentHref);
                         
-                        // Para el enlace de Inicio
-                        if (currentHref === '../index.html') {
-                            link.setAttribute('href', '../../index.html');
+                        // Caso especial para enlace de vintage (no modificar si ya estamos en vintage)
+                        if (link.hasAttribute('data-vintage-link')) {
+                            // Desde vintage.html, el enlace a vintage debe apuntar a sí mismo
+                            link.setAttribute('href', 'vintage.html');
+                            console.log('🍇 Enlace Vintage ajustado para autoreferencia: vintage.html');
+                            return;
                         }
-                        // Para enlaces que van a páginas en html/ (pero no son colecciones)
-                        else if (!currentHref.startsWith('http') && 
-                                !currentHref.startsWith('../../') && 
-                                !currentHref.startsWith('#') &&
-                                !currentHref.startsWith('colecciones/') &&
-                                currentHref.includes('.html')) {
-                            link.setAttribute('href', '../' + currentHref);
+                        
+                        // Para enlaces a páginas en html/
+                        if (!currentHref.startsWith('http') && 
+                            !currentHref.startsWith('../../') && 
+                            !currentHref.startsWith('#') &&
+                            currentHref.endsWith('.html')) {
+                            
+                            // Si es un enlace a una colección
+                            if (currentHref.startsWith('colecciones/')) {
+                                // Desde vintage.html, las otras colecciones están en la misma carpeta
+                                const collectionPage = currentHref.replace('colecciones/', '');
+                                link.setAttribute('href', collectionPage);
+                                console.log('✅ Enlace colección ajustado:', currentHref, '→', collectionPage);
+                            } else {
+                                // Para otras páginas, agregar ../../html/
+                                const newHref = '../../html/' + currentHref;
+                                link.setAttribute('href', newHref);
+                                console.log('✅ Enlace página ajustado:', currentHref, '→', newHref);
+                            }
+                        } else {
+                            console.log('⏭️ Enlace no modificado:', currentHref);
                         }
                     });
                     
@@ -158,9 +363,46 @@
                             initNavbar();
                         }
                     }, 150);
+                    
+                    // Reconfigurar event listeners del carrito después de cargar navbar
+                    setTimeout(() => {
+                        if (window.shoppingCart && typeof window.shoppingCart.reconfigureEventListeners === 'function') {
+                            console.log('🔄 Reconfigurando carrito en Vintage...');
+                            window.shoppingCart.reconfigureEventListeners();
+                            console.log('✅ Event listeners del carrito reconfigurados en Vintage');
+                        } else {
+                            console.warn('⚠️ Carrito no disponible para reconfigurar en Vintage');
+                        }
+                    }, 800);
                 })
                 .catch(error => console.error('Error cargando navbar:', error));
+
+            // Configurar videos
+            const videoCards = document.querySelectorAll('.fragrance-video video');
+            
+            const observerOptions = {
+                threshold: 0.5
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target;
+                    if (entry.isIntersecting) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                });
+            }, observerOptions);
+
+            videoCards.forEach(video => {
+                observer.observe(video);
+            });
         });
     </script>
+    <script src="../../js/cart.js"></script>
+    <script src="../../js/cart-error-fixes.js"></script>
+    <script src="../../js/limpiar-productos-prueba.js"></script>
+    <script src="../../js/navbar.js"></script>
 </body>
 </html>

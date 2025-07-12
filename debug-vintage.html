@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Debug Enlaces Vintage</title>
+    <style>
+        body { font-family: monospace; padding: 2rem; background: #1a1a1a; color: #fff; }
+        .test { margin: 1rem 0; padding: 1rem; border: 1px solid #d4af37; }
+        .correct { color: #00ff00; }
+        .incorrect { color: #ff0000; }
+        .log { background: #333; padding: 0.5rem; margin: 0.5rem 0; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Debug Enlaces Vintage</h1>
+    
+    <div class="test">
+        <h3>✅ Enlaces Correctos Esperados:</h3>
+        <div class="correct">📁 Desde index.html → html/colecciones/vintage.html</div>
+        <div class="correct">📁 Desde html/contacto.html → colecciones/vintage.html</div>
+        <div class="correct">📁 Desde html/colecciones/vintage.html → vintage.html (mismo archivo)</div>
+    </div>
+    
+    <div class="test">
+        <h3>❌ URL Problemática Reportada:</h3>
+        <div class="incorrect">http://127.0.0.1:5501/html/colecciones/colecciones/vintage.html</div>
+        <div>↑ Duplicación de "colecciones/" - INCORRECTO</div>
+    </div>
+    
+    <div class="test">
+        <h3>🔧 Cambios Implementados:</h3>
+        <div>1. ✅ Agregado atributo data-vintage-link="true" en navbar.html</div>
+        <div>2. ✅ Lógica específica para vintage en index.html</div>
+        <div>3. ✅ Lógica específica para vintage en vintage.html</div>
+        <div>4. ✅ Verificación en contacto.html</div>
+        <div>5. ✅ Logs de debug en consola para rastrear cambios</div>
+    </div>
+    
+    <div class="test">
+        <h3>🧪 Instrucciones de Prueba:</h3>
+        <div>1. Abrir F12 (DevTools) y ir a la pestaña Console</div>
+        <div>2. Navegar desde index.html → Click en Colecciones → Vintage</div>
+        <div>3. Verificar logs en consola que muestren el href ajustado</div>
+        <div>4. URL resultante debe ser: /html/colecciones/vintage.html</div>
+    </div>
+    
+    <div class="test">
+        <h3>📋 Test Links:</h3>
+        <a href="index.html" style="color: #d4af37;">→ Ir a Index</a><br>
+        <a href="html/contacto.html" style="color: #d4af37;">→ Ir a Contacto</a><br>
+        <a href="html/colecciones/vintage.html" style="color: #d4af37;">→ Ir directamente a Vintage</a>
+    </div>
+    
+    <script>
+        console.log('🔧 Debug page loaded');
+        console.log('📍 Current location:', window.location.href);
+        
+        // Test enlace directo
+        function testVintageLink() {
+            const testUrl = 'html/colecciones/vintage.html';
+            console.log('🧪 Testing direct link to:', testUrl);
+            return testUrl;
+        }
+        
+        // Disponible en consola
+        window.testVintageLink = testVintageLink;
+        console.log('💡 Tip: Ejecuta testVintageLink() en la consola');
+    </script>
+</body>
+</html>

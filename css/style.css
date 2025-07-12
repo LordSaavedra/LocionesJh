@@ -3,7 +3,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background: #000;
+    background: #2B2B2B;
     overflow-x: hidden;
 }
 
@@ -24,7 +24,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0;
     margin: 0;
     width: 100%;
-    background: #000;
+    background: #2B2B2B;
     position: relative;
 }
 
@@ -53,7 +53,7 @@ h1, h2, h3, h4, h5, h6 {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    color: #fff;
+    color: #EFE8DC;
     z-index: 2;
 }
 
@@ -75,7 +75,7 @@ h1, h2, h3, h4, h5, h6 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 2px;
-    background: #000;
+    background: #2B2B2B;
     padding: 2px;
     max-width: 2000px;
     margin: 0 auto;
@@ -86,7 +86,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
     padding-top: 56.25%; /* Aspect ratio 16:9 */
     overflow: hidden;
-    background: #000;
+    background: #2B2B2B;
 }
 
 .video-item video {
@@ -105,7 +105,7 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0,0,0,0.4);
+    background: rgba(43,43,43,0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -119,11 +119,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .video-item:hover .video-overlay {
     opacity: 1;
-    background: rgba(0,0,0,0.6);
+    background: rgba(43,43,43,0.6);
 }
 
 .video-overlay h3 {
-    color: white;
+    color: #EFE8DC;
     font-size: clamp(1.8rem, 3vw, 2.5rem);
     font-weight: 300;
     letter-spacing: 0.2em;
@@ -146,7 +146,7 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.3) 100%);
+    background: radial-gradient(circle, transparent 50%, rgba(43,43,43,0.3) 100%);
     z-index: 1;
 }
 
