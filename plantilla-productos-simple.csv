@@ -1,0 +1,6 @@
+nombre,marca,precio,categoria,subcategoria,descripcion,notas,imagen_url,ml,stock,estado,descuento,luxury,activo
+Polo Blue,Ralph Lauren,89000,para-ellos,contemporary,Fragancia fresca y marina,Notas acuáticas melón mandarina,https://example.com/polo-blue.jpg,125,15,disponible,,false,true
+Black Opium,Yves Saint Laurent,165000,para-ellas,designer,Perfume oriental y seductor,Café negro vainilla flor de naranja,https://example.com/black-opium.jpg,90,8,disponible,15,true,true
+Acqua Di Gio,Giorgio Armani,149000,para-ellos,designer,Fragancia fresca y acuática,Bergamota neroli cedro,https://example.com/acqua-di-gio.jpg,100,10,disponible,10,true,true
+La Vie Est Belle,Lancôme,172000,para-ellas,designer,Fragancia floral y dulce,Iris jazmín flor de azahar,https://example.com/la-vie-est-belle.jpg,75,12,disponible,,true,true
+1 Million,Paco Rabanne,135000,para-ellos,designer,Fragancia intensa y especiada,Canela cuero mandarina roja,https://example.com/1-million.jpg,100,20,disponible,5,false,true

@@ -1327,6 +1327,8 @@ class ShoppingCart {
         
         // También reconfigurar otros elementos del carrito si existen
         this.reconfigureCartElements();
+        
+        console.log('✅ Reconfiguración del carrito completada');
     }
     
     // Método auxiliar para reconfigurar elementos del carrito
@@ -1375,6 +1377,10 @@ class ShoppingCart {
         }
         
         console.log('✅ Elementos del carrito reconfigurados sin duplicados');
+        
+        // ✅ IMPORTANTE: Actualizar el contador después de reconfigurar
+        this.updateCartCount();
+        console.log('🔢 Contador del carrito actualizado después de reconfiguración');
     }
 
     // Iniciar verificación periódica del tiempo del carrito
@@ -1562,6 +1568,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.shoppingCart && typeof window.shoppingCart.getTotalItems === 'function') {
             const itemCount = window.shoppingCart.getTotalItems();
             console.log(`✅ Carrito verificado: ${itemCount} items`);
+            
+            // ✅ ACTUALIZAR EL CONTADOR VISUAL
+            window.shoppingCart.updateCartCount();
+            console.log('🔢 Contador visual actualizado en inicialización');
             
             // Mostrar información de tiempo si hay items
             if (itemCount > 0) {

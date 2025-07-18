@@ -1,0 +1,21 @@
+nombre,marca,precio,categoria,subcategoria,descripcion,notas,imagen_url,ml,stock,estado,descuento,luxury,activo
+Polo Blue,Ralph Lauren,89000,para-ellos,contemporary,Fragancia fresca y marina perfecta para el día,Notas de melón mandarina y maderas,https://images.unsplash.com/photo-1541643600914-78b084683601?w=400,125,15,disponible,,false,true
+Black Opium,Yves Saint Laurent,165000,para-ellas,designer,Perfume oriental y seductor para la noche,Café negro vainilla y flor de naranja,https://images.unsplash.com/photo-1588405748880-12d1d2a59d32?w=400,90,8,disponible,15,true,true
+Invictus,Paco Rabanne,78000,para-ellos,sport,Fragancia deportiva y energizante,Grapefruit laurel y maderas marinas,https://images.unsplash.com/photo-1557170334-a9632e77c6e4?w=400,100,12,disponible,,false,true
+Good Girl,Carolina Herrera,145000,para-ellas,designer,Perfume floral oriental con personalidad,Jazmín tuberosa y cacao,https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=400,80,6,disponible,10,true,true
+Sauvage,Dior,125000,para-ellos,luxury,Fragancia salvaje y magnética,Bergamota pimienta y ambroxan,https://images.unsplash.com/photo-1563170351-be82bc888aa4?w=400,100,20,disponible,,true,true
+La Vie Est Belle,Lancôme,135000,para-ellas,contemporary,Perfume de la felicidad y la libertad,Iris pralinés y vainilla,https://images.unsplash.com/photo-1594735797693-74467fdc8e8d?w=400,75,10,disponible,,false,true
+Bleu de Chanel,Chanel,180000,para-ellos,luxury,Elegancia masculina en estado puro,Limón cedro sándalo,https://images.unsplash.com/photo-1565602834213-e7a7c3b162de?w=400,100,5,disponible,,true,true
+Coco Mademoiselle,Chanel,195000,para-ellas,luxury,Sofisticación y feminidad parisina,Naranja rosa patchouli,https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=400,100,3,disponible,,true,true
+One Million,Paco Rabanne,85000,para-ellos,contemporary,Fragancia dorada y seductora,Canela cuero y ámbar,https://images.unsplash.com/photo-1541643600914-78b084683601?w=400,80,18,disponible,,false,true
+Flowerbomb,Viktor & Rolf,155000,para-ellas,designer,Explosión floral intensa y adictiva,Sambac jazmín rosa centifolia,https://images.unsplash.com/photo-1563170351-be82bc888aa4?w=400,100,7,disponible,20,true,true
+Acqua di Gio,Giorgio Armani,95000,para-ellos,contemporary,Frescura marina mediterránea,Bergamota neroli y cedro,https://images.unsplash.com/photo-1557170334-a9632e77c6e4?w=400,100,25,disponible,,false,true
+Miss Dior,Dior,140000,para-ellas,luxury,Romance y elegancia francesa,Rosa de Grasse peonía,https://images.unsplash.com/photo-1588405748880-12d1d2a59d32?w=400,100,9,disponible,,true,true
+The One,Dolce & Gabbana,105000,para-ellos,designer,Sofisticación italiana masculina,Bergamota cardamomo y tabaco,https://images.unsplash.com/photo-1565602834213-e7a7c3b162de?w=400,100,14,disponible,,false,true
+Alien,Thierry Mugler,120000,para-ellas,contemporary,Misterio y sensualidad extraterrestre,Jazmín sambac cashmerán,https://images.unsplash.com/photo-1594735797693-74467fdc8e8d?w=400,60,11,disponible,,false,true
+CK One,Calvin Klein,65000,unisex,contemporary,Fragancia icónica unisex de los 90s,Bergamota cardamomo y ámbar,https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=400,100,30,disponible,,false,true
+Pure XS,Paco Rabanne,92000,para-ellos,contemporary,Exceso y adrenalina pura,Jengibre canela y vainilla,https://images.unsplash.com/photo-1541643600914-78b084683601?w=400,100,16,disponible,,false,true
+Scandal,Jean Paul Gaultier,130000,para-ellas,designer,Escándalo dulce y seductor,Miel gardenia y pachulí,https://images.unsplash.com/photo-1563170351-be82bc888aa4?w=400,80,8,disponible,25,true,true
+Eros,Versace,88000,para-ellos,contemporary,Pasión y deseo mediterráneo,Menta limón y vainilla,https://images.unsplash.com/photo-1557170334-a9632e77c6e4?w=400,100,22,disponible,,false,true
+Si,Giorgio Armani,115000,para-ellas,contemporary,Elegancia moderna y femenina,Casis rosa freesia,https://images.unsplash.com/photo-1588405748880-12d1d2a59d32?w=400,100,13,disponible,,false,true
+Tom Ford Noir,Tom Ford,220000,para-ellos,luxury,Lujo y misterio en su máxima expresión,Bergamota violeta y ámbar,https://images.unsplash.com/photo-1565602834213-e7a7c3b162de?w=400,50,4,disponible,,true,true

@@ -7,11 +7,34 @@
     <link rel="stylesheet" href="../css/navbar.css">
     <link rel="stylesheet" href="../css/para_ellos.css">
     <link rel="stylesheet" href="../css/cart.css">
+    <link rel="stylesheet" href="../css/slide-cart.css">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&family=Italiana&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Navbar container -->
     <div id="navbar-container"></div>
+
+    <!-- Carrito deslizante -->
+    <div id="cart-slide" class="cart-slide">
+        <div class="cart-header">
+            <h3 class="cart-title">Mi Carrito</h3>
+            <button id="cart-close" class="cart-close">&times;</button>
+        </div>
+        <div class="cart-content">
+            <div class="cart-items" id="cart-items">
+                <!-- Los productos se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total: $<span id="cart-total">0</span></span>
+            </div>
+            <button class="checkout-btn">Proceder al Pago</button>
+        </div>
+    </div>
+    
+    <!-- Overlay del carrito -->
+    <div id="cart-overlay" class="cart-overlay"></div>
 
     <main class="magazine-main">
         <!-- Collection Grid -->        <section class="collection-grid">            <div class="video-title-section">

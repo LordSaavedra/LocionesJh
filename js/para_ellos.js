@@ -364,9 +364,7 @@ class ParaEllosManager {
                     
                     <div class="item-price">${precioInfo}</div>
                     
-                    <button class="add-to-bag-btn" onclick="window.paraEllosManager.addToCart(${product.id})">
-                        AGREGAR AL CARRITO
-                    </button>
+                    ${this.generateAddToCartButton(product)}
                 </div>
                 
                 <div class="product-badges">
@@ -417,9 +415,7 @@ class ParaEllosManager {
                         </div>
                     ` : ''}
                     <div class="actions">
-                        <button class="add-to-cart-btn" onclick="window.paraEllosManager.addToCart(${product.id})">
-                            Agregar al Carrito
-                        </button>
+                        ${this.generateAddToCartButton(product)}
                     </div>
                 </div>
             </div>
@@ -451,13 +447,40 @@ class ParaEllosManager {
             return;
         }
 
-        console.log('🛒 [ParaEllos] Agregando producto al carrito:', product.nombre, product.id);
+        // ✅ VALIDAR STOCK - Si está agotado, mostrar alerta
+        if (product.stock <= 0 || product.estado === 'agotado') {
+            console.warn('⚠️ Producto agotado:', product.nombre);
+            this.showTemporaryMessage('🚫 Producto agotado - No disponible para agregar al carrito', 'error');
+            return;
+        }
+        
+        if (product.estado === 'proximo') {
+            console.warn('⚠️ Producto próximo - no disponible aún');
+            this.showTemporaryMessage('� Producto próximamente disponible', 'warning');
+            return;
+        }
+
+        console.log('�🛒 [ParaEllos] Agregando producto al carrito:', product.nombre, product.id);
 
         // Función para agregar el producto de forma segura
         const addProductSafely = () => {
             if (window.shoppingCart && window.shoppingCart.isInitialized) {
                 console.log('✅ [ParaEllos] Carrito disponible y inicializado');
-                window.shoppingCart.addItem(product);
+                
+                // ✅ CALCULAR PRECIO CON DESCUENTO SI APLICA
+                let finalPrice = parseFloat(product.precio);
+                if (product.descuento && product.descuento > 0) {
+                    finalPrice = finalPrice * (1 - product.descuento / 100);
+                    console.log(`💰 Aplicando descuento ${product.descuento}%: $${product.precio} → $${finalPrice.toFixed(0)}`);
+                }
+                
+                const productForCart = {
+                    ...product,
+                    precio: finalPrice, // ✅ Usar precio con descuento
+                    precio_original: product.precio // Guardar precio original para referencia
+                };
+                
+                window.shoppingCart.addItem(productForCart);
                 
                 // Verificar que se agregó correctamente
                 setTimeout(() => {
@@ -479,7 +502,21 @@ class ParaEllosManager {
                     const cart = window.getShoppingCartInstance();
                     if (cart && cart.isInitialized) {
                         console.log('✅ [ParaEllos] Carrito obtenido via singleton');
-                        cart.addItem(product);
+                        
+                        // ✅ CALCULAR PRECIO CON DESCUENTO SI APLICA
+                        let finalPrice = parseFloat(product.precio);
+                        if (product.descuento && product.descuento > 0) {
+                            finalPrice = finalPrice * (1 - product.descuento / 100);
+                            console.log(`💰 Aplicando descuento ${product.descuento}%: $${product.precio} → $${finalPrice.toFixed(0)}`);
+                        }
+                        
+                        const productForCart = {
+                            ...product,
+                            precio: finalPrice, // ✅ Usar precio con descuento
+                            precio_original: product.precio // Guardar precio original para referencia
+                        };
+                        
+                        cart.addItem(productForCart);
                     } else {
                         console.error('❌ [ParaEllos] Singleton no funcionó');
                         this.showTemporaryMessage('Error: Carrito no disponible');
@@ -538,20 +575,44 @@ class ParaEllosManager {
         this.addToCart(productId);
     }
 
-    showTemporaryMessage(message) {
+    showTemporaryMessage(message, type = 'info') {
         const notification = document.createElement('div');
+        
+        // Definir colores según el tipo
+        let backgroundColor, borderColor;
+        switch(type) {
+            case 'error':
+                backgroundColor = '#dc3545';
+                borderColor = '#dc3545';
+                break;
+            case 'warning':
+                backgroundColor = '#ffc107';
+                borderColor = '#ffc107';
+                break;
+            case 'success':
+                backgroundColor = '#28a745';
+                borderColor = '#28a745';
+                break;
+            default:
+                backgroundColor = '#2c2c2c';
+                borderColor = '#2c2c2c';
+        }
+        
         notification.style.cssText = `
             position: fixed; top: 80px; right: 20px; z-index: 10000;
-            background: #2c2c2c; color: white; padding: 12px 20px;
+            background: ${backgroundColor}; color: white; padding: 12px 20px;
             border-radius: 8px; font-family: 'Montserrat', sans-serif;
             font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-left: 4px solid ${borderColor};
         `;
         notification.textContent = message;
         
         document.body.appendChild(notification);
         
         setTimeout(() => {
-            document.body.removeChild(notification);
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
         }, 3000);
     }
 
@@ -1056,6 +1117,33 @@ class ParaEllosManager {
         return maxBadges.map((badge, index) => 
             `<div class="${badge.class}" style="top: ${10 + (index * 35)}px;">${badge.text}</div>`
         ).join('');
+    }
+
+    generateAddToCartButton(product) {
+        const isOutOfStock = product.stock <= 0 || product.estado === 'agotado';
+        const isComingSoon = product.estado === 'proximo';
+        
+        if (isOutOfStock) {
+            return `
+                <button class="add-to-bag-btn disabled" disabled>
+                    🚫 AGOTADO
+                </button>
+            `;
+        }
+        
+        if (isComingSoon) {
+            return `
+                <button class="add-to-bag-btn disabled" disabled>
+                    🔜 PRÓXIMAMENTE
+                </button>
+            `;
+        }
+        
+        return `
+            <button class="add-to-bag-btn" onclick="window.paraEllosManager.addToCart(${product.id})">
+                AGREGAR AL CARRITO
+            </button>
+        `;
     }
 }
 

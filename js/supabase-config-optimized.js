@@ -56,7 +56,7 @@ class ProductosServiceOptimized {
     // Configuración de paginación
     static pagination = {
         pageSize: 20,
-        adminPageSize: 15 // Menos productos en admin para carga rápida
+        adminPageSize: 1000 // Cargar todos los productos en admin
     };
 
     // Verificar cache por clave
@@ -104,13 +104,21 @@ class ProductosServiceOptimized {
             }
 
             // Configurar paginación
-            const pageSize = filtros.admin ? this.pagination.adminPageSize : this.pagination.pageSize;
-            const page = filtros.page || 0;
-            const offset = page * pageSize;
+            let pageSize, offset;
+            
+            if (filtros.unlimited || (filtros.admin && filtros.forceRefresh)) {
+                // Para admin con unlimited, no aplicar límites
+                pageSize = null;
+                offset = 0;
+                console.log('🔍 Admin: Consultando TODOS los productos sin límite...');
+            } else {
+                pageSize = filtros.admin ? 1000 : this.pagination.pageSize;
+                const page = filtros.page || 0;
+                offset = page * pageSize;
+                console.log(`🔍 Consultando ${filtros.admin ? 'hasta 1000' : pageSize} productos desde ${offset}...`);
+            }
 
-            console.log(`🔍 Consultando ${pageSize} productos desde ${offset}...`);
-
-            // Query optimizada con límite - usando campos correctos
+            // Query optimizada - sin límite para admin unlimited
             let query = supabaseClient
                 .from('productos')
                 .select(`
@@ -123,6 +131,7 @@ class ProductosServiceOptimized {
                     categoria,
                     marca,
                     ml,
+                    stock,
                     estado,
                     descuento,
                     activo,
@@ -130,8 +139,12 @@ class ProductosServiceOptimized {
                     notas,
                     subcategoria,
                     created_at
-                `)
-                .range(offset, offset + pageSize - 1);
+                `);
+            
+            // Solo aplicar límite si no es unlimited
+            if (pageSize !== null) {
+                query = query.range(offset, offset + pageSize - 1);
+            }
             
             // Solo filtrar por activo si no es admin
             if (!filtros.admin) {
@@ -146,12 +159,16 @@ class ProductosServiceOptimized {
             if (filtros.busqueda) {
                 query = query.or(`nombre.ilike.%${filtros.busqueda}%,descripcion.ilike.%${filtros.busqueda}%`);
             }
+            
+            // Ordenar por fecha de creación (más recientes primero) para consistencia
+            query = query.order('created_at', { ascending: false });
 
-            // Ejecutar query con timeout
+            // Ejecutar query con timeout (más tiempo para admin con muchos productos)
+            const timeoutMs = filtros.unlimited ? 15000 : 8000;
             const { data, error, count } = await Promise.race([
                 query,
                 new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Timeout')), 8000)
+                    setTimeout(() => reject(new Error('Timeout')), timeoutMs)
                 )
             ]);
 
@@ -170,7 +187,8 @@ class ProductosServiceOptimized {
                 activo: producto.activo !== false,
                 luxury: producto.luxury || false,
                 precio: producto.precio || 0,
-                ml: producto.ml || 0
+                ml: producto.ml || 0,
+                stock: producto.stock || 0
             }));
 
             // Guardar en cache solo si no es admin
@@ -413,12 +431,14 @@ class ProductosServiceOptimized {
         return productosEjemplo;
     }
 
-    // Método optimizado para admin panel
+    // Método optimizado para admin panel - carga TODOS los productos
     static async obtenerProductosAdmin(page = 0) {
+        console.log('🔄 Admin: Cargando todos los productos sin límite...');
         return await this.obtenerProductosOptimizado({ 
             admin: true, 
-            page: page,
-            fallback: true
+            page: 0, // Siempre página 0 para admin
+            forceRefresh: true,
+            unlimited: true // Flag especial para cargar todos
         });
     }
 

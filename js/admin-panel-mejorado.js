@@ -8,7 +8,9 @@ class AdminPanel {
         this.dataLoaded = false;
         this.loadingData = false;
         this.eventsConfigured = false;
+        this.qrEventsConfigured = false; // Nueva bandera para eventos QR
         this.isSubmitting = false;
+        this.isGeneratingQR = false; // Nueva bandera para generación QR
         
         // Cache para placeholders y control de errores
         this.placeholderCache = null;
@@ -37,6 +39,12 @@ class AdminPanel {
             
             // Configurar eventos
             this.setupEvents();
+            
+            // Inicializar controles de vista
+            this.initViewControls();
+            
+            // Configurar generador QR
+            this.setupQREvents();
             
             // Cargar datos iniciales
             await this.loadInitialData();
@@ -185,6 +193,9 @@ class AdminPanel {
             });
         }
         
+        // Inicializar controles de vista
+        this.initViewControls();
+        
         this.eventsConfigured = true;
     }
 
@@ -216,6 +227,9 @@ class AdminPanel {
                 break;
             case 'productos':
                 await this.loadProductsData();
+                break;
+            case 'generador-qr':
+                await this.loadProductsForQR();
                 break;
             case 'configuracion':
                 this.checkConnection();
@@ -256,13 +270,23 @@ class AdminPanel {
     async loadProductos() {
         try {
             if (typeof ProductosServiceOptimized !== 'undefined') {
-                console.log('🔄 Cargando productos con filtros admin...');
-                this.productos = await ProductosServiceOptimized.obtenerProductosOptimizado({ 
-                    admin: true,
-                    page: 0,
-                    forceRefresh: true 
-                });
-                console.log('✅ Productos cargados:', this.productos.length);
+                console.log('🔄 Cargando TODOS los productos para admin...');
+                
+                // Usar método específico para admin que carga todos los productos
+                this.productos = await ProductosServiceOptimized.obtenerProductosAdmin(0);
+                
+                console.log('✅ Productos cargados en admin:', this.productos.length);
+                
+                // Si no se cargaron suficientes productos, intentar con el método genérico
+                if (this.productos.length < 20) {
+                    console.log('⚠️ Pocos productos cargados, intentando método alternativo...');
+                    this.productos = await ProductosServiceOptimized.obtenerProductosOptimizado({ 
+                        admin: true,
+                        page: 0,
+                        forceRefresh: true 
+                    });
+                    console.log('✅ Productos cargados (método alternativo):', this.productos.length);
+                }
             } else {
                 console.warn('⚠️ ProductosServiceOptimized no disponible');
                 this.productos = [];
@@ -430,6 +454,15 @@ class AdminPanel {
 
     // Cargar datos de productos para mostrar
     async loadProductsData() {
+        if (this.currentView === 'grid') {
+            await this.loadProductsGrid();
+        } else {
+            await this.loadProductsTable();
+        }
+    }
+
+    // Cargar productos en vista de grid (tarjetas)
+    async loadProductsGrid() {
         const container = document.querySelector('.products-grid');
         if (!container) return;
 
@@ -438,18 +471,7 @@ class AdminPanel {
                 await this.loadProductos();
             }
 
-            console.log('🔍 Productos cargados:', this.productos.length);
-            
-            // Debug: mostrar primera imagen de cada producto
-            if (this.productos.length > 0) {
-                console.log('📸 Debug imágenes:', this.productos.slice(0, 3).map(p => ({
-                    id: p.id,
-                    nombre: p.nombre,
-                    imagen_url: p.imagen_url,
-                    imagen: p.imagen,
-                    resultado: this.getImagePath(p)
-                })));
-            }
+            console.log('🔍 Productos cargados en grid:', this.productos.length);
 
             if (this.productos.length === 0) {
                 container.innerHTML = `
@@ -498,11 +520,112 @@ class AdminPanel {
             }).join('');
 
             container.innerHTML = productsHTML;
+            this.updateProductsCount(this.productos.length);
             
         } catch (error) {
-            console.error('❌ Error en loadProductsData:', error);
+            console.error('❌ Error en loadProductsGrid:', error);
             container.innerHTML = `<div class="no-products error">Error cargando productos: ${error.message}</div>`;
         }
+    }
+
+    // Cargar productos en vista de tabla
+    async loadProductsTable() {
+        const tableBody = document.getElementById('productsTableBody');
+        if (!tableBody) return;
+
+        try {
+            if (this.productos.length === 0) {
+                await this.loadProductos();
+            }
+
+            console.log('🔍 Productos cargados en tabla:', this.productos.length);
+
+            if (this.productos.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center">
+                            <div class="no-products">
+                                No hay productos disponibles.
+                                <div style="margin-top: 10px;">
+                                    <button class="btn btn-secondary" onclick="adminPanel.reloadProducts()">
+                                        🔄 Recargar Productos
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            const productsHTML = this.productos.map(product => {
+                const imageSrc = this.getImagePath(product);
+                const productName = this.cleanFieldValue(product.nombre, 'Producto sin nombre');
+                const productBrand = this.cleanFieldValue(product.marca, '');
+                const placeholderSrc = this.getPlaceholderImagePath();
+                const stockClass = this.getStockClass(product.stock);
+                
+                return `
+                <tr>
+                    <td>
+                        ${imageSrc ? 
+                            `<img src="${imageSrc}" 
+                                 alt="${productName}"
+                                 class="table-product-image"
+                                 onerror="this.src='${placeholderSrc}'"
+                                 loading="lazy">` :
+                            `<div class="table-product-image no-image">
+                                <i class="fas fa-image"></i>
+                            </div>`
+                        }
+                    </td>
+                    <td>
+                        <div class="table-product-name">${productName}</div>
+                        <div class="table-product-description">${this.cleanFieldValue(product.descripcion, '')}</div>
+                    </td>
+                    <td class="table-product-brand">${productBrand}</td>
+                    <td>
+                        <div class="table-product-price">$${this.formatPrice(product.precio)}</div>
+                        ${product.descuento ? `<div class="table-product-discount">-${product.descuento}%</div>` : ''}
+                    </td>
+                    <td>
+                        <span class="table-category-badge ${product.categoria}">${this.getCategoryName(product.categoria)}</span>
+                    </td>
+                    <td>
+                        <span class="table-stock ${stockClass}">${product.stock || 0}</span>
+                    </td>
+                    <td>
+                        <span class="table-status-badge ${product.estado}">${product.estado || 'disponible'}</span>
+                    </td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="table-action-btn edit" onclick="adminPanel.editProduct(${product.id})" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="table-action-btn delete" onclick="adminPanel.deleteProduct(${product.id})" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+
+            tableBody.innerHTML = productsHTML;
+            this.updateProductsCount(this.productos.length);
+            this.updateProductsCount(this.productos.length);
+            
+        } catch (error) {
+            console.error('❌ Error en loadProductsTable:', error);
+            tableBody.innerHTML = `<tr><td colspan="8" class="text-center error">Error cargando productos: ${error.message}</td></tr>`;
+        }
+    }
+
+    // Obtener clase CSS para el stock
+    getStockClass(stock) {
+        const stockNum = parseInt(stock) || 0;
+        if (stockNum <= 5) return 'low-stock';
+        if (stockNum <= 15) return 'medium-stock';
+        return 'high-stock';
     }
 
     // Obtener nombre de categoría
@@ -553,10 +676,8 @@ class AdminPanel {
 
     // Formatear precio
     formatPrice(price) {
-        return new Intl.NumberFormat('es-CO', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(price);
+        if (!price) return '0';
+        return new Intl.NumberFormat('es-CO').format(price);
     }
 
     // Manejar envío del formulario
@@ -588,6 +709,7 @@ class AdminPanel {
                 marca: marca.trim(),
                 precio: parseInt(precio),
                 ml: parseInt(formData.get('ml')) || 100,
+                stock: parseInt(formData.get('stock')) || 0,
                 categoria: categoria,
                 subcategoria: formData.get('subcategoria') || null,
                 descripcion: formData.get('descripcion') || '',
@@ -766,7 +888,9 @@ class AdminPanel {
         const product = this.productos.find(p => p.id === productId);
         const productName = product ? product.nombre : `ID ${productId}`;
         
-        if (!confirm(`¿Estás seguro de que quieres eliminar el producto "${productName}"?`)) {
+        // Mostrar modal de confirmación personalizado
+        const confirmed = await this.showDeleteConfirmModal(productName, productId);
+        if (!confirmed) {
             return;
         }
 
@@ -882,6 +1006,21 @@ class AdminPanel {
         }
     }
 
+    // Actualizar indicador de cantidad de productos
+    updateProductsCount(count) {
+        const indicator = document.getElementById('productsCountIndicator');
+        const countText = document.getElementById('productsCountText');
+        
+        if (indicator && countText) {
+            if (count > 0) {
+                countText.textContent = `Mostrando ${count} producto${count === 1 ? '' : 's'} en vista ${this.currentView === 'grid' ? 'de tarjetas' : 'de lista'}`;
+                indicator.style.display = 'block';
+            } else {
+                indicator.style.display = 'none';
+            }
+        }
+    }
+
     // Vista previa de imagen
     previewImageFromUrl(url) {
         const previewContainer = document.getElementById('imagePreview');
@@ -963,6 +1102,69 @@ class AdminPanel {
         }, 5000);
     }
 
+    // Modal de confirmación de eliminación
+    showDeleteConfirmModal(productName, productId) {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('deleteConfirmModal');
+            const productNameElement = document.getElementById('deleteProductName');
+            const confirmBtn = document.getElementById('confirmDelete');
+            const cancelBtn = document.getElementById('cancelDelete');
+            
+            if (!modal || !productNameElement || !confirmBtn || !cancelBtn) {
+                console.error('Elementos del modal de confirmación no encontrados');
+                resolve(false);
+                return;
+            }
+            
+            // Configurar el nombre del producto
+            productNameElement.textContent = productName;
+            
+            // Mostrar modal con animación
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+            
+            // Función para cerrar modal
+            const closeModal = (confirmed) => {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+                resolve(confirmed);
+                
+                // Limpiar event listeners
+                confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+                cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+            };
+            
+            // Event listeners
+            document.getElementById('confirmDelete').addEventListener('click', () => {
+                closeModal(true);
+            });
+            
+            document.getElementById('cancelDelete').addEventListener('click', () => {
+                closeModal(false);
+            });
+            
+            // Cerrar al hacer click en el overlay
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal(false);
+                }
+            });
+            
+            // Cerrar con Escape
+            const handleEscape = (e) => {
+                if (e.key === 'Escape') {
+                    closeModal(false);
+                    document.removeEventListener('keydown', handleEscape);
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
+        });
+    }
+
     // Verificar conexión
     async checkConnection() {
         try {
@@ -1020,29 +1222,58 @@ class AdminPanel {
 
     // Filtrar productos
     filterProducts(searchTerm) {
-        const container = document.querySelector('.products-grid');
-        if (!container) return;
-        
-        const productCards = container.querySelectorAll('.product-card');
+        // Detectar vista activa
+        const gridContainer = document.querySelector('.products-grid');
+        const tableBody = document.getElementById('productsTableBody');
         
         if (!searchTerm || searchTerm.trim() === '') {
-            productCards.forEach(card => card.style.display = 'block');
+            // Mostrar todos los elementos
+            if (gridContainer) {
+                const productCards = gridContainer.querySelectorAll('.product-card');
+                productCards.forEach(card => card.style.display = 'block');
+            }
+            if (tableBody) {
+                const tableRows = tableBody.querySelectorAll('tr');
+                tableRows.forEach(row => row.style.display = '');
+            }
             return;
         }
         
         const search = searchTerm.toLowerCase().trim();
         
-        productCards.forEach(card => {
-            const productName = card.querySelector('.product-name')?.textContent?.toLowerCase() || '';
-            const productBrand = card.querySelector('.product-brand')?.textContent?.toLowerCase() || '';
-            const productCategory = card.querySelector('.product-category')?.textContent?.toLowerCase() || '';
-            
-            const matches = productName.includes(search) || 
-                          productBrand.includes(search) || 
-                          productCategory.includes(search);
-            
-            card.style.display = matches ? 'block' : 'none';
-        });
+        // Filtrar vista de tarjetas
+        if (gridContainer) {
+            const productCards = gridContainer.querySelectorAll('.product-card');
+            productCards.forEach(card => {
+                const productName = card.querySelector('.product-name')?.textContent?.toLowerCase() || '';
+                const productBrand = card.querySelector('.product-brand')?.textContent?.toLowerCase() || '';
+                const productCategory = card.querySelector('.product-category')?.textContent?.toLowerCase() || '';
+                
+                const matches = productName.includes(search) || 
+                              productBrand.includes(search) || 
+                              productCategory.includes(search);
+                
+                card.style.display = matches ? 'block' : 'none';
+            });
+        }
+        
+        // Filtrar vista de tabla
+        if (tableBody) {
+            const tableRows = tableBody.querySelectorAll('tr');
+            tableRows.forEach(row => {
+                const productName = row.querySelector('.table-product-name')?.textContent?.toLowerCase() || '';
+                const productBrand = row.querySelector('.table-product-brand')?.textContent?.toLowerCase() || '';
+                const categoryBadge = row.querySelector('.table-category-badge')?.textContent?.toLowerCase() || '';
+                const productDescription = row.querySelector('.table-product-description')?.textContent?.toLowerCase() || '';
+                
+                const matches = productName.includes(search) || 
+                              productBrand.includes(search) || 
+                              categoryBadge.includes(search) ||
+                              productDescription.includes(search);
+                
+                row.style.display = matches ? '' : 'none';
+            });
+        }
     }
 
     // Actualizar estadísticas de categorías
@@ -1086,6 +1317,805 @@ class AdminPanel {
                 return originalOnError(message, source, lineno, colno, error);
             }
         };
+    }
+
+    // Inicializar controles de vista
+    initViewControls() {
+        this.currentView = 'grid'; // Vista por defecto
+        
+        // Configurar eventos de cambio de vista
+        const gridViewBtn = document.getElementById('gridView');
+        const tableViewBtn = document.getElementById('tableView');
+        
+        if (gridViewBtn && tableViewBtn) {
+            gridViewBtn.addEventListener('click', () => this.switchView('grid'));
+            tableViewBtn.addEventListener('click', () => this.switchView('table'));
+        }
+    }
+
+    // Cambiar vista entre grid y table
+    switchView(view) {
+        this.currentView = view;
+        
+        // Actualizar botones activos
+        document.querySelectorAll('.view-toggle').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        if (view === 'grid') {
+            document.getElementById('gridView').classList.add('active');
+            document.getElementById('productsGrid').style.display = 'grid';
+            document.getElementById('productsTable').style.display = 'none';
+        } else {
+            document.getElementById('tableView').classList.add('active');
+            document.getElementById('productsGrid').style.display = 'none';
+            document.getElementById('productsTable').style.display = 'block';
+        }
+        
+        // Recargar productos en la vista actual
+        this.loadProductsData();
+    }
+
+    // ===============================================
+    // FUNCIONES DEL GENERADOR QR
+    // ===============================================
+
+    // Configurar eventos del generador QR
+    setupQREvents() {
+        if (this.qrEventsConfigured) return; // Evitar configurar múltiples veces
+        
+        console.log('🔧 Configurando eventos del generador QR...');
+        
+        // Formulario de generación QR
+        const qrForm = document.getElementById('qrGeneratorForm');
+        if (qrForm) {
+            qrForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.generateQRCode();
+            });
+        }
+
+        this.qrEventsConfigured = true; // Marcar como configurado
+        
+        // Cargar productos en el selector
+        this.loadProductsForQR();
+    }
+
+    // Cargar productos en el selector QR
+    async loadProductsForQR() {
+        const select = document.getElementById('qr-producto');
+        if (!select) return;
+
+        try {
+            if (this.productos.length === 0) {
+                await this.loadProductos();
+            }
+
+            // Limpiar opciones existentes excepto la primera
+            while (select.children.length > 1) {
+                select.removeChild(select.lastChild);
+            }
+
+            // Agregar productos
+            this.productos.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.textContent = `${product.nombre} - ${product.marca}`;
+                select.appendChild(option);
+            });
+
+            console.log(`✅ ${this.productos.length} productos cargados en selector QR`);
+
+        } catch (error) {
+            console.error('❌ Error cargando productos para QR:', error);
+        }
+    }
+
+    // Generar código QR
+    async generateQRCode() {
+        // Evitar ejecuciones múltiples simultáneas
+        if (this.isGeneratingQR) {
+            console.warn('⚠️ Generación QR ya en progreso, ignorando...');
+            return;
+        }
+        
+        this.isGeneratingQR = true;
+        
+        try {
+            console.log('🔄 Iniciando generación de QR...');
+            this.showLoading(true);
+
+            // Verificar que la librería QR esté disponible
+            const QRCodeLib = window.QRCodeLib || window.QRCode || window.qrcode;
+            if (!QRCodeLib) {
+                throw new Error('Librería QR no encontrada. Por favor, recarga la página e intenta nuevamente.');
+            }
+            console.log('✅ Librería QR disponible:', typeof QRCodeLib);
+
+            const form = document.getElementById('qrGeneratorForm');
+            const formData = new FormData(form);
+            
+            const productId = formData.get('producto');
+            const lote = formData.get('lote') || '';
+            const fechaProduccion = formData.get('fecha_produccion') || '';
+            const cantidad = parseInt(formData.get('cantidad')) || 1;
+            const notas = formData.get('notas') || '';
+
+            if (!productId) {
+                throw new Error('Debe seleccionar un producto');
+            }
+
+            const product = this.productos.find(p => p.id == productId);
+            if (!product) {
+                throw new Error('Producto no encontrado');
+            }
+
+            // Generar ID único para el QR
+            const qrId = this.generateUniqueQRId();
+            
+            // Crear URL de verificación
+            const baseUrl = window.location.origin + window.location.pathname.replace('admin-panel-estructura-mejorada.html', '');
+            const verificationUrl = `${baseUrl}verificacion-qr.html?qr=${qrId}&product=${productId}`;
+
+            // Generar código QR visual
+            const canvas = document.getElementById('qrCanvas');
+            
+            await QRCodeLib.toCanvas(canvas, verificationUrl, {
+                width: 300,
+                height: 300,
+                color: {
+                    dark: '#2c3e50',
+                    light: '#ffffff'
+                },
+                errorCorrectionLevel: 'M'
+            });
+
+            // Mostrar información del QR generado
+            this.displayQRResult(product, qrId, verificationUrl, lote, fechaProduccion);
+
+            // Guardar registro del QR (opcional - aquí podrías guardarlo en Supabase)
+            await this.saveQRRecord({
+                id: qrId,
+                productId: productId,
+                producto: product.nombre,
+                marca: product.marca,
+                lote: lote,
+                fechaProduccion: fechaProduccion,
+                fechaCreacion: new Date().toISOString(),
+                url: verificationUrl,
+                cantidad: cantidad,
+                notas: notas,
+                escaneado: false,
+                contadorEscaneos: 0
+            });
+
+            this.showAlert(`QR generado exitosamente para ${product.nombre}`, 'success');
+
+        } catch (error) {
+            console.error('❌ Error generando QR:', error);
+            console.error('Stack trace:', error.stack);
+            console.error('Detalles del error:', {
+                message: error.message,
+                name: error.name,
+                qrLibraryAvailable: !!(window.QRCodeLib || window.QRCode || window.qrcode),
+                availableLibraries: {
+                    QRCodeLib: typeof window.QRCodeLib,
+                    QRCode: typeof window.QRCode,
+                    qrcode: typeof window.qrcode,
+                    QRious: typeof window.QRious
+                }
+            });
+            
+            let errorMessage = 'Error generando QR: ' + error.message;
+            if (error.message.includes('QRCode is not defined') || error.message.includes('Librería QR no encontrada')) {
+                errorMessage = 'Error: No se pudo cargar la librería de códigos QR. Por favor, recarga la página e intenta nuevamente.';
+            }
+            
+            this.showAlert(errorMessage, 'error');
+        } finally {
+            this.showLoading(false);
+            this.isGeneratingQR = false; // Limpiar bandera
+        }
+    }
+
+    // Generar ID único para QR
+    generateUniqueQRId() {
+        const timestamp = Date.now();
+        const random = Math.random().toString(36).substr(2, 9);
+        return `QR${timestamp}${random}`.toUpperCase();
+    }
+
+    // Mostrar resultado del QR generado
+    displayQRResult(product, qrId, url, lote, fechaProduccion) {
+        const resultDiv = document.getElementById('qrResult');
+        const productNombre = document.getElementById('qr-producto-nombre');
+        const productMarca = document.getElementById('qr-producto-marca');
+        const codigoId = document.getElementById('qr-codigo-id');
+        const qrUrl = document.getElementById('qr-url');
+
+        if (productNombre) productNombre.textContent = product.nombre;
+        if (productMarca) productMarca.textContent = product.marca;
+        if (codigoId) codigoId.textContent = qrId;
+        if (qrUrl) qrUrl.value = url;
+
+        // Guardar información del QR actual para descargas
+        this.currentQR = {
+            id: qrId,
+            product: product,
+            url: url,
+            lote: lote,
+            fechaProduccion: fechaProduccion,
+            fechaCreacion: new Date().toISOString(),
+            canvas: document.getElementById('qrCanvas') // Agregar referencia al canvas
+        };
+
+        // Mostrar el contenedor de resultado
+        if (resultDiv) {
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    // Guardar registro del QR
+    async saveQRRecord(qrData) {
+        try {
+            // Aquí podrías guardar en Supabase o localStorage
+            const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+            qrHistory.push(qrData);
+            localStorage.setItem('qrHistory', JSON.stringify(qrHistory));
+            
+            console.log('✅ Registro QR guardado:', qrData.id);
+        } catch (error) {
+            console.error('❌ Error guardando registro QR:', error);
+        }
+    }
+
+    // Copiar URL del QR
+    copyQRUrl(url = null) {
+        let urlToCopy = url;
+        
+        // Si no se proporciona URL, usar la del campo de entrada actual
+        if (!urlToCopy) {
+            const urlInput = document.getElementById('qr-url');
+            if (urlInput) {
+                urlToCopy = urlInput.value;
+            }
+        }
+        
+        if (!urlToCopy) {
+            this.showAlert('No hay URL para copiar', 'error');
+            return;
+        }
+        
+        try {
+            // Usar la API moderna de clipboard
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(urlToCopy).then(() => {
+                    this.showAlert('URL copiada al portapapeles', 'success');
+                }).catch(() => {
+                    this.fallbackCopyText(urlToCopy);
+                });
+            } else {
+                this.fallbackCopyText(urlToCopy);
+            }
+        } catch (error) {
+            console.error('Error copiando URL:', error);
+            this.showAlert('No se pudo copiar la URL', 'error');
+        }
+    }
+    
+    // Método fallback para copiar texto
+    fallbackCopyText(text) {
+        try {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            if (successful) {
+                this.showAlert('URL copiada al portapapeles', 'success');
+            } else {
+                this.showAlert('No se pudo copiar la URL', 'error');
+            }
+        } catch (error) {
+            console.error('Error en fallback copy:', error);
+            this.showAlert('No se pudo copiar la URL', 'error');
+        }
+    }
+
+    // Regenerar QR código existente
+    regenerateQR(qrId) {
+        try {
+            const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+            const qrRecord = qrHistory.find(qr => qr.id === qrId);
+            
+            if (!qrRecord) {
+                this.showAlert('QR no encontrado', 'error');
+                return;
+            }
+
+            // Confirmar regeneración
+            if (!confirm(`¿Estás seguro de que quieres regenerar el QR para "${qrRecord.producto}"?`)) {
+                return;
+            }
+
+            // Usar los datos existentes para regenerar
+            document.getElementById('qr-producto').value = qrRecord.productId;
+            document.getElementById('qr-lote').value = qrRecord.lote || '';
+            document.getElementById('qr-fecha').value = qrRecord.fechaProduccion || '';
+            document.getElementById('qr-notas').value = qrRecord.notas || '';
+
+            // Regenerar el QR
+            this.generateQRCode();
+            
+            // Eliminar el registro anterior
+            const updatedHistory = qrHistory.filter(qr => qr.id !== qrId);
+            localStorage.setItem('qrHistory', JSON.stringify(updatedHistory));
+            
+            this.showAlert('QR regenerado exitosamente', 'success');
+            
+            // Actualizar la tabla de historial
+            this.loadQRHistory();
+            
+        } catch (error) {
+            console.error('Error regenerando QR:', error);
+            this.showAlert('Error al regenerar QR', 'error');
+        }
+    }
+
+    // Eliminar QR código
+    deleteQR(qrId) {
+        try {
+            const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+            const qrRecord = qrHistory.find(qr => qr.id === qrId);
+            
+            if (!qrRecord) {
+                this.showAlert('QR no encontrado', 'error');
+                return;
+            }
+
+            // Confirmar eliminación
+            if (!confirm(`¿Estás seguro de que quieres eliminar el QR para "${qrRecord.producto}"?\n\nEsta acción no se puede deshacer.`)) {
+                return;
+            }
+
+            // Eliminar del historial
+            const updatedHistory = qrHistory.filter(qr => qr.id !== qrId);
+            localStorage.setItem('qrHistory', JSON.stringify(updatedHistory));
+            
+            this.showAlert('QR eliminado exitosamente', 'success');
+            
+            // Actualizar la tabla de historial
+            this.loadQRHistory();
+            
+            // Actualizar estadísticas
+            this.updateQRStats();
+            
+        } catch (error) {
+            console.error('Error eliminando QR:', error);
+            this.showAlert('Error al eliminar QR', 'error');
+        }
+    }
+
+    // Mostrar vista previa del QR
+    showQRPreview(qrId) {
+        try {
+            const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+            const qrRecord = qrHistory.find(qr => qr.id === qrId);
+            
+            if (!qrRecord) {
+                this.showAlert('QR no encontrado', 'error');
+                return;
+            }
+
+            // Verificar que la librería QR esté disponible
+            const QRCodeLib = window.QRCodeLib || window.QRCode || window.qrcode;
+            if (!QRCodeLib) {
+                this.showAlert('Librería QR no disponible', 'error');
+                return;
+            }
+
+            // Cambiar a la sección del generador QR
+            this.showSection('generador-qr');
+
+            // Regenerar el QR en el canvas principal
+            const canvas = document.getElementById('qrCanvas');
+            if (canvas) {
+                QRCodeLib.toCanvas(canvas, qrRecord.url, {
+                    width: 300,
+                    height: 300,
+                    color: {
+                        dark: '#2c3e50',
+                        light: '#ffffff'
+                    },
+                    errorCorrectionLevel: 'M'
+                }).then(() => {
+                    // Mostrar información del QR
+                    this.displayQRResult(
+                        { nombre: qrRecord.producto, marca: qrRecord.marca },
+                        qrRecord.id,
+                        qrRecord.url,
+                        qrRecord.lote,
+                        qrRecord.fechaProduccion
+                    );
+                    
+                    // Guardar referencia para descargas
+                    this.currentQR = {
+                        canvas: canvas,
+                        url: qrRecord.url,
+                        producto: qrRecord.producto,
+                        id: qrRecord.id
+                    };
+                    
+                    this.showAlert(`QR de ${qrRecord.producto} cargado`, 'success');
+                }).catch(error => {
+                    console.error('Error generando vista previa QR:', error);
+                    this.showAlert('Error mostrando QR', 'error');
+                });
+            }
+            
+        } catch (error) {
+            console.error('Error en showQRPreview:', error);
+            this.showAlert('Error mostrando vista previa del QR', 'error');
+        }
+    }
+
+    // Descargar QR en diferentes formatos
+    downloadQR(format) {
+        if (!this.currentQR) {
+            this.showAlert('No hay QR generado para descargar', 'error');
+            return;
+        }
+
+        // Obtener canvas, ya sea de la referencia guardada o del DOM
+        let canvas = this.currentQR.canvas;
+        if (!canvas) {
+            canvas = document.getElementById('qrCanvas');
+        }
+        
+        if (!canvas) {
+            this.showAlert('No se encontró el código QR para descargar', 'error');
+            return;
+        }
+
+        const filename = `QR_${this.currentQR.product.nombre.replace(/\s+/g, '_')}_${this.currentQR.id}`;
+
+        try {
+            switch (format) {
+                case 'png':
+                    this.downloadCanvasAsPNG(canvas, filename);
+                    break;
+                case 'svg':
+                    this.downloadQRAsSVG(filename);
+                    break;
+                case 'pdf':
+                    this.downloadQRAsPDF(filename);
+                    break;
+                default:
+                    throw new Error('Formato no soportado');
+            }
+            
+            this.showAlert(`QR descargado como ${format.toUpperCase()}`, 'success');
+        } catch (error) {
+            console.error('❌ Error descargando QR:', error);
+            this.showAlert('Error descargando QR: ' + error.message, 'error');
+        }
+    }
+
+    // Descargar canvas como PNG
+    downloadCanvasAsPNG(canvas, filename) {
+        try {
+            const link = document.createElement('a');
+            link.download = `${filename}.png`;
+            link.href = canvas.toDataURL('image/png');
+            
+            // Agregar el link al DOM temporalmente
+            document.body.appendChild(link);
+            
+            // Hacer click para descargar
+            link.click();
+            
+            // Remover el link del DOM
+            document.body.removeChild(link);
+            
+            console.log(`✅ PNG descargado: ${filename}.png`);
+        } catch (error) {
+            console.error('❌ Error descargando PNG:', error);
+            throw error;
+        }
+    }
+
+    // Descargar QR como SVG
+    downloadQRAsSVG(filename) {
+        if (!this.currentQR) return;
+        
+        const QRCodeLib = window.QRCodeLib || window.QRCode || window.qrcode;
+        if (!QRCodeLib) {
+            console.error('Librería QR no encontrada');
+            this.showAlert('Librería QR no disponible para SVG', 'error');
+            return;
+        }
+        
+        try {
+            QRCodeLib.toString(this.currentQR.url, {
+                type: 'svg',
+                width: 300,
+                height: 300,
+                color: {
+                    dark: '#2c3e50',
+                    light: '#ffffff'
+                }
+            }, (err, svg) => {
+                if (err) {
+                    console.error('Error generando SVG:', err);
+                    this.showAlert('Error generando SVG: ' + err.message, 'error');
+                    return;
+                }
+                
+                const blob = new Blob([svg], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `${filename}.svg`;
+                link.href = url;
+                
+                // Agregar al DOM temporalmente
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Limpiar URL
+                URL.revokeObjectURL(url);
+                
+                console.log(`✅ SVG descargado: ${filename}.svg`);
+            });
+        } catch (error) {
+            console.error('❌ Error descargando SVG:', error);
+            this.showAlert('Error descargando SVG: ' + error.message, 'error');
+        }
+    }
+
+    // Descargar QR como PDF
+    downloadQRAsPDF(filename) {
+        try {
+            // Para una solución simple, convertimos el canvas a PNG y lo descargamos
+            // En el futuro se puede implementar con jsPDF
+            let canvas = this.currentQR.canvas;
+            if (!canvas) {
+                canvas = document.getElementById('qrCanvas');
+            }
+            
+            if (!canvas) {
+                throw new Error('No se encontró el canvas del QR');
+            }
+            
+            // Por ahora, descargar como PNG con sufijo PDF
+            this.downloadCanvasAsPNG(canvas, filename + '_PDF');
+            this.showAlert('PDF básico descargado como PNG. Para PDF real, se necesita librería adicional.', 'info');
+            
+        } catch (error) {
+            console.error('❌ Error descargando PDF:', error);
+            this.showAlert('Error descargando PDF: ' + error.message, 'error');
+        }
+    }
+
+    // Imprimir QR
+    printQR() {
+        if (!this.currentQR) {
+            this.showAlert('No hay QR generado para imprimir', 'error');
+            return;
+        }
+
+        // Obtener canvas
+        let canvas = this.currentQR.canvas;
+        if (!canvas) {
+            canvas = document.getElementById('qrCanvas');
+        }
+        
+        if (!canvas) {
+            this.showAlert('No se encontró el código QR para imprimir', 'error');
+            return;
+        }
+
+        const printWindow = window.open('', '_blank');
+        const dataUrl = canvas.toDataURL('image/png');
+
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>QR Code - ${this.currentQR.product.nombre}</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            text-align: center;
+                            padding: 20px;
+                        }
+                        .qr-container {
+                            max-width: 400px;
+                            margin: 0 auto;
+                            border: 2px solid #333;
+                            padding: 20px;
+                            border-radius: 10px;
+                        }
+                        .qr-image {
+                            margin: 20px 0;
+                        }
+                        .product-info {
+                            margin: 10px 0;
+                            font-size: 14px;
+                        }
+                        @media print {
+                            body { margin: 0; }
+                            .qr-container { border: 1px solid #000; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="qr-container">
+                        <h2>AROME DE DIEU</h2>
+                        <h3>Código de Verificación</h3>
+                        <div class="qr-image">
+                            <img src="${dataUrl}" alt="QR Code" style="max-width: 300px;">
+                        </div>
+                        <div class="product-info">
+                            <strong>${this.currentQR.product.nombre}</strong><br>
+                            ${this.currentQR.product.marca}<br>
+                            Código: ${this.currentQR.id}
+                        </div>
+                        ${this.currentQR.lote ? `<div class="additional-info">Lote: ${this.currentQR.lote}</div>` : ''}
+                        ${this.currentQR.fechaProduccion ? `<div class="additional-info">Fecha: ${this.currentQR.fechaProduccion}</div>` : ''}
+                    </div>
+                </body>
+            </html>
+        `);
+        
+        printWindow.document.close();
+        printWindow.focus();
+        
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.close();
+        }, 250);
+    }
+
+    // Cargar sección de datos específica con QR
+    async loadSectionData(sectionName) {
+        if (!this.dataLoaded && !this.loadingData) {
+            await this.loadInitialData();
+        }
+        
+        switch (sectionName) {
+            case 'dashboard':
+                this.updateDashboardDisplay();
+                this.updateCategoryStats();
+                break;
+            case 'productos':
+                await this.loadProductsData();
+                break;
+            case 'generador-qr':
+                await this.loadProductsForQR();
+                await this.loadQRHistory();
+                break;
+            case 'configuracion':
+                this.checkConnection();
+                break;
+            case 'categorias':
+                this.updateCategoryStats();
+                break;
+        }
+    }
+
+    // Cargar historial de QRs
+    async loadQRHistory() {
+        try {
+            const qrRecords = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+            this.updateQRStats(qrRecords);
+            this.displayQRHistory(qrRecords);
+        } catch (error) {
+            console.error('❌ Error cargando historial QR:', error);
+        }
+    }
+
+    // Actualizar estadísticas QR
+    updateQRStats(qrRecords = null) {
+        // Si no se pasan registros, cargarlos desde localStorage
+        if (!qrRecords) {
+            qrRecords = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+        }
+        
+        const totalQRs = qrRecords.length;
+        const escaneados = qrRecords.filter(qr => qr.escaneado).length;
+        
+        const today = new Date().toDateString();
+        const qrsHoy = qrRecords.filter(qr => 
+            new Date(qr.fechaCreacion).toDateString() === today
+        ).length;
+        
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        const qrsSemana = qrRecords.filter(qr => 
+            new Date(qr.fechaCreacion) >= weekAgo
+        ).length;
+
+        // Actualizar elementos del DOM
+        const updateStat = (id, value) => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = value;
+        };
+
+        updateStat('total-qrs', totalQRs);
+        updateStat('qrs-escaneados', escaneados);
+        updateStat('qrs-hoy', qrsHoy);
+        updateStat('qrs-semana', qrsSemana);
+    }
+
+    // Mostrar historial de QRs en tabla
+    displayQRHistory(qrRecords) {
+        const tableBody = document.getElementById('qrHistoryTable');
+        if (!tableBody) return;
+
+        if (qrRecords.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center">
+                        <div class="no-qrs">
+                            <i class="fas fa-qrcode" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                            <p>No hay códigos QR generados</p>
+                            <button class="btn btn-primary" onclick="adminPanel.showSection('generador-qr')">
+                                <i class="fas fa-plus"></i> Generar Primer QR
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        const qrRows = qrRecords.map(qr => `
+            <tr>
+                <td>
+                    <div class="qr-mini" onclick="adminPanel.showQRPreview('${qr.id}')">
+                        <i class="fas fa-qrcode" title="Ver QR"></i>
+                    </div>
+                </td>
+                <td>
+                    <div class="product-cell">
+                        <strong>${qr.producto}</strong><br>
+                        <small>${qr.marca}</small>
+                    </div>
+                </td>
+                <td><code>${qr.id}</code></td>
+                <td>${qr.lote || '-'}</td>
+                <td>${new Date(qr.fechaCreacion).toLocaleDateString('es-CO')}</td>
+                <td>
+                    <span class="badge ${qr.escaneado ? 'badge-success' : 'badge-secondary'}">
+                        ${qr.escaneado ? 'Sí' : 'No'}
+                    </span>
+                </td>
+                <td>${qr.ultimaVerificacion ? new Date(qr.ultimaVerificacion).toLocaleDateString('es-CO') : '-'}</td>
+                <td>
+                    <div class="table-actions">
+                        <button class="btn btn-sm btn-info" onclick="adminPanel.copyQRUrl('${qr.url}')" title="Copiar URL">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="adminPanel.regenerateQR('${qr.id}')" title="Regenerar">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="adminPanel.deleteQR('${qr.id}')" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+
+        tableBody.innerHTML = qrRows;
     }
 }
 

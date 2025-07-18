@@ -232,15 +232,49 @@ class CatalogoManager {
     async agregarAlCarrito(productId) {
         try {
             const producto = this.productos.find(p => p.id == productId);
-            if (!producto) return;
+            if (!producto) {
+                console.error('❌ Producto no encontrado:', productId);
+                return;
+            }
+
+            // ✅ VALIDAR STOCK - Si está agotado, mostrar alerta
+            if (producto.stock <= 0 || producto.estado === 'agotado') {
+                console.warn('⚠️ Producto agotado:', producto.nombre);
+                this.mostrarNotificacion('🚫 Producto agotado - No disponible', 'error');
+                return;
+            }
+            
+            if (producto.estado === 'proximo') {
+                console.warn('⚠️ Producto próximo - no disponible aún');
+                this.mostrarNotificacion('🔜 Producto próximamente disponible', 'warning');
+                return;
+            }
+
+            // ✅ CALCULAR PRECIO CON DESCUENTO SI APLICA
+            let finalPrice = parseFloat(producto.precio);
+            if (producto.descuento && producto.descuento > 0) {
+                finalPrice = finalPrice * (1 - producto.descuento / 100);
+                console.log(`💰 Aplicando descuento ${producto.descuento}%: $${producto.precio} → $${finalPrice.toFixed(0)}`);
+            }
+
+            // Preparar producto con precio correcto
+            const productForCart = {
+                ...producto,
+                precio: finalPrice, // ✅ Usar precio con descuento
+                precio_original: producto.precio // Guardar precio original para referencia
+            };
 
             // Usar el sistema de carrito existente
             if (window.shoppingCart) {
-                await window.shoppingCart.agregarProducto(productId, 1);
-                console.log('✅ Producto agregado al carrito:', producto.nombre);
+                // Usar addItem en lugar de agregarProducto para ser consistente
+                window.shoppingCart.addItem(productForCart);
+                console.log('✅ Producto agregado al carrito:', producto.nombre, 'Precio final:', finalPrice);
                 
                 // Mostrar feedback visual
-                this.mostrarNotificacion('Producto agregado al carrito', 'success');
+                const mensaje = producto.descuento > 0 ? 
+                    `Producto agregado con ${producto.descuento}% descuento` : 
+                    'Producto agregado al carrito';
+                this.mostrarNotificacion(mensaje, 'success');
             } else {
                 console.error('❌ Sistema de carrito no disponible');
                 this.mostrarNotificacion('Error al agregar al carrito', 'error');

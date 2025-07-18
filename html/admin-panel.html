@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Aromes De Dieu</title>
+      <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@200;300;400;500;600&family=Italiana&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+      <!-- CSS del panel -->
+    <link rel="stylesheet" href="../css/admin-panel.css">
+    <link rel="stylesheet" href="../css/admin-panel-validacion.css">
+    
+    <!-- Supabase -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <header class="admin-header">
+            <h1>Panel de Administración</h1>
+            <p>Gestión completa de productos y categorías - Aromes De Dieu</p>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <nav>
+                <ul class="sidebar-menu">
+                    <li>
+                        <a href="#dashboard" class="active">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#productos">
+                            <i class="fas fa-box"></i>
+                            Productos
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#agregar-producto">
+                            <i class="fas fa-plus"></i>
+                            Agregar Producto
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#categorias">
+                            <i class="fas fa-tags"></i>
+                            Categorías
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#configuracion">
+                            <i class="fas fa-cog"></i>
+                            Configuración
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Contenido principal -->
+        <main class="admin-content">
+            <!-- Dashboard -->
+            <section id="dashboard" class="content-section active">
+                <h2 class="section-title">Dashboard</h2>
+                
+                <div class="dashboard-grid">
+                    <div class="dashboard-card" data-card="total-productos">
+                        <h3>Total Productos</h3>
+                        <div class="number">0</div>
+                        <div class="description">Productos en la base de datos</div>
+                    </div>
+                    
+                    <div class="dashboard-card" data-card="productos-activos">
+                        <h3>Productos Activos</h3>
+                        <div class="number">0</div>
+                        <div class="description">Productos visibles en la tienda</div>
+                    </div>
+                    
+                    <div class="dashboard-card" data-card="total-categorias">
+                        <h3>Categorías</h3>
+                        <div class="number">0</div>
+                        <div class="description">Categorías disponibles</div>
+                    </div>
+                    
+                    <div class="dashboard-card" data-card="total-marcas">
+                        <h3>Marcas</h3>
+                        <div class="number">0</div>
+                        <div class="description">Marcas representadas</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button id="refreshData" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i>
+                        Actualizar Datos
+                    </button>
+                    
+                    <!-- Botones de debug -->
+                    <div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                        <h4>🔧 Herramientas de Debug</h4>
+                        <button onclick="debugPanel()" class="btn btn-secondary" style="margin: 5px;">
+                            🔍 Debug Panel
+                        </button>
+                        <button onclick="forceReloadProducts()" class="btn btn-secondary" style="margin: 5px;">
+                            🔄 Forzar Recarga Productos
+                        </button>
+                        <button onclick="testSupabaseConnection()" class="btn btn-secondary" style="margin: 5px;">
+                            📡 Test Supabase
+                        </button>                        <button onclick="showAllSections()" class="btn btn-secondary" style="margin: 5px;">
+                            📄 Mostrar Todas las Secciones
+                        </button>
+                        <button onclick="testSaveProduct()" class="btn btn-secondary" style="margin: 5px;">
+                            💾 Test Guardar Producto
+                        </button>                        <button onclick="testDirectSupabase()" class="btn btn-secondary" style="margin: 5px;">
+                            🔗 Test Supabase Directo
+                        </button>
+                        <button onclick="testImageUpload()" class="btn btn-secondary" style="margin: 5px;">
+                            📷 Test Subida Imagen
+                        </button>
+                        <button onclick="testImageUpload()" class="btn btn-secondary" style="margin: 5px;">
+                            🖼️ Test Subida Imagen
+                        </button>
+                        <div id="debugOutput" style="margin-top: 10px; padding: 10px; background: #fff; border: 1px solid #ddd; border-radius: 3px; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+            </section>            <!-- Productos -->
+            <section id="productos" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Gestión de Productos</h2>
+                    <button id="refreshProducts" class="btn btn-secondary">
+                        <i class="fas fa-sync-alt"></i>
+                        Recargar Productos
+                    </button>
+                </div>
+                
+                <div class="products-controls">
+                    <input type="text" id="searchProducts" placeholder="Buscar productos..." class="form-control">
+                </div>
+                
+                <div class="products-grid">
+                    <!-- Los productos se cargarán dinámicamente aquí -->
+                </div>
+            </section>
+
+            <!-- Agregar Producto -->
+            <section id="agregar-producto" class="content-section">
+                <h2 class="section-title">Agregar Nuevo Producto</h2>
+                
+                <form id="productForm" class="product-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nombre">Nombre del Producto *</label>
+                            <input type="text" id="nombre" name="nombre" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="marca">Marca *</label>
+                            <input type="text" id="marca" name="marca" required>
+                        </div>
+                          <div class="form-group">                            <label for="precio">Precio (COP) *</label>                            <input type="number" id="precio" name="precio" required step="1000" min="0" max="2147483647" 
+                                   placeholder="Ej: 50000" 
+                                   oninput="adminPanel.validatePrice(this)">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="ml">Tamaño (ML) *</label>
+                            <input type="number" id="ml" name="ml" required min="1" max="1000" 
+                                   placeholder="Ej: 100" value="100">
+                            <div class="help-text">Tamaño del producto en mililitros</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="categoria">Categoría *</label>
+                            <select id="categoria" name="categoria" required>
+                                <option value="">Seleccionar categoría</option>
+                                <option value="para-ellos">Para Ellos</option>
+                                <option value="para-ellas">Para Ellas</option>
+                                <option value="unisex">Unisex</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subcategoria">Subcategoría</label>
+                            <select id="subcategoria" name="subcategoria">
+                                <option value="">Seleccionar subcategoría</option>
+                                <option value="designer">Marcas de Diseñador</option>
+                                <option value="arabic">Marcas Árabes</option>
+                                <option value="contemporary">Perfumería Contemporánea</option>
+                                <option value="vintage">Vintage</option>
+                            </select>                        </div>
+                        
+                    </div>
+                    
+                    <!-- Sección de Imagen como apartado independiente -->
+                    <div class="image-upload-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-image"></i>
+                            Imagen del Producto (URL)
+                        </h3>
+                        
+                        <div class="image-upload-container">
+                            <div class="input-group">
+                                <input type="url" id="imagen_url" name="imagen_url" placeholder="https://images.unsplash.com/photo-1234567890/image.jpg" class="form-control" required>
+                                <button type="button" class="btn btn-secondary" onclick="adminPanel.previewImageFromUrl()">
+                                    <i class="fas fa-eye"></i> Vista Previa
+                                </button>
+                            </div>
+                            <div class="help-text">
+                                <strong>Usa URLs directas de imágenes.</strong> Ejemplos:
+                                <ul style="margin: 10px 0; padding-left: 20px; font-size: 12px;">
+                                    <li>Unsplash: https://images.unsplash.com/photo-xxxxx?w=400&h=400</li>
+                                    <li>Pexels: https://images.pexels.com/photos/xxxxx/image.jpg?w=400&h=400</li>
+                                    <li>Directa: https://tu-dominio.com/imagen.jpg</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="quick-images">
+                                <div class="quick-images-title">
+                                    <i class="fas fa-images"></i> Imágenes de Ejemplo (Clic para usar):
+                                </div>
+                                <div class="quick-images-grid">
+                                    <div class="quick-image" onclick="adminPanel.useQuickImage('https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=400&fit=crop')">
+                                        <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=100&h=100&fit=crop" alt="Perfume 1">
+                                    </div>
+                                    <div class="quick-image" onclick="adminPanel.useQuickImage('https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=400&h=400&fit=crop')">
+                                        <img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=100&h=100&fit=crop" alt="Perfume 2">
+                                    </div>
+                                    <div class="quick-image" onclick="adminPanel.useQuickImage('https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&h=400&fit=crop')">
+                                        <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?w=100&h=100&fit=crop" alt="Perfume 3">
+                                    </div>
+                                    <div class="quick-image" onclick="adminPanel.useQuickImage('https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?w=400&h=400&fit=crop')">
+                                        <img src="https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?w=100&h=100&fit=crop" alt="Perfume 4">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="image-preview" id="imagePreview" style="display: none;">
+                                <div class="preview-header">
+                                    <span><i class="fas fa-eye"></i> Vista previa:</span>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="adminPanel.clearImagePreview()">
+                                        <i class="fas fa-times"></i> Limpiar
+                                    </button>
+                                </div>
+                                <img id="previewImg" src="" alt="Vista previa" class="preview-image">
+                            </div>
+                        </div>
+                    </div>
+                      <!-- Descripción y Notas -->
+                    <div class="form-group">
+                        <label for="descripcion">Descripción del Producto</label>
+                        <textarea id="descripcion" name="descripcion" rows="3" placeholder="Descripción detallada del producto que aparecerá en las tarjetas"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notas">Notas Olfativas</label>
+                        <textarea id="notas" name="notas" rows="3" placeholder="Ej: Bergamota, Rosa, Sándalo (separadas por comas)"></textarea>
+                    </div>
+                      <div class="form-group">
+                        <label for="estado">Estado del Producto *</label>                        <select id="estado" name="estado" required onchange="adminPanel.handleEstadoChange()">
+                            <option value="disponible">Disponible</option>
+                            <option value="agotado">Agotado</option>
+                            <option value="proximo">Disponible Próximamente</option>
+                            <option value="oferta">En Oferta</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="descuentoGroup" style="display: none;">
+                        <label for="descuento">Descuento (%) *</label>                        <input type="number" id="descuento" name="descuento" min="1" max="99" step="1" 
+                               placeholder="Ej: 15" oninput="adminPanel.updatePrecioConDescuento()">
+                        <div class="help-text">Porcentaje de descuento sobre el precio original</div>
+                        <div class="precio-info" id="precioInfo" style="display: none;">
+                            <small>Precio original: <span id="precioOriginal">$0</span></small><br>
+                            <small>Precio con descuento: <span id="precioConDescuento">$0</span></small>
+                        </div>
+                    </div>
+                      <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="luxury" name="luxury">
+                            Producto de lujo (mostrará la etiqueta LUXURY)
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="activo" name="activo" checked>
+                            Producto activo (visible en la tienda)
+                        </label>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Guardar Producto
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-undo"></i>
+                            Limpiar Formulario
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Categorías -->
+            <section id="categorias" class="content-section">
+                <h2 class="section-title">Gestión de Categorías</h2>
+                
+                <div class="categories-list">
+                    <!-- Las categorías se cargarán dinámicamente aquí -->
+                </div>
+            </section>
+
+            <!-- Configuración -->
+            <section id="configuracion" class="content-section">
+                <h2 class="section-title">Configuración del Sistema</h2>
+                
+                <div class="config-section">
+                    <h3>Configuración de Supabase</h3>
+                    <p>URL: <code>https://xelobsbzytdxrrxgmlta.supabase.co</code></p>
+                    <p>Estado de conexión: <span id="connection-status">Verificando...</span></p>
+                </div>
+                
+                <div class="config-section">
+                    <h3>Herramientas de Base de Datos</h3>
+                    <button class="btn btn-secondary" onclick="adminPanel.testConnection()">
+                        <i class="fas fa-database"></i>
+                        Probar Conexión
+                    </button>
+                    <button class="btn btn-primary" onclick="adminPanel.refreshAllData()">
+                        <i class="fas fa-sync-alt"></i>
+                        Sincronizar Datos
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Cargando...</p>
+        </div>    </div>
+    
+    <!-- Scripts en orden correcto -->
+    <script src="../js/supabase-config-optimized.js"></script>
+    <script src="../js/admin-panel-validacion-mejorada.js"></script>
+    <script src="../js/admin-panel-new.js"></script>
+    <script src="../js/admin-panel-integration.js"></script>
+    
+    <!-- Configuración de precios -->
+    <script>
+        // Configurar formato de precios
+        function setupPriceFormatting() {
+            const priceInput = document.getElementById('precio');
+            if (!priceInput) return;
+            
+            priceInput.addEventListener('input', function(e) {
+                formatPriceInput(e.target);
+            });
+            
+            priceInput.addEventListener('blur', function(e) {
+                formatPriceInput(e.target);
+            });
+        }
+        
+        function formatPriceInput(input) {
+            let value = parseFloat(input.value.replace(/[^0-9.]/g, ''));
+            
+            if (isNaN(value)) {
+                input.value = '';
+                return;
+            }
+            
+            const max = 10000000;
+            if (value > max) {
+                input.value = max;
+                if (window.adminPanel) {
+                    adminPanel.showAlert(`Precio ajustado al máximo permitido: $${new Intl.NumberFormat('es-CO').format(max)}`, 'warning');
+                }
+            }
+            
+            if (value < 0) {
+                input.value = 0;
+            }
+        }
+        
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            setupPriceFormatting();
+        });
+    </script>
+    
+    <!-- Inicialización del panel -->
+    <script>
+        let adminPanel;
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🚀 DOM cargado, inicializando panel...');
+            
+            // Esperar un poco para asegurar que los scripts se ejecuten
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Verificar dependencias
+            console.log('🔍 Verificando dependencias...');
+            console.log('Supabase:', typeof window.supabase !== 'undefined' ? '✅' : '❌');
+            console.log('initSupabase:', typeof initSupabase === 'function' ? '✅' : '❌');
+            console.log('ProductosService:', typeof ProductosService !== 'undefined' ? '✅' : '❌');
+            console.log('AdminPanel:', typeof AdminPanel !== 'undefined' ? '✅' : '❌');
+              // Crear instancia del panel admin
+            if (typeof AdminPanel !== 'undefined') {
+                try {
+                    console.log('📋 Creando instancia del panel...');
+                    adminPanel = new AdminPanel();
+                    console.log('✅ Panel de administración listo');
+                } catch (error) {
+                    console.error('❌ Error creando panel:', error);
+                    alert('Error inicializando el panel: ' + error.message);
+                }
+            } else {
+                console.error('❌ AdminPanel no está disponible');
+                alert('Error: La clase AdminPanel no está disponible. Verifica que admin-panel-new.js se haya cargado correctamente.');
+            }
+        });
+        
+        // Funciones de debug globales
+        window.debugPanel = function() {
+            const output = document.getElementById('debugOutput');
+            let debug = '';
+            
+            debug += `📋 Panel Admin Status:\n`;
+            debug += `- AdminPanel class: ${typeof AdminPanel !== 'undefined' ? '✅' : '❌'}\n`;
+            debug += `- adminPanel instance: ${typeof adminPanel !== 'undefined' ? '✅' : '❌'}\n`;
+            debug += `- Current section: ${adminPanel ? adminPanel.currentSection : 'N/A'}\n`;
+            debug += `- Products loaded: ${adminPanel ? adminPanel.productos.length : 0}\n`;
+            debug += `- Categories loaded: ${adminPanel ? adminPanel.categorias.length : 0}\n`;
+            debug += `- Brands loaded: ${adminPanel ? adminPanel.marcas.length : 0}\n\n`;
+            
+            debug += `🔧 Dependencies:\n`;
+            debug += `- Supabase: ${typeof window.supabase !== 'undefined' ? '✅' : '❌'}\n`;
+            debug += `- supabaseClient: ${typeof supabaseClient !== 'undefined' ? '✅' : '❌'}\n`;
+            debug += `- ProductosService: ${typeof ProductosService !== 'undefined' ? '✅' : '❌'}\n`;
+            debug += `- initSupabase: ${typeof initSupabase === 'function' ? '✅' : '❌'}\n\n`;
+            
+            debug += `📄 DOM Elements:\n`;
+            debug += `- products-grid: ${document.querySelector('.products-grid') ? '✅' : '❌'}\n`;
+            debug += `- sidebar-menu links: ${document.querySelectorAll('.sidebar-menu a').length}\n`;
+            debug += `- content-sections: ${document.querySelectorAll('.content-section').length}\n`;
+            
+            if (output) {
+                output.textContent = debug;
+            }
+            console.log('🔍 Debug Panel:\n', debug);
+        };
+        
+        window.forceReloadProducts = async function() {
+            const output = document.getElementById('debugOutput');
+            if (output) output.textContent = 'Recargando productos...\n';
+            
+            try {
+                if (adminPanel) {
+                    await adminPanel.reloadProducts();
+                    if (output) output.textContent += 'Productos recargados exitosamente.\n';
+                } else {
+                    if (output) output.textContent += 'ERROR: adminPanel no disponible.\n';
+                }
+            } catch (error) {
+                if (output) output.textContent += `ERROR: ${error.message}\n`;
+                console.error('Error recargando productos:', error);
+            }
+        };
+        
+        window.testSupabaseConnection = async function() {
+            const output = document.getElementById('debugOutput');
+            if (output) output.textContent = 'Probando conexión Supabase...\n';
+            
+            try {
+                if (typeof ProductosService !== 'undefined') {
+                    const productos = await ProductosService.obtenerProductos();
+                    if (output) output.textContent += `✅ Conexión exitosa: ${productos.length} productos encontrados.\n`;
+                } else {
+                    if (output) output.textContent += 'ERROR: ProductosService no disponible.\n';
+                }
+            } catch (error) {
+                if (output) output.textContent += `ERROR: ${error.message}\n`;
+                console.error('Error probando conexión:', error);
+            }
+        };
+        
+        window.showAllSections = function() {
+            const output = document.getElementById('debugOutput');
+            const sections = document.querySelectorAll('.content-section');
+            let debug = `📄 Secciones encontradas (${sections.length}):\n`;
+            
+            sections.forEach((section, index) => {
+                debug += `${index + 1}. ${section.id} - ${section.classList.contains('active') ? 'ACTIVA' : 'inactiva'}\n`;
+            });
+            
+            if (output) output.textContent = debug;
+            console.log(debug);
+        };
+        
+        window.testSaveProduct = async function() {
+            const output = document.getElementById('debugOutput');
+            if (output) output.textContent = 'Probando guardado de producto...\n';
+            
+            try {
+                // Datos de prueba mínimos
+                const testProduct = {
+                    nombre: 'Producto Test ' + new Date().getTime(),
+                    marca: 'Test Brand',
+                    precio: 50000,
+                    categoria: 'para-ellos',
+                    descripcion: 'Producto de prueba',
+                    activo: true
+                };
+                
+                if (output) output.textContent += 'Datos de prueba preparados...\n';
+                console.log('🧪 Datos de prueba:', testProduct);
+                
+                if (adminPanel && typeof adminPanel.saveProduct === 'function') {
+                    const result = await adminPanel.saveProduct(testProduct);
+                    if (output) output.textContent += `✅ Producto guardado exitosamente: ID ${result.id}\n`;
+                    console.log('✅ Test exitoso:', result);
+                } else {
+                    if (output) output.textContent += 'ERROR: adminPanel.saveProduct no disponible.\n';
+                }
+                
+            } catch (error) {
+                if (output) output.textContent += `ERROR: ${error.message}\n`;
+                console.error('❌ Error en test:', error);
+            }
+        };
+        
+        window.testDirectSupabase = async function() {
+            const output = document.getElementById('debugOutput');
+            if (output) output.textContent = 'Probando Supabase directamente...\n';
+            
+            try {
+                if (typeof supabaseClient === 'undefined' || !supabaseClient) {
+                    if (output) output.textContent += 'ERROR: supabaseClient no disponible.\n';
+                    return;
+                }
+                
+                // Test de lectura
+                const { data: readData, error: readError } = await supabaseClient
+                    .from('productos')
+                    .select('id, nombre')
+                    .limit(3);
+                    
+                if (readError) {
+                    if (output) output.textContent += `ERROR leyendo: ${readError.message}\n`;
+                    return;
+                }
+                
+                if (output) output.textContent += `✅ Lectura OK: ${readData.length} productos\n`;
+                
+                // Test de escritura
+                const testData = {
+                    nombre: 'Test Direct ' + new Date().getTime(),
+                    marca: 'Direct Brand',
+                    precio: 25000,
+                    categoria: 'para-ellos'
+                };
+                
+                const { data: writeData, error: writeError } = await supabaseClient
+                    .from('productos')
+                    .insert([testData])
+                    .select()
+                    .single();
+                    
+                if (writeError) {
+                    if (output) output.textContent += `ERROR escribiendo: ${writeError.message}\n`;
+                    return;
+                }
+                
+                if (output) output.textContent += `✅ Escritura OK: ID ${writeData.id}\n`;
+                
+            } catch (error) {
+                if (output) output.textContent += `ERROR: ${error.message}\n`;
+                console.error('❌ Error en test directo:', error);
+            }
+        };
+        
+        window.testImageUpload = async function() {
+            const output = document.getElementById('debugOutput');
+            if (output) output.textContent = 'Probando subida de imagen...\n';
+            
+            try {
+                // Verificar que ImageStorageService esté disponible
+                if (typeof ImageStorageService === 'undefined') {
+                    if (output) output.textContent += 'ERROR: ImageStorageService no disponible.\n';
+                    return;
+                }
+                
+                // Crear una imagen de prueba (1x1 pixel transparente PNG)
+                const testImageData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
+                
+                if (output) output.textContent += 'Creando imagen de prueba...\n';
+                
+                // Convertir a blob y luego a file
+                const response = await fetch(testImageData);
+                const blob = await response.blob();
+                const testFile = new File([blob], 'test-image.png', { type: 'image/png' });
+                
+                if (output) output.textContent += `Archivo creado: ${testFile.name} (${testFile.size} bytes)\n`;
+                
+                // Probar subida
+                if (output) output.textContent += 'Subiendo imagen al storage...\n';
+                const imageUrl = await ImageStorageService.uploadImage(testFile, 'test-upload');
+                
+                if (output) output.textContent += `✅ Imagen subida exitosamente: ${imageUrl}\n`;
+                
+                // Opcional: eliminar imagen de prueba
+                if (output) output.textContent += 'Eliminando imagen de prueba...\n';
+                await ImageStorageService.deleteImage(imageUrl);
+                if (output) output.textContent += '✅ Imagen de prueba eliminada.\n';
+                
+            } catch (error) {
+                if (output) output.textContent += `ERROR: ${error.message}\n`;
+                console.error('❌ Error en test de imagen:', error);
+            }
+        };
+        
+        // Funciones globales para eventos del formulario
+        window.handleEstadoChange = function() {
+            if (window.adminPanel) {
+                adminPanel.handleEstadoChange();
+            }
+        };
+        
+        window.updatePrecioConDescuento = function() {
+            if (window.adminPanel) {
+                adminPanel.updatePrecioConDescuento();
+            }
+        };
+        
+        window.previewImageFromUrl = function() {
+            if (window.adminPanel) {
+                adminPanel.previewImageFromUrl();
+            }
+        };
+        
+        window.previewImageFromFile = function(input) {
+            if (window.adminPanel) {
+                adminPanel.previewImageFromFile(input);
+            }
+        };
+          window.clearImagePreview = function() {
+            if (window.adminPanel) {
+                adminPanel.clearImagePreview(true); // Limpiar todo cuando el usuario hace click en limpiar
+            }
+        };
+        
+    <!-- JavaScript del panel de administración -->
+    <script src="../js/supabase-config-optimized.js"></script>
+    <script src="../js/admin-panel-validacion-mejorada.js"></script>
+    <script src="../js/admin-panel-new.js"></script>
+    <script src="../js/admin-panel-integration.js"></script>
+    
+    <!-- Configuración de precios -->
+    <script>
+        // Función para cambiar tabs de imagen
+        window.switchImageTab = function(tabType) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            // Actualizar tabs
+            tabs.forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabType);
+            });
+            
+            // Actualizar contenido
+            contents.forEach(content => {
+                content.classList.toggle('active', content.id === `${tabType}-tab`);
+            });
+            
+            // Actualizar tipo en adminPanel
+            if (window.adminPanel) {
+                adminPanel.imageType = tabType;
+            }
+        };
+        
+        // Función para validar precio en tiempo real
+        window.validatePrice = function(input) {
+            const value = parseInt(input.value);
+            const max = 2147483647; // Límite de PostgreSQL int
+            
+            if (value > max) {
+                input.value = max;
+                if (window.adminPanel) {
+                    adminPanel.showAlert(`Precio ajustado al máximo permitido: $${new Intl.NumberFormat('es-CO').format(max)}`, 'warning');
+                }
+            }
+            
+            if (value < 0) {
+                input.value = 0;
+            }
+        };
+    </script>
+</body>
+</html>

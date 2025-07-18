@@ -1,0 +1,456 @@
+/* 
+ * ADMIN PANEL - PALETA ELEGANTE CHAMPAGNE, ROSEY, GRIS Y CARBON
+ * CSS Mejorado con colores sofisticados y elegantes
+ * Fecha: 13 Enero 2025
+ */
+
+/* ==========================================
+   VARIABLES DE COLORES ELEGANTES
+========================================== */
+
+:root {
+    /* PALETA CHAMPAGNE - Tonos dorados elegantes */
+    --champagne-light: #F7F3E9;      /* Champagne muy claro */
+    --champagne-medium: #F5E6D3;     /* Champagne medio */
+    --champagne-base: #E8D5B7;       /* Champagne base */
+    --champagne-dark: #D4AF37;       /* Champagne oscuro - dorado */
+    --champagne-deep: #B8860B;       /* Champagne profundo */
+    
+    /* PALETA ROSEY - Tonos rosados sofisticados */
+    --rosey-light: #F8E8E8;          /* Rosa muy claro */
+    --rosey-medium: #E8B4B8;         /* Rosa medio */
+    --rosey-base: #D4A4A8;           /* Rosa base */
+    --rosey-dark: #C08497;           /* Rosa oscuro */
+    --rosey-deep: #A67C87;           /* Rosa profundo */
+    
+    /* PALETA GRIS - Tonos grises elegantes */
+    --gris-light: #F8F9FA;           /* Gris muy claro */
+    --gris-medium: #E9ECEF;          /* Gris medio */
+    --gris-base: #CED4DA;            /* Gris base */
+    --gris-dark: #6C757D;            /* Gris oscuro */
+    --gris-deep: #495057;            /* Gris profundo */
+    
+    /* PALETA CARBON - Tonos oscuros sofisticados */
+    --carbon-light: #2C2C2C;         /* Carbon claro */
+    --carbon-medium: #1E1E1E;        /* Carbon medio */
+    --carbon-base: #151515;          /* Carbon base */
+    --carbon-dark: #0D0D0D;          /* Carbon oscuro */
+    --carbon-deep: #000000;          /* Carbon profundo - negro */
+    
+    /* GRADIENTES ELEGANTES */
+    --gradient-champagne: linear-gradient(135deg, var(--champagne-base) 0%, var(--champagne-dark) 100%);
+    --gradient-rosey: linear-gradient(135deg, var(--rosey-base) 0%, var(--rosey-dark) 100%);
+    --gradient-gris: linear-gradient(135deg, var(--gris-dark) 0%, var(--gris-deep) 100%);
+    --gradient-carbon: linear-gradient(135deg, var(--carbon-base) 0%, var(--carbon-medium) 100%);
+    
+    /* GRADIENTES COMBINADOS */
+    --gradient-elegant-primary: linear-gradient(135deg, var(--carbon-base) 0%, var(--carbon-medium) 50%, var(--gris-deep) 100%);
+    --gradient-elegant-secondary: linear-gradient(135deg, var(--champagne-base) 0%, var(--rosey-base) 100%);
+    --gradient-elegant-accent: linear-gradient(135deg, var(--champagne-medium) 0%, var(--champagne-dark) 100%);
+    
+    /* FONDOS ELEGANTES */
+    --bg-elegant-main: linear-gradient(135deg, var(--gris-light) 0%, var(--champagne-light) 100%);
+    --bg-elegant-card: rgba(248, 249, 250, 0.98);
+    --bg-elegant-glass: rgba(248, 243, 233, 0.2);
+    --bg-elegant-overlay: rgba(21, 21, 21, 0.05);
+    
+    /* TEXTO ELEGANTE */
+    --text-elegant-primary: var(--carbon-base);
+    --text-elegant-secondary: var(--gris-deep);
+    --text-elegant-muted: var(--gris-dark);
+    --text-elegant-light: var(--champagne-light);
+    --text-elegant-accent: var(--champagne-dark);
+    
+    /* BORDES ELEGANTES */
+    --border-elegant-light: rgba(232, 213, 183, 0.3);
+    --border-elegant-medium: rgba(212, 175, 55, 0.4);
+    --border-elegant-strong: var(--champagne-dark);
+    --border-elegant-glass: rgba(248, 243, 233, 0.25);
+    
+    /* SOMBRAS ELEGANTES */
+    --shadow-elegant-light: 0 2px 8px rgba(21, 21, 21, 0.08), 0 1px 3px rgba(21, 21, 21, 0.04);
+    --shadow-elegant-medium: 0 4px 16px rgba(21, 21, 21, 0.1), 0 2px 6px rgba(21, 21, 21, 0.06);
+    --shadow-elegant-large: 0 8px 25px rgba(21, 21, 21, 0.12), 0 4px 10px rgba(21, 21, 21, 0.08);
+    --shadow-elegant-glass: 0 8px 32px rgba(212, 175, 55, 0.15);
+    --shadow-elegant-rosey: 0 4px 16px rgba(212, 164, 168, 0.2);
+    
+    /* ANIMACIONES ELEGANTES */
+    --transition-elegant: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-elegant-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-elegant-slow: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================
+   ELEMENTOS BASE CON PALETA ELEGANTE
+========================================== */
+
+/* Tipografía elegante */
+.elegant-title {
+    font-family: 'Playfair Display', 'Cormorant Garamond', serif;
+    background: var(--gradient-champagne);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 8px rgba(21, 21, 21, 0.1);
+}
+
+.elegant-subtitle {
+    color: var(--text-elegant-secondary);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+}
+
+.elegant-text {
+    color: var(--text-elegant-primary);
+    line-height: 1.6;
+}
+
+.elegant-muted {
+    color: var(--text-elegant-muted);
+    font-size: 0.9em;
+}
+
+/* Contenedores elegantes */
+.elegant-container {
+    background: var(--bg-elegant-card);
+    border: 1px solid var(--border-elegant-light);
+    border-radius: 16px;
+    box-shadow: var(--shadow-elegant-medium);
+    backdrop-filter: blur(10px);
+}
+
+.elegant-glass {
+    background: var(--bg-elegant-glass);
+    border: 1px solid var(--border-elegant-glass);
+    backdrop-filter: blur(15px);
+    box-shadow: var(--shadow-elegant-glass);
+}
+
+/* Botones elegantes */
+.btn-elegant-primary {
+    background: var(--gradient-champagne);
+    color: var(--carbon-dark);
+    border: 1px solid var(--champagne-dark);
+    font-weight: 500;
+    transition: var(--transition-elegant);
+}
+
+.btn-elegant-primary:hover {
+    background: var(--gradient-carbon);
+    color: var(--champagne-light);
+    box-shadow: var(--shadow-elegant-glass);
+    transform: translateY(-2px);
+}
+
+.btn-elegant-secondary {
+    background: var(--gradient-gris);
+    color: var(--champagne-light);
+    border: 1px solid var(--gris-dark);
+    transition: var(--transition-elegant);
+}
+
+.btn-elegant-secondary:hover {
+    background: var(--gradient-rosey);
+    box-shadow: var(--shadow-elegant-rosey);
+    transform: translateY(-2px);
+}
+
+.btn-elegant-accent {
+    background: var(--gradient-elegant-accent);
+    color: var(--carbon-base);
+    border: 1px solid var(--champagne-medium);
+    transition: var(--transition-elegant);
+}
+
+.btn-elegant-accent:hover {
+    background: linear-gradient(135deg, var(--champagne-dark) 0%, var(--champagne-deep) 100%);
+    color: var(--champagne-light);
+    box-shadow: var(--shadow-elegant-large);
+    transform: translateY(-2px);
+}
+
+/* Estados elegantes */
+.elegant-success {
+    background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+    color: var(--champagne-light);
+    border-color: #22C55E;
+}
+
+.elegant-warning {
+    background: var(--gradient-champagne);
+    color: var(--carbon-base);
+    border-color: var(--champagne-dark);
+}
+
+.elegant-danger {
+    background: var(--gradient-rosey);
+    color: var(--champagne-light);
+    border-color: var(--rosey-dark);
+}
+
+.elegant-info {
+    background: var(--gradient-gris);
+    color: var(--champagne-light);
+    border-color: var(--gris-dark);
+}
+
+/* ==========================================
+   EFECTOS ESPECIALES ELEGANTES
+========================================== */
+
+/* Brillo dorado sutil */
+.elegant-glow {
+    position: relative;
+}
+
+.elegant-glow::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(212, 175, 55, 0.1) 50%, transparent 70%);
+    pointer-events: none;
+    opacity: 0;
+    transition: var(--transition-elegant);
+}
+
+.elegant-glow:hover::after {
+    opacity: 1;
+}
+
+/* Animación de shimmer */
+.elegant-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.elegant-shimmer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(212, 175, 55, 0.2), 
+        transparent
+    );
+    transition: var(--transition-elegant-slow);
+}
+
+.elegant-shimmer:hover::before {
+    left: 100%;
+}
+
+/* Efecto de cristal elegante */
+.elegant-frosted {
+    background: rgba(248, 243, 233, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(248, 243, 233, 0.2);
+}
+
+/* ==========================================
+   UTILIDADES DE COLOR
+========================================== */
+
+/* Colores de texto */
+.text-champagne { color: var(--champagne-dark); }
+.text-champagne-light { color: var(--champagne-light); }
+.text-rosey { color: var(--rosey-dark); }
+.text-gris { color: var(--gris-dark); }
+.text-carbon { color: var(--carbon-base); }
+
+/* Colores de fondo */
+.bg-champagne { background-color: var(--champagne-base); }
+.bg-champagne-light { background-color: var(--champagne-light); }
+.bg-rosey { background-color: var(--rosey-base); }
+.bg-gris { background-color: var(--gris-base); }
+.bg-carbon { background-color: var(--carbon-base); }
+
+/* Gradientes de fondo */
+.bg-elegant-primary { background: var(--gradient-elegant-primary); }
+.bg-elegant-secondary { background: var(--gradient-elegant-secondary); }
+.bg-elegant-accent { background: var(--gradient-elegant-accent); }
+
+/* Bordes elegantes */
+.border-elegant { border: 1px solid var(--border-elegant-medium); }
+.border-champagne { border: 1px solid var(--champagne-dark); }
+.border-rosey { border: 1px solid var(--rosey-dark); }
+.border-gris { border: 1px solid var(--gris-dark); }
+
+/* ==========================================
+   RESPONSIVE Y ACCESIBILIDAD
+========================================== */
+
+/* Reducir animaciones para usuarios que lo prefieran */
+@media (prefers-reduced-motion: reduce) {
+    .elegant-shimmer::before,
+    .elegant-glow::after {
+        transition: none;
+        animation: none;
+    }
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+    :root {
+        --border-elegant-medium: var(--carbon-dark);
+        --border-elegant-light: var(--gris-dark);
+    }
+    
+    .elegant-container,
+    .elegant-glass {
+        border: 2px solid var(--carbon-dark);
+    }
+}
+
+/* Modo oscuro elegante */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-elegant-main: linear-gradient(135deg, var(--carbon-medium) 0%, var(--carbon-base) 100%);
+        --bg-elegant-card: rgba(28, 28, 28, 0.95);
+        --text-elegant-primary: var(--champagne-light);
+        --text-elegant-secondary: var(--champagne-medium);
+    }
+}
+
+/* ==========================================
+   COMPONENTES ESPECÍFICOS ELEGANTES
+========================================== */
+
+/* Cards elegantes */
+.elegant-card {
+    background: var(--bg-elegant-card);
+    border: 1px solid var(--border-elegant-light);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--shadow-elegant-medium);
+    transition: var(--transition-elegant);
+    position: relative;
+    overflow: hidden;
+}
+
+.elegant-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-champagne);
+}
+
+.elegant-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-elegant-large);
+    border-color: var(--champagne-dark);
+}
+
+/* Inputs elegantes */
+.elegant-input {
+    background: var(--bg-elegant-card);
+    border: 2px solid var(--border-elegant-light);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: var(--text-elegant-primary);
+    transition: var(--transition-elegant);
+}
+
+.elegant-input:focus {
+    outline: none;
+    border-color: var(--champagne-dark);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+/* Badges elegantes */
+.elegant-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: var(--gradient-champagne);
+    color: var(--carbon-base);
+}
+
+.elegant-badge.secondary {
+    background: var(--gradient-gris);
+    color: var(--champagne-light);
+}
+
+.elegant-badge.rosey {
+    background: var(--gradient-rosey);
+    color: var(--champagne-light);
+}
+
+/* ==========================================
+   ANIMACIONES PERSONALIZADAS
+========================================== */
+
+@keyframes elegantFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes elegantGlow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+    }
+}
+
+@keyframes elegantFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Clases de animación */
+.animate-elegant-fade-in {
+    animation: elegantFadeIn 0.6s ease-out;
+}
+
+.animate-elegant-glow {
+    animation: elegantGlow 2s ease-in-out infinite;
+}
+
+.animate-elegant-float {
+    animation: elegantFloat 3s ease-in-out infinite;
+}
+
+/* ==========================================
+   UTILIDADES ADICIONALES
+========================================== */
+
+/* Espaciado elegante */
+.elegant-spacing-sm { padding: 1rem; }
+.elegant-spacing-md { padding: 1.5rem; }
+.elegant-spacing-lg { padding: 2rem; }
+.elegant-spacing-xl { padding: 3rem; }
+
+/* Bordes redondeados elegantes */
+.elegant-rounded-sm { border-radius: 8px; }
+.elegant-rounded-md { border-radius: 12px; }
+.elegant-rounded-lg { border-radius: 16px; }
+.elegant-rounded-xl { border-radius: 20px; }
+
+/* Sombras elegantes */
+.elegant-shadow-sm { box-shadow: var(--shadow-elegant-light); }
+.elegant-shadow-md { box-shadow: var(--shadow-elegant-medium); }
+.elegant-shadow-lg { box-shadow: var(--shadow-elegant-large); }
+.elegant-shadow-glass { box-shadow: var(--shadow-elegant-glass); }

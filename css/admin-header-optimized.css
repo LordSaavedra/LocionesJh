@@ -1,0 +1,447 @@
+/* 
+ * ADMIN PANEL HEADER - CSS OPTIMIZADO
+ * Estilos específicos para el header del panel de administración
+ * Fecha: 13 Enero 2025
+ */
+
+/* Variables específicas para el header */
+:root {
+    --header-bg: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+    --header-border: rgba(255, 255, 255, 0.1);
+    --header-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --accent-primary: #f093fb;
+    --accent-secondary: #667eea;
+    --status-success: #4ade80;
+    --status-warning: #fbbf24;
+    --status-error: #ef4444;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --blur-effect: blur(10px);
+}
+
+/* Header Principal */
+.admin-header {
+    background: var(--header-bg);
+    color: white;
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    box-shadow: var(--header-shadow);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--header-border);
+}
+
+.admin-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+}
+
+/* Contenido del Header */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* Sección Izquierda */
+.header-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.header-left h1 {
+    font-family: 'Playfair Display', 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 50%, #e6fffa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+}
+
+.header-left h1 i {
+    color: var(--accent-primary);
+    margin-right: 0.75rem;
+    filter: drop-shadow(0 2px 4px rgba(240, 147, 251, 0.3));
+    animation: crown-glow 3s ease-in-out infinite alternate;
+    font-size: 1.1em;
+}
+
+.header-left p {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    margin: 0;
+    font-style: italic;
+}
+
+/* Sección Derecha */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-shrink: 0;
+}
+
+/* Estado de Conexión */
+.connection-status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.6rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    backdrop-filter: var(--blur-effect);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    min-width: 150px;
+    justify-content: center;
+    cursor: default;
+}
+
+.connection-status::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.connection-status:hover::before {
+    left: 100%;
+}
+
+.connection-status:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Estados Específicos de Conexión */
+.connection-status.connected {
+    border-color: rgba(74, 222, 128, 0.4);
+    background: rgba(74, 222, 128, 0.15);
+    color: #ffffff;
+}
+
+.connection-status.connected i {
+    color: var(--status-success);
+    animation: pulse-success 2.5s infinite;
+}
+
+.connection-status.connecting {
+    border-color: rgba(251, 191, 36, 0.4);
+    background: rgba(251, 191, 36, 0.15);
+    color: #ffffff;
+}
+
+.connection-status.connecting i {
+    color: var(--status-warning);
+    animation: rotate-loading 1.2s linear infinite;
+}
+
+.connection-status.disconnected,
+.connection-status.error {
+    border-color: rgba(239, 68, 68, 0.4);
+    background: rgba(239, 68, 68, 0.15);
+    color: #ffffff;
+}
+
+.connection-status.disconnected i,
+.connection-status.error i {
+    color: var(--status-error);
+    animation: pulse-error 1.8s infinite;
+}
+
+/* Botón de Actualizar */
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #8d9499 100%);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.9rem 1.6rem;
+    border-radius: 25px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: var(--blur-effect);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.btn-secondary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-secondary:hover::before {
+    left: 100%;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #5a6268 0%, #7a8187 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary i {
+    transition: transform 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn-secondary:hover i {
+    transform: rotate(180deg);
+}
+
+.btn-secondary.loading i {
+    animation: rotate-loading 1s linear infinite;
+}
+
+/* Animaciones */
+@keyframes crown-glow {
+    0% { 
+        filter: drop-shadow(0 2px 4px rgba(240, 147, 251, 0.3));
+        transform: scale(1);
+    }
+    50% {
+        filter: drop-shadow(0 4px 12px rgba(240, 147, 251, 0.6));
+        transform: scale(1.05);
+    }
+    100% { 
+        filter: drop-shadow(0 2px 4px rgba(240, 147, 251, 0.3));
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse-success {
+    0%, 100% { 
+        opacity: 1; 
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5);
+    }
+    50% { 
+        opacity: 0.8; 
+        transform: scale(0.95);
+        box-shadow: 0 0 0 6px rgba(74, 222, 128, 0);
+    }
+}
+
+@keyframes pulse-error {
+    0%, 100% { 
+        opacity: 1; 
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5);
+    }
+    50% { 
+        opacity: 0.8; 
+        transform: scale(0.95);
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+    }
+}
+
+@keyframes rotate-loading {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Estados de loading para elementos */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.loading i {
+    animation: rotate-loading 1s linear infinite !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .header-content {
+        gap: 1.5rem;
+    }
+    
+    .header-left h1 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .admin-header {
+        padding: 1.5rem;
+    }
+    
+    .header-content {
+        gap: 1rem;
+    }
+    
+    .header-left h1 {
+        font-size: 1.6rem;
+    }
+    
+    .header-right {
+        gap: 1rem;
+    }
+    
+    .connection-status,
+    .btn-secondary {
+        padding: 0.7rem 1.3rem;
+        font-size: 0.85rem;
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .header-left h1 {
+        font-size: 1.5rem;
+    }
+    
+    .header-left p {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .admin-header {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .header-left h1 {
+        font-size: 1.3rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .header-left h1 i {
+        margin-right: 0;
+        margin-bottom: 0.25rem;
+    }
+    
+    .connection-status,
+    .btn-secondary {
+        font-size: 0.8rem;
+        padding: 0.6rem 1rem;
+        min-width: 100px;
+    }
+    
+    .header-right {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-content {
+        gap: 1rem;
+    }
+    
+    .header-left h1 {
+        font-size: 1.2rem;
+    }
+    
+    .header-left p {
+        font-size: 0.8rem;
+    }
+}
+
+/* Estados adicionales para mejor UX */
+.connection-status.maintenance {
+    border-color: rgba(168, 85, 247, 0.4);
+    background: rgba(168, 85, 247, 0.15);
+    color: #ffffff;
+}
+
+.connection-status.maintenance i {
+    color: #a855f7;
+    animation: pulse-maintenance 2s infinite;
+}
+
+@keyframes pulse-maintenance {
+    0%, 100% { 
+        opacity: 1; 
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.5);
+    }
+    50% { 
+        opacity: 0.8; 
+        transform: scale(0.95);
+        box-shadow: 0 0 0 6px rgba(168, 85, 247, 0);
+    }
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    .header-left h1 i,
+    .connection-status i,
+    .btn-secondary i {
+        animation: none !important;
+    }
+    
+    .connection-status::before,
+    .btn-secondary::before {
+        transition: none;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .admin-header {
+        border: 2px solid white;
+    }
+    
+    .connection-status,
+    .btn-secondary {
+        border: 2px solid currentColor;
+    }
+}

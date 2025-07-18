@@ -11,6 +11,77 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
+    <!-- QR Code Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>
+        // Verificar y configurar la librería QR
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Verificando librería QR...');
+            console.log('window.QRCode:', typeof window.QRCode);
+            console.log('window.qrcode:', typeof window.qrcode);
+            console.log('window.QRious:', typeof window.QRious);
+            
+            // Intentar detectar la librería QR disponible
+            let qrLibrary = null;
+            
+            if (typeof window.QRCode !== 'undefined') {
+                qrLibrary = window.QRCode;
+                console.log('✅ Usando window.QRCode');
+            } else if (typeof window.qrcode !== 'undefined') {
+                qrLibrary = window.qrcode;
+                console.log('✅ Usando window.qrcode');
+            } else {
+                console.error('⚠️ Librería QR no encontrada, intentando cargar alternativa...');
+                
+                // Intentar cargar una librería alternativa
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js';
+                script.onload = function() {
+                    if (typeof window.QRious !== 'undefined') {
+                        console.log('✅ Librería QRious cargada como alternativa');
+                        // Crear wrapper para compatibilidad
+                        window.QRCodeLib = {
+                            toCanvas: function(canvas, text, options) {
+                                return new Promise((resolve) => {
+                                    const qr = new QRious({
+                                        element: canvas,
+                                        value: text,
+                                        size: options.width || 300,
+                                        foreground: options.color?.dark || '#000',
+                                        background: options.color?.light || '#fff'
+                                    });
+                                    resolve();
+                                });
+                            },
+                            toString: function(text, options) {
+                                return new Promise((resolve) => {
+                                    const qr = new QRious({
+                                        value: text,
+                                        size: 300
+                                    });
+                                    resolve(qr.toDataURL());
+                                });
+                            }
+                        };
+                    }
+                };
+                script.onerror = function() {
+                    console.error('❌ No se pudo cargar ninguna librería QR');
+                };
+                document.head.appendChild(script);
+                return;
+            }
+            
+            // Crear interfaz unificada para la librería QR
+            if (qrLibrary) {
+                window.QRCodeLib = qrLibrary;
+                console.log('✅ Librería QR configurada correctamente');
+            }
+        });
+    </script>
+        });
+    </script>
+    
     <!-- CSS del panel -->
     <link rel="stylesheet" href="css/admin-panel-mejorado.css">
     
@@ -38,6 +109,9 @@
             </div>
         </header>
 
+        <!-- Contenedor de Alertas -->
+        <div id="alertContainer" class="alert-container"></div>
+
         <!-- Sidebar -->
         <aside class="admin-sidebar">
             <nav>
@@ -61,9 +135,21 @@
                         </a>
                     </li>
                     <li>
+                        <a href="#carga-masiva">
+                            <i class="fas fa-file-upload"></i>
+                            Carga Masiva CSV
+                        </a>
+                    </li>
+                    <li>
                         <a href="#categorias">
                             <i class="fas fa-tags"></i>
                             Categorías
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#generador-qr">
+                            <i class="fas fa-qrcode"></i>
+                            Generador QR
                         </a>
                     </li>
                     <li>
@@ -151,6 +237,16 @@
                         Gestión de Productos
                     </h2>
                     <div class="section-actions">
+                        <div class="view-controls">
+                            <button class="btn btn-sm btn-secondary view-toggle active" data-view="grid" id="gridView">
+                                <i class="fas fa-th-large"></i>
+                                Tarjetas
+                            </button>
+                            <button class="btn btn-sm btn-secondary view-toggle" data-view="table" id="tableView">
+                                <i class="fas fa-list"></i>
+                                Lista
+                            </button>
+                        </div>
                         <div class="search-container">
                             <input type="text" id="searchProducts" placeholder="Buscar productos..." class="search-input">
                             <i class="fas fa-search"></i>
@@ -162,8 +258,38 @@
                     </div>
                 </div>
                 
-                <div class="products-grid">
+                <!-- Indicador de cantidad de productos -->
+                <div class="products-count-indicator" id="productsCountIndicator" style="display: none;">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="productsCountText">Mostrando 0 productos</span>
+                </div>
+                
+                <!-- Vista Grid (Tarjetas) -->
+                <div class="products-grid" id="productsGrid">
                     <!-- Los productos se cargarán aquí dinámicamente -->
+                </div>
+                
+                <!-- Vista Table (Lista horizontal) -->
+                <div class="products-table-container" id="productsTable" style="display: none;">
+                    <div class="table-responsive">
+                        <table class="products-table">
+                            <thead>
+                                <tr>
+                                    <th>Imagen</th>
+                                    <th>Producto</th>
+                                    <th>Marca</th>
+                                    <th>Precio</th>
+                                    <th>Categoría</th>
+                                    <th>Stock</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTableBody">
+                                <!-- Los productos se cargarán aquí dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
@@ -209,6 +335,13 @@
                                     <input type="number" id="ml" name="ml" required min="1" max="1000" 
                                            placeholder="Ej: 100" value="100">
                                     <div class="help-text">Tamaño en mililitros</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="stock">Stock Disponible *</label>
+                                    <input type="number" id="stock" name="stock" required min="0" max="10000" 
+                                           placeholder="Ej: 50" value="0">
+                                    <div class="help-text">Cantidad disponible en inventario</div>
                                 </div>
                             </div>
                         </div>
@@ -434,6 +567,243 @@
                 </div>
             </section>
 
+            <!-- Generador QR -->
+            <section id="generador-qr" class="content-section">
+                <h2 class="section-title">
+                    <i class="fas fa-qrcode"></i>
+                    Generador de Códigos QR
+                </h2>
+                
+                <div class="qr-generator-container">
+                    <!-- Información de la funcionalidad -->
+                    <div class="qr-info-section">
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="info-content">
+                                <h3>Verificación de Autenticidad</h3>
+                                <p>Genera códigos QR únicos para cada producto que permiten verificar la autenticidad de las lociones AROME DE DIEU.</p>
+                                <ul class="feature-list">
+                                    <li><i class="fas fa-check"></i> Verificación instantánea</li>
+                                    <li><i class="fas fa-check"></i> Protección contra falsificaciones</li>
+                                    <li><i class="fas fa-check"></i> Experiencia premium para el cliente</li>
+                                    <li><i class="fas fa-check"></i> Redirección automática a la tienda</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generador de QR -->
+                    <div class="qr-generator-section">
+                        <div class="generator-form">
+                            <h3>
+                                <i class="fas fa-plus-circle"></i>
+                                Generar Nuevo QR
+                            </h3>
+                            
+                            <form id="qrGeneratorForm" class="qr-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="qr-producto">Seleccionar Producto *</label>
+                                        <select id="qr-producto" name="producto" required>
+                                            <option value="">Seleccionar producto...</option>
+                                            <!-- Los productos se cargarán dinámicamente -->
+                                        </select>
+                                        <div class="help-text">Selecciona el producto para generar su QR de verificación</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="qr-lote">Número de Lote</label>
+                                        <input type="text" id="qr-lote" name="lote" placeholder="Ej: LOTE2025001" maxlength="20">
+                                        <div class="help-text">Número de lote para identificación (opcional)</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="qr-fecha">Fecha de Producción</label>
+                                        <input type="date" id="qr-fecha" name="fecha_produccion">
+                                        <div class="help-text">Fecha de producción del producto</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="qr-cantidad">Cantidad de QRs</label>
+                                        <input type="number" id="qr-cantidad" name="cantidad" min="1" max="1000" value="1">
+                                        <div class="help-text">Cantidad de QRs idénticos a generar</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group full-width">
+                                        <label for="qr-notas">Notas Adicionales</label>
+                                        <textarea id="qr-notas" name="notas" rows="3" placeholder="Información adicional sobre este lote..."></textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-qrcode"></i>
+                                        Generar QR
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="fas fa-undo"></i>
+                                        Limpiar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Resultado del QR -->
+                        <div class="qr-result" id="qrResult" style="display: none;">
+                            <h3>
+                                <i class="fas fa-check-circle"></i>
+                                QR Generado Exitosamente
+                            </h3>
+                            
+                            <div class="qr-display">
+                                <div class="qr-code-container">
+                                    <canvas id="qrCanvas" width="300" height="300"></canvas>
+                                    <div class="qr-info">
+                                        <p><strong>Producto:</strong> <span id="qr-producto-nombre"></span></p>
+                                        <p><strong>Marca:</strong> <span id="qr-producto-marca"></span></p>
+                                        <p><strong>Código QR:</strong> <span id="qr-codigo-id"></span></p>
+                                        <p><strong>URL de Verificación:</strong></p>
+                                        <div class="url-display">
+                                            <input type="text" id="qr-url" readonly>
+                                            <button class="btn btn-sm btn-secondary" onclick="adminPanel.copyQRUrl()">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="qr-actions">
+                                    <button class="btn btn-success" onclick="adminPanel.downloadQR('png')">
+                                        <i class="fas fa-download"></i>
+                                        Descargar PNG
+                                    </button>
+                                    <button class="btn btn-info" onclick="adminPanel.downloadQR('svg')">
+                                        <i class="fas fa-download"></i>
+                                        Descargar SVG
+                                    </button>
+                                    <button class="btn btn-warning" onclick="adminPanel.downloadQR('pdf')">
+                                        <i class="fas fa-file-pdf"></i>
+                                        Descargar PDF
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="adminPanel.printQR()">
+                                        <i class="fas fa-print"></i>
+                                        Imprimir
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Historial de QRs -->
+                    <div class="qr-history-section">
+                        <div class="section-header">
+                            <h3>
+                                <i class="fas fa-history"></i>
+                                Historial de QRs Generados
+                            </h3>
+                            <div class="history-actions">
+                                <button class="btn btn-sm btn-secondary" onclick="adminPanel.refreshQRHistory()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    Actualizar
+                                </button>
+                                <button class="btn btn-sm btn-info" onclick="adminPanel.exportQRHistory()">
+                                    <i class="fas fa-file-export"></i>
+                                    Exportar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="qr-stats">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-qrcode"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h4>Total QRs</h4>
+                                    <span class="stat-number" id="total-qrs">0</span>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h4>Escaneados</h4>
+                                    <span class="stat-number" id="qrs-escaneados">0</span>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h4>Hoy</h4>
+                                    <span class="stat-number" id="qrs-hoy">0</span>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calendar-week"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h4>Esta Semana</h4>
+                                    <span class="stat-number" id="qrs-semana">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="qr-table-container">
+                            <div class="table-filters">
+                                <div class="filter-group">
+                                    <input type="text" id="filter-qr-search" placeholder="Buscar por producto o código..." class="filter-input">
+                                </div>
+                                <div class="filter-group">
+                                    <select id="filter-qr-producto" class="filter-select">
+                                        <option value="">Todos los productos</option>
+                                    </select>
+                                </div>
+                                <div class="filter-group">
+                                    <select id="filter-qr-fecha" class="filter-select">
+                                        <option value="">Todas las fechas</option>
+                                        <option value="today">Hoy</option>
+                                        <option value="week">Esta semana</option>
+                                        <option value="month">Este mes</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="qr-history-table">
+                                    <thead>
+                                        <tr>
+                                            <th>QR</th>
+                                            <th>Producto</th>
+                                            <th>Código</th>
+                                            <th>Lote</th>
+                                            <th>Fecha Creación</th>
+                                            <th>Escaneado</th>
+                                            <th>Última Verificación</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="qrHistoryTable">
+                                        <!-- Los QRs se cargarán dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             <!-- Configuración -->
             <section id="configuracion" class="content-section">
                 <h2 class="section-title">
@@ -490,7 +860,352 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Carga Masiva CSV -->
+            <section id="carga-masiva" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-file-upload"></i>
+                        Carga Masiva desde CSV
+                    </h2>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary" id="downloadTemplate">
+                            <i class="fas fa-download"></i>
+                            Descargar Plantilla
+                        </button>
+                        <button class="btn btn-info" id="showInstructions">
+                            <i class="fas fa-question-circle"></i>
+                            Instrucciones
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Estadísticas de Carga -->
+                <div class="upload-stats" id="uploadStats" style="display: none;">
+                    <div class="stats-grid">
+                        <div class="stat-card success">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Procesados</h3>
+                                <span class="stat-number" id="processedCount">0</span>
+                            </div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Con Errores</h3>
+                                <span class="stat-number" id="errorCount">0</span>
+                            </div>
+                        </div>
+                        <div class="stat-card info">
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Tiempo</h3>
+                                <span class="stat-number" id="processTime">0s</span>
+                            </div>
+                        </div>
+                        <div class="stat-card primary">
+                            <div class="stat-icon">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Progreso</h3>
+                                <span class="stat-number" id="progressPercent">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenedor Principal de Carga -->
+                <div class="upload-container">
+                    <!-- Área de Upload -->
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-zone" id="uploadZone">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h3>Cargar Archivo CSV</h3>
+                            <p>Arrastra tu archivo aquí o haz click para seleccionar</p>
+                            <p class="upload-hint">Máximo 1000 productos por archivo • Solo archivos .csv</p>
+                            <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+                            <button class="btn btn-primary" id="selectFileBtn">
+                                <i class="fas fa-folder-open"></i>
+                                Seleccionar Archivo
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Información del Archivo -->
+                    <div class="file-info" id="fileInfo" style="display: none;">
+                        <div class="file-details">
+                            <div class="file-icon">
+                                <i class="fas fa-file-csv"></i>
+                            </div>
+                            <div class="file-data">
+                                <h4 id="fileName">archivo.csv</h4>
+                                <p id="fileSize">0 KB</p>
+                                <p id="fileRows">0 filas detectadas</p>
+                            </div>
+                            <div class="file-actions">
+                                <button class="btn btn-sm btn-danger" id="removeFile">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuración de Carga -->
+                    <div class="upload-config" id="uploadConfig" style="display: none;">
+                        <h3><i class="fas fa-cogs"></i> Configuración de Carga</h3>
+                        <div class="config-grid">
+                            <div class="config-group">
+                                <label>
+                                    <input type="checkbox" id="skipErrors" checked>
+                                    Saltar filas con errores
+                                </label>
+                                <span class="config-hint">Continúa procesando aunque haya errores</span>
+                            </div>
+                            <div class="config-group">
+                                <label>
+                                    <input type="checkbox" id="updateExisting">
+                                    Actualizar productos existentes
+                                </label>
+                                <span class="config-hint">Actualiza productos que ya existen (por nombre y marca)</span>
+                            </div>
+                            <div class="config-group">
+                                <label>
+                                    <input type="checkbox" id="validateImages">
+                                    Validar URLs de imágenes
+                                </label>
+                                <span class="config-hint">Verifica que las URLs de imágenes sean válidas</span>
+                            </div>
+                            <div class="config-group">
+                                <label for="batchSize">Tamaño de lote:</label>
+                                <select id="batchSize">
+                                    <option value="10">10 productos</option>
+                                    <option value="25" selected>25 productos</option>
+                                    <option value="50">50 productos</option>
+                                    <option value="100">100 productos</option>
+                                </select>
+                                <span class="config-hint">Productos a procesar por lote</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview de Datos -->
+                    <div class="data-preview" id="dataPreview" style="display: none;">
+                        <h3><i class="fas fa-eye"></i> Vista Previa de Datos</h3>
+                        <div class="preview-controls">
+                            <button class="btn btn-sm btn-secondary" id="validateData">
+                                <i class="fas fa-check-double"></i>
+                                Validar Datos
+                            </button>
+                            <button class="btn btn-sm btn-info" id="debugData" style="display: none;">
+                                <i class="fas fa-bug"></i>
+                                Debug Datos
+                            </button>
+                            <button class="btn btn-sm btn-warning" id="diagnoseSupabase" style="display: none;">
+                                <i class="fas fa-database"></i>
+                                Test Supabase
+                            </button>
+                            <span class="preview-info">Mostrando primeras 5 filas</span>
+                        </div>
+                        <div class="preview-table-container">
+                            <table class="preview-table" id="previewTable">
+                                <thead id="previewHeader"></thead>
+                                <tbody id="previewBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Errores de Validación -->
+                    <div class="validation-errors" id="validationErrors" style="display: none;">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Errores de Validación</h3>
+                        <div class="errors-list" id="errorsList"></div>
+                    </div>
+
+                    <!-- Barra de Progreso -->
+                    <div class="progress-container" id="progressContainer" style="display: none;">
+                        <h3><i class="fas fa-tasks"></i> Progreso de Carga</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                            <span class="progress-text" id="progressText">0%</span>
+                        </div>
+                        <div class="progress-details">
+                            <span id="progressDetail">Preparando carga...</span>
+                            <span id="progressTime">Tiempo estimado: --</span>
+                        </div>
+                    </div>
+
+                    <!-- Acciones de Carga -->
+                    <div class="upload-actions" id="uploadActions" style="display: none;">
+                        <button class="btn btn-success btn-lg" id="startUpload">
+                            <i class="fas fa-upload"></i>
+                            Iniciar Carga Masiva
+                        </button>
+                        <button class="btn btn-warning btn-lg" id="pauseUpload" style="display: none;">
+                            <i class="fas fa-pause"></i>
+                            Pausar
+                        </button>
+                        <button class="btn btn-danger btn-lg" id="cancelUpload" style="display: none;">
+                            <i class="fas fa-stop"></i>
+                            Cancelar
+                        </button>
+                    </div>
+
+                    <!-- Resultados de Carga -->
+                    <div class="upload-results" id="uploadResults" style="display: none;">
+                        <h3><i class="fas fa-chart-bar"></i> Resultados de Carga</h3>
+                        <div class="results-summary" id="resultsSummary"></div>
+                        <div class="results-actions">
+                            <button class="btn btn-primary" id="downloadReport">
+                                <i class="fas fa-download"></i>
+                                Descargar Reporte
+                            </button>
+                            <button class="btn btn-secondary" id="resetUpload">
+                                <i class="fas fa-redo"></i>
+                                Nueva Carga
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal de Instrucciones -->
+                <div class="modal-overlay" id="instructionsModal">
+                    <div class="modal instructions-modal">
+                        <div class="modal-header">
+                            <h3 class="modal-title">
+                                <i class="fas fa-info-circle"></i>
+                                Instrucciones de Carga Masiva
+                            </h3>
+                            <button class="modal-close" id="closeInstructions">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="instructions-content">
+                                <div class="instruction-section">
+                                    <h4><i class="fas fa-file-csv"></i> Formato del Archivo CSV</h4>
+                                    <p>El archivo debe tener las siguientes columnas (en este orden):</p>
+                                    <div class="csv-format">
+                                        <code>nombre,marca,precio,categoria,subcategoria,descripcion,notas,imagen_url,ml,stock,estado,descuento,luxury,activo</code>
+                                    </div>
+                                </div>
+
+                                <div class="instruction-section">
+                                    <h4><i class="fas fa-list"></i> Descripción de Campos</h4>
+                                    <div class="fields-list">
+                                        <div class="field-item required">
+                                            <strong>nombre</strong>: Nombre del producto (requerido)
+                                        </div>
+                                        <div class="field-item required">
+                                            <strong>marca</strong>: Marca del producto (requerido)
+                                        </div>
+                                        <div class="field-item required">
+                                            <strong>precio</strong>: Precio en pesos (requerido, solo números)
+                                        </div>
+                                        <div class="field-item required">
+                                            <strong>categoria</strong>: para-ellos, para-ellas, unisex (requerido)
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>subcategoria</strong>: designer, arabic, contemporary, vintage
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>descripcion</strong>: Descripción del producto
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>notas</strong>: Notas olfativas
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>imagen_url</strong>: URL de la imagen del producto
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>ml</strong>: Tamaño en mililitros (1-1000, default: 100)
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>stock</strong>: Cantidad disponible (default: 0)
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>estado</strong>: disponible, agotado, proximo, oferta (default: disponible)
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>descuento</strong>: Porcentaje de descuento (1-99, vacío si no hay)
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>luxury</strong>: true/false (default: false)
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>activo</strong>: true/false (default: true)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="instruction-section">
+                                    <h4><i class="fas fa-exclamation-triangle"></i> Notas Importantes</h4>
+                                    <ul class="notes-list">
+                                        <li>La primera fila debe contener los nombres de las columnas</li>
+                                        <li>Los campos marcados como "requerido" no pueden estar vacíos</li>
+                                        <li>Usa comas como separador y comillas dobles para texto con comas</li>
+                                        <li>Las URLs de imágenes deben ser válidas y accesibles</li>
+                                        <li>Máximo 1000 productos por archivo</li>
+                                        <li>El archivo no debe superar los 5MB</li>
+                                    </ul>
+                                </div>
+
+                                <div class="instruction-section">
+                                    <h4><i class="fas fa-download"></i> Plantilla de Ejemplo</h4>
+                                    <p>Descarga la plantilla para ver un ejemplo del formato correcto:</p>
+                                    <button class="btn btn-primary" id="downloadTemplateModal">
+                                        <i class="fas fa-download"></i>
+                                        Descargar Plantilla CSV
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
+    </div>
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div class="modal-overlay" id="deleteConfirmModal" style="display: none;">
+        <div class="modal delete-confirm-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Confirmar Eliminación
+                </h3>
+            </div>
+            <div class="modal-body">
+                <div class="delete-warning">
+                    <div class="warning-icon">
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+                    <div class="warning-content">
+                        <p><strong>¿Estás seguro de que quieres eliminar este producto?</strong></p>
+                        <p class="product-name" id="deleteProductName">Nombre del producto</p>
+                        <p class="warning-text">Esta acción no se puede deshacer.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelDelete">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+                <button class="btn btn-danger" id="confirmDelete">
+                    <i class="fas fa-trash"></i>
+                    Eliminar Producto
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Loading Overlay -->
@@ -504,9 +1219,13 @@
     <!-- Alert Container -->
     <div id="alertContainer" class="alert-container"></div>
 
+    <!-- Toast Notifications Container -->
+    <div class="toast-container"></div>
+
     <!-- Scripts -->
     <script src="js/supabase-config-optimized.js"></script>
     <script src="js/admin-panel-mejorado.js"></script>
+    <script src="js/csv-upload-fixed.js"></script>
     <script>
         // Inicializar el panel de administración
         let adminPanel;
@@ -527,6 +1246,24 @@
                 if (typeof window.supabase === 'undefined') {
                     throw new Error('Supabase no pudo cargarse después de 5 segundos');
                 }
+                
+                // Inicializar Supabase client
+                console.log('🔄 Inicializando cliente Supabase...');
+                if (typeof initSupabase === 'function') {
+                    const initialized = initSupabase();
+                    if (!initialized) {
+                        throw new Error('Error inicializando cliente Supabase');
+                    }
+                } else {
+                    console.error('❌ Función initSupabase no encontrada');
+                }
+                
+                // Verificar que el cliente esté disponible
+                if (!window.supabaseClient) {
+                    throw new Error('Cliente Supabase no está disponible');
+                }
+                
+                console.log('✅ Cliente Supabase inicializado correctamente');
                 
                 // Inicializar el panel
                 adminPanel = new AdminPanel();
@@ -583,6 +1320,59 @@
                 };
             }
         };
+    </script>
+
+    <!-- Debug QR Library -->
+    <script>
+        // Función de debug para probar QR
+        window.testQRLibrary = function() {
+            console.log('🧪 Testing QR Library...');
+            console.log('window.QRCodeLib:', typeof window.QRCodeLib);
+            console.log('window.QRCode:', typeof window.QRCode);
+            console.log('window.qrcode:', typeof window.qrcode);
+            console.log('window.QRious:', typeof window.QRious);
+            
+            const testCanvas = document.createElement('canvas');
+            testCanvas.width = 200;
+            testCanvas.height = 200;
+            
+            const QRCodeLib = window.QRCodeLib || window.QRCode || window.qrcode;
+            if (QRCodeLib && QRCodeLib.toCanvas) {
+                QRCodeLib.toCanvas(testCanvas, 'TEST QR CODE', {
+                    width: 200,
+                    height: 200
+                }).then(() => {
+                    console.log('✅ QR Library is working!');
+                    alert('✅ QR Library is working correctly!');
+                }).catch(error => {
+                    console.error('❌ QR Library test failed:', error);
+                    alert('❌ QR Library test failed: ' + error.message);
+                });
+            } else {
+                console.error('❌ QR Library not available');
+                alert('❌ QR Library not available');
+            }
+        };
+        
+        // Agregar botón de debug cuando la página cargue
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const debugBtn = document.createElement('button');
+                debugBtn.innerHTML = '🧪 Test QR Library';
+                debugBtn.style.position = 'fixed';
+                debugBtn.style.top = '10px';
+                debugBtn.style.right = '10px';
+                debugBtn.style.zIndex = '9999';
+                debugBtn.style.padding = '5px 10px';
+                debugBtn.style.backgroundColor = '#007bff';
+                debugBtn.style.color = 'white';
+                debugBtn.style.border = 'none';
+                debugBtn.style.borderRadius = '4px';
+                debugBtn.style.cursor = 'pointer';
+                debugBtn.onclick = window.testQRLibrary;
+                document.body.appendChild(debugBtn);
+            }, 1000);
+        });
     </script>
 </body>
 </html>
