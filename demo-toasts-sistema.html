@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo - Sistema de Toasts</title>
+    <link rel="stylesheet" href="css/admin-panel-mejorado.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f3f0 0%, #e8e2db 100%);
+            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .demo-title {
+            text-align: center;
+            color: #2c2c2c;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .demo-button {
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4a6 50%, #d4af37 100%);
+            color: #2c2c2c;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .demo-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+        }
+        .demo-button.success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
+        .demo-button.error { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
+        .demo-button.warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; }
+        .demo-button.info { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; }
+        .clear-button {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+        }
+        .demo-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            color: #1e40af;
+        }
+        .demo-info h3 {
+            margin: 0 0 10px 0;
+            color: #1e3a8a;
+        }
+        .demo-info ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .demo-info li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">
+            <i class="fas fa-bell"></i>
+            Sistema de Toasts - Notificaciones
+        </h1>
+        
+        <div class="buttons-grid">
+            <button class="demo-button success" onclick="showToast('success', 'Operación Exitosa', 'La carga masiva se completó correctamente. 15 productos fueron procesados.')">
+                <i class="fas fa-check-circle"></i> Toast Éxito
+            </button>
+            
+            <button class="demo-button error" onclick="showToast('error', 'Error Crítico', 'No se pudo conectar con la base de datos. Verifique su conexión.')">
+                <i class="fas fa-exclamation-circle"></i> Toast Error
+            </button>
+            
+            <button class="demo-button warning" onclick="showToast('warning', 'Advertencia', 'Algunos productos tienen precios muy altos. Revise antes de continuar.')">
+                <i class="fas fa-exclamation-triangle"></i> Toast Advertencia
+            </button>
+            
+            <button class="demo-button info" onclick="showToast('info', 'Información', 'Proceso de carga iniciado. Esto puede tomar unos minutos.')">
+                <i class="fas fa-info-circle"></i> Toast Info
+            </button>
+            
+            <button class="demo-button" onclick="showMultipleToasts()">
+                <i class="fas fa-layer-group"></i> Múltiples Toasts
+            </button>
+            
+            <button class="demo-button clear-button" onclick="clearAllToasts()">
+                <i class="fas fa-trash"></i> Limpiar Todos
+            </button>
+        </div>
+
+        <div class="demo-info">
+            <h3><i class="fas fa-info-circle"></i> Características del Sistema de Toasts:</h3>
+            <ul>
+                <li><strong>Posicionamiento:</strong> Fijo en la esquina superior derecha</li>
+                <li><strong>Auto-cierre:</strong> Se cierran automáticamente después de 5 segundos</li>
+                <li><strong>Cierre manual:</strong> Botón X para cerrar manualmente</li>
+                <li><strong>Animaciones:</strong> Entrada suave desde la derecha y salida elegante</li>
+                <li><strong>Tipos:</strong> Success (verde), Error (rojo), Warning (naranja), Info (azul)</li>
+                <li><strong>Responsive:</strong> Se adapta a dispositivos móviles</li>
+                <li><strong>Apilamiento:</strong> Los toasts se apilan verticalmente</li>
+                <li><strong>Efectos hover:</strong> Elevación sutil al pasar el mouse</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Contenedor de Toasts -->
+    <div class="toast-container"></div>
+
+    <script>
+        function showToast(type, title, message) {
+            // Crear contenedor si no existe
+            let container = document.querySelector('.toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // Crear toast
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const iconMap = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                warning: 'fas fa-exclamation-triangle',
+                info: 'fas fa-info-circle'
+            };
+
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="${iconMap[type]}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            // Agregar evento de cierre
+            const closeBtn = toast.querySelector('.toast-close');
+            closeBtn.addEventListener('click', () => {
+                closeToast(toast);
+            });
+
+            // Agregar al contenedor
+            container.appendChild(toast);
+
+            // Auto cerrar después de 5 segundos
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    closeToast(toast);
+                }
+            }, 5000);
+        }
+
+        function closeToast(toast) {
+            toast.classList.add('fade-out');
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }
+
+        function showMultipleToasts() {
+            showToast('info', 'Iniciando proceso', 'Preparando carga masiva...');
+            setTimeout(() => {
+                showToast('success', 'Archivo procesado', 'CSV validado correctamente');
+            }, 500);
+            setTimeout(() => {
+                showToast('warning', 'Atención', 'Algunos productos requieren revisión');
+            }, 1000);
+            setTimeout(() => {
+                showToast('success', 'Proceso completado', 'Todos los productos fueron cargados exitosamente');
+            }, 1500);
+        }
+
+        function clearAllToasts() {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(toast => {
+                closeToast(toast);
+            });
+        }
+
+        // Mostrar toast de bienvenida al cargar
+        setTimeout(() => {
+            showToast('info', '¡Bienvenido!', 'Sistema de toasts cargado correctamente. Prueba los diferentes tipos de notificaciones.');
+        }, 1000);
+    </script>
+</body>
+</html>

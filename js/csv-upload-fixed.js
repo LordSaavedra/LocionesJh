@@ -278,32 +278,73 @@ class CSVUploadManager {
         let skippedRows = 0;
         
         for (let i = 1; i < lines.length; i++) {
-            const values = this.parseCSVLine(lines[i]);
+            const line = lines[i].trim();
+            
+            // Saltar líneas vacías
+            if (!line) {
+                console.log(`⚠️ Fila ${i + 1} vacía - ignorada`);
+                skippedRows++;
+                continue;
+            }
+            
+            const values = this.parseCSVLine(line);
             console.log(`📄 Fila ${i + 1} valores (${values.length} campos):`, values);
+            console.log(`📄 Línea original: "${line}"`);
             
             if (values.length === headers.length) {
                 const rowData = {};
+                let hasRequiredData = false;
+                
                 headers.forEach((header, index) => {
                     const normalizedHeader = header.trim().toLowerCase();
-                    rowData[normalizedHeader] = values[index] ? values[index].trim() : '';
+                    const value = values[index] ? values[index].trim() : '';
+                    rowData[normalizedHeader] = value;
+                    
+                    // Verificar si tiene datos básicos requeridos
+                    if ((normalizedHeader === 'nombre' || normalizedHeader === 'marca') && value) {
+                        hasRequiredData = true;
+                    }
                 });
-                console.log(`✅ Fila ${i + 1} procesada:`, rowData);
-                dataRows.push({
-                    row: i + 1,
-                    data: rowData
-                });
+                
+                // Solo agregar si tiene datos básicos
+                if (hasRequiredData) {
+                    console.log(`✅ Fila ${i + 1} procesada:`, rowData);
+                    dataRows.push({
+                        row: i + 1,
+                        data: rowData
+                    });
+                } else {
+                    console.log(`⚠️ Fila ${i + 1} sin datos básicos (nombre/marca) - ignorada`);
+                    skippedRows++;
+                }
             } else {
                 console.log(`⚠️ Fila ${i + 1} ignorada - columnas no coinciden: esperadas ${headers.length}, encontradas ${values.length}`);
+                console.log(`⚠️ Headers: [${headers.join(', ')}]`);
+                console.log(`⚠️ Valores: [${values.join(', ')}]`);
                 skippedRows++;
             }
         }
 
         console.log(`📊 Resumen procesamiento:`);
+        console.log(`  - Total de líneas: ${lines.length - 1}`);
         console.log(`  - Filas procesadas: ${dataRows.length}`);
         console.log(`  - Filas ignoradas: ${skippedRows}`);
+        console.log(`  - Headers esperados: ${headers.length}`);
+        console.log(`  - Headers: [${headers.join(', ')}]`);
 
         if (dataRows.length === 0) {
-            this.showError('No se encontraron filas de datos válidas en el archivo.');
+            let errorMessage = 'No se encontraron filas de datos válidas en el archivo.';
+            
+            if (skippedRows > 0) {
+                errorMessage += ` Se encontraron ${skippedRows} filas con problemas:`;
+                errorMessage += `\n• Verifica que todas las filas tengan ${headers.length} columnas`;
+                errorMessage += `\n• Asegúrate de que los campos 'nombre' y 'marca' no estén vacíos`;
+                errorMessage += `\n• Revisa que no haya comas extra o comillas mal cerradas`;
+            } else {
+                errorMessage += ' El archivo podría estar vacío o tener un formato incorrecto.';
+            }
+            
+            this.showError(errorMessage);
             return;
         }
 
@@ -1058,18 +1099,24 @@ class CSVUploadManager {
             <div class="results-summary">
                 <div class="summary-item success">
                     <i class="fas fa-check-circle"></i>
-                    <span class="summary-number">${successful.length}</span>
-                    <span class="summary-label">Exitosos</span>
+                    <div>
+                        <div class="summary-number">${successful.length}</div>
+                        <div class="summary-label">Exitosos</div>
+                    </div>
                 </div>
                 <div class="summary-item error">
                     <i class="fas fa-exclamation-circle"></i>
-                    <span class="summary-number">${failed.length}</span>
-                    <span class="summary-label">Fallidos</span>
+                    <div>
+                        <div class="summary-number">${failed.length}</div>
+                        <div class="summary-label">Fallidos</div>
+                    </div>
                 </div>
                 <div class="summary-item info">
                     <i class="fas fa-clock"></i>
-                    <span class="summary-number">${elapsedTime}s</span>
-                    <span class="summary-label">Tiempo</span>
+                    <div>
+                        <div class="summary-number">${elapsedTime}s</div>
+                        <div class="summary-label">Tiempo</div>
+                    </div>
                 </div>
             </div>
             

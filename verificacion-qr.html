@@ -91,7 +91,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            max-width: 600px;
+            max-width: 700px;
             width: 90%;
         }
 
@@ -99,46 +99,56 @@
             background: linear-gradient(135deg, #2B2B2B 0%, #3A3A3A 100%);
             border: 2px solid #EFE8DC;
             border-radius: 12px;
-            padding: 1rem;
+            padding: 0;
             text-align: center;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8);
-            max-width: 600px;
+            max-width: 700px;
             width: 100%;
             position: relative;
             animation: glow 2s ease-in-out infinite alternate;
             backdrop-filter: blur(10px);
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+            min-height: 400px;
         }
 
         .verification-header {
             display: flex;
             align-items: stretch;
-            gap: 1rem;
-            margin-bottom: 0.8rem;
-            height: 200px;
+            gap: 0;
+            margin-bottom: 0;
+            height: auto;
+            width: 100%;
+            min-height: 400px;
         }
 
         .product-image-section {
             flex-shrink: 0;
-            width: 150px;
+            width: 250px;
             height: 100%;
+            min-height: 400px;
             display: flex;
             flex-direction: column;
+            background: linear-gradient(135deg, rgba(239, 232, 220, 0.1) 0%, rgba(239, 232, 220, 0.05) 100%);
+            border-radius: 12px 0 0 12px;
+            overflow: hidden;
         }
 
         .product-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid rgba(239, 232, 220, 0.2);
+            border-radius: 0;
+            border: none;
         }
 
         .product-image-placeholder {
             width: 100%;
             height: 100%;
             background: linear-gradient(135deg, rgba(239, 232, 220, 0.1) 0%, rgba(239, 232, 220, 0.05) 100%);
-            border: 2px dashed rgba(239, 232, 220, 0.3);
-            border-radius: 8px;
+            border: none;
+            border-radius: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -160,11 +170,15 @@
 
         .verification-info {
             flex: 1;
-            text-align: center;
+            text-align: left;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             height: 100%;
+            min-height: 400px;
+            padding: 2rem;
+            background: linear-gradient(135deg, #2B2B2B 0%, #3A3A3A 100%);
+            border-radius: 0 12px 12px 0;
         }
 
         @keyframes glow {
@@ -215,8 +229,8 @@
             background: linear-gradient(135deg, rgba(239, 232, 220, 0.1) 0%, rgba(239, 232, 220, 0.05) 100%);
             border: 1px solid rgba(239, 232, 220, 0.2);
             border-radius: 8px;
-            padding: 0.7rem;
-            margin: 0.7rem 0;
+            padding: 1rem;
+            margin: 1rem 0;
             text-align: left;
         }
 
@@ -274,7 +288,7 @@
             border: 2px solid #28a745;
             border-radius: 8px;
             padding: 0.6rem;
-            margin: 0.7rem 0;
+            margin: 1rem 0;
             animation: successPulse 2s infinite;
         }
 
@@ -298,8 +312,8 @@
         }
 
         .company-footer {
-            margin-top: 0.7rem;
-            padding-top: 0.6rem;
+            margin-top: auto;
+            padding-top: 1rem;
             border-top: 1px solid rgba(239, 232, 220, 0.2);
         }
 
@@ -312,6 +326,42 @@
         .company-highlight {
             color: #EFE8DC;
             font-weight: 600;
+        }
+
+        /* Contador de redirección */
+        .redirect-countdown {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, rgba(0, 123, 255, 0.1) 0%, rgba(0, 123, 255, 0.05) 100%);
+            border: 1px solid rgba(0, 123, 255, 0.3);
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .countdown-text {
+            font-size: 0.65rem;
+            color: #007bff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .countdown-text i {
+            font-size: 0.7rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        #countdownTimer {
+            font-weight: 700;
+            color: #EFE8DC;
+            background: rgba(0, 123, 255, 0.2);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            min-width: 1.5rem;
+            display: inline-block;
         }
 
         /* Animación de salida */
@@ -334,19 +384,19 @@
         /* Responsive */
         @media (max-width: 768px) {
             .verification-wrapper {
-                max-width: 400px;
+                max-width: 450px;
             }
 
             .verification-header {
                 flex-direction: column;
-                align-items: center;
-                gap: 0.8rem;
+                align-items: stretch;
+                gap: 0;
                 height: auto;
             }
 
             .product-image-section {
-                width: 160px;
-                height: 160px;
+                width: 100%;
+                height: 200px;
             }
 
             .product-image,
@@ -365,10 +415,11 @@
 
             .verification-info {
                 height: auto;
+                padding: 1rem;
+                text-align: center;
             }
 
             .verification-container {
-                padding: 0.8rem;
                 max-width: 100%;
             }
 
@@ -495,50 +546,57 @@
                         <!-- Título de verificación -->
                         <h2 class="verification-title">Producto Verificado</h2>
                         <p class="verification-subtitle">Este producto es auténtico y está respaldado por nuestra garantía de calidad</p>
-                    </div>
-                </div>
 
-                <!-- Estado de verificación -->
-                <div class="verification-status">
-                    <div class="status-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="status-text">✓ Producto Legítimo</div>
-                </div>
+                        <!-- Estado de verificación -->
+                        <div class="verification-status">
+                            <div class="status-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="status-text">✓ Producto Legítimo</div>
+                        </div>
 
-                <!-- Información del producto -->
-                <div class="product-info">
-                    <div class="product-header">
-                        <div class="product-name" id="productName">Cargando...</div>
-                        <div class="product-brand" id="productBrand">AROME DE DIEU</div>
-                    </div>
+                        <!-- Información del producto -->
+                        <div class="product-info">
+                            <div class="product-header">
+                                <div class="product-name" id="productName">Cargando...</div>
+                                <div class="product-brand" id="productBrand">AROME DE DIEU</div>
+                            </div>
 
-                    <div class="product-details">
-                        <div class="detail-item">
-                            <div class="detail-label">Código QR</div>
-                            <div class="detail-value" id="qrCode">-</div>
+                            <div class="product-details">
+                                <div class="detail-item">
+                                    <div class="detail-label">Código QR</div>
+                                    <div class="detail-value" id="qrCode">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Fecha de Verificación</div>
+                                    <div class="detail-value" id="verificationDate">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Lote</div>
+                                    <div class="detail-value" id="productLote">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Estado</div>
+                                    <div class="detail-value" style="color: #28a745;">Auténtico</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Fecha de Verificación</div>
-                            <div class="detail-value" id="verificationDate">-</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Lote</div>
-                            <div class="detail-value" id="productLote">-</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Estado</div>
-                            <div class="detail-value" style="color: #28a745;">Auténtico</div>
+
+                        <!-- Pie de página de la empresa -->
+                        <div class="company-footer">
+                            <p class="company-text">
+                                Vendido por <span class="company-highlight">AROME DE DIEU</span><br>
+                                Garantía de autenticidad y calidad premium
+                            </p>
+                            <!-- Contador de redirección -->
+                            <div class="redirect-countdown" id="redirectCountdown" style="display: none;">
+                                <p class="countdown-text">
+                                    <i class="fas fa-home"></i>
+                                    Redirigiendo a la tienda en <span id="countdownTimer">10</span> segundos...
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Pie de página de la empresa -->
-                <div class="company-footer">
-                    <p class="company-text">
-                        Vendido por <span class="company-highlight">AROME DE DIEU</span><br>
-                        Garantía de autenticidad y calidad premium
-                    </p>
                 </div>
             </div>
         </div>
@@ -550,6 +608,11 @@
     <script src="js/limpiar-productos-prueba.js"></script>
     <script src="js/navbar.js"></script>
     <script src="js/app.js"></script>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/qr-service-fixed.js"></script>
 
     <script>
         // Cargar navbar en el fondo
@@ -577,9 +640,80 @@
             };
         }
 
-        // Cargar datos del QR desde localStorage
-        function loadQRData(qrId) {
+        // Cargar datos del QR desde Supabase usando QRService
+        async function loadQRData(qrId) {
             try {
+                console.log('🔍 Buscando QR usando QRService:', qrId);
+                
+                // Inicializar QRService
+                if (typeof window.QRService === 'undefined') {
+                    console.log('📝 Inicializando QRService...');
+                    const qrService = new QRService();
+                    await qrService.initialize();
+                    window.QRService = qrService;
+                }
+
+                // Obtener información del QR usando QRService
+                const qrInfo = await window.QRService.getQRInfo(qrId);
+                
+                if (!qrInfo) {
+                    console.warn('⚠️ QR no encontrado en base de datos');
+                    return loadQRDataFromLocalStorage(qrId);
+                }
+
+                console.log('✅ Datos QR obtenidos de base de datos:', qrInfo);
+
+                // Registrar el escaneo
+                try {
+                    await window.QRService.registerScan(qrId, {
+                        userAgent: navigator.userAgent,
+                        referrer: document.referrer,
+                        location: window.location.href,
+                        timestamp: new Date().toISOString()
+                    });
+                    console.log('✅ Escaneo registrado');
+                } catch (scanError) {
+                    console.warn('⚠️ Error registrando escaneo:', scanError);
+                }
+
+                // Transformar datos al formato esperado por la página
+                return {
+                    id: qrInfo.qr.id,
+                    producto: qrInfo.producto?.nombre || 'Producto AROME DE DIEU',
+                    marca: qrInfo.producto?.marca || 'AROME DE DIEU',
+                    lote: qrInfo.qr.lote || 'Sin especificar',
+                    fechaProduccion: qrInfo.qr.fechaProduccion,
+                    fechaCreacion: qrInfo.qr.fechaCreacion,
+                    imagen: qrInfo.producto?.imagen_url,
+                    imageUrl: qrInfo.producto?.imagen_url,
+                    precio: qrInfo.producto?.precio,
+                    ml: qrInfo.producto?.ml,
+                    categoria: qrInfo.producto?.categoria,
+                    descripcion: qrInfo.producto?.descripcion,
+                    luxury: qrInfo.producto?.luxury,
+                    escaneado: true,
+                    ultimaVerificacion: new Date().toISOString(),
+                    contadorEscaneos: (qrInfo.qr.totalEscaneos || 0) + 1
+                };
+                
+            } catch (error) {
+                console.error('❌ Error cargando datos QR usando QRService:', error);
+                return loadQRDataFromLocalStorage(qrId);
+            }
+        }
+
+        // Fallback: Cargar datos del QR desde localStorage
+        function loadQRDataFromLocalStorage(qrId) {
+            try {
+                console.log('🔄 Usando fallback localStorage para QR:', qrId);
+                
+                if (typeof window.QRService !== 'undefined') {
+                    const qrRecord = window.QRService.getQRFromLocalStorage(qrId);
+                    if (qrRecord) {
+                        return qrRecord;
+                    }
+                }
+                
                 const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
                 const qrRecord = qrHistory.find(qr => qr.id === qrId);
                 
@@ -598,7 +732,7 @@
                     ultimaVerificacion: new Date().toISOString()
                 };
             } catch (error) {
-                console.error('Error cargando datos QR:', error);
+                console.error('❌ Error cargando datos QR desde localStorage:', error);
                 return null;
             }
         }
@@ -716,29 +850,107 @@
         }
 
         // Función principal de inicialización
-        function init() {
+        async function init() {
             console.log('🔍 Inicializando verificación QR...');
             
-            const params = getUrlParams();
-            console.log('📋 Parámetros URL:', params);
-            
-            if (params.qr) {
-                const qrData = loadQRData(params.qr);
-                console.log('📦 Datos QR cargados:', qrData);
+            try {
+                const params = getUrlParams();
+                console.log('📋 Parámetros URL:', params);
                 
-                updateProductInfo(qrData);
-            } else {
-                console.warn('⚠️ No se encontró ID de QR en la URL');
-                // Mostrar datos genéricos
-                updateProductInfo({
-                    id: 'QR-GENERICO',
-                    producto: 'Producto AROME DE DIEU',
-                    marca: 'AROME DE DIEU',
-                    lote: 'DEMO-001'
-                });
+                if (params.qr) {
+                    // Mostrar estado de carga
+                    document.getElementById('productName').textContent = 'Verificando producto...';
+                    document.getElementById('productBrand').textContent = 'AROME DE DIEU';
+                    
+                    const qrData = await loadQRData(params.qr);
+                    console.log('📦 Datos QR cargados:', qrData);
+                    
+                    if (qrData) {
+                        updateProductInfo(qrData);
+                        console.log('✅ Verificación QR completada');
+                    } else {
+                        // Mostrar error si no se encontró el QR
+                        showQRError('QR no encontrado o inválido');
+                    }
+                } else {
+                    console.warn('⚠️ No se encontró ID de QR en la URL');
+                    // Mostrar datos genéricos
+                    updateProductInfo({
+                        id: 'QR-GENERICO',
+                        producto: 'Producto AROME DE DIEU',
+                        marca: 'AROME DE DIEU',
+                        lote: 'DEMO-001'
+                    });
+                }
+                
+            } catch (error) {
+                console.error('❌ Error en inicialización:', error);
+                showQRError('Error verificando el producto');
             }
             
-            console.log('✅ Verificación QR completada');
+            // Mostrar contador de redirección después de 3 segundos
+            setTimeout(() => {
+                showRedirectCountdown();
+            }, 3000);
+        }
+
+        // Mostrar error de QR
+        function showQRError(message) {
+            document.getElementById('productName').textContent = message;
+            document.querySelector('.verification-title').textContent = 'Error de Verificación';
+            document.querySelector('.verification-subtitle').textContent = 'No se pudo verificar la autenticidad del producto';
+            
+            // Cambiar el estado de verificación a error
+            const statusElement = document.querySelector('.verification-status');
+            const statusIcon = statusElement.querySelector('.status-icon i');
+            const statusText = statusElement.querySelector('.status-text');
+            
+            statusElement.style.background = 'linear-gradient(135deg, rgba(220, 53, 69, 0.2) 0%, rgba(220, 53, 69, 0.1) 100%)';
+            statusElement.style.borderColor = '#dc3545';
+            statusIcon.className = 'fas fa-exclamation-circle';
+            statusIcon.style.color = '#dc3545';
+            statusText.textContent = '⚠ Error de Verificación';
+            statusText.style.color = '#dc3545';
+        }
+
+        // Función para mostrar y manejar el contador de redirección
+        function showRedirectCountdown() {
+            const countdownElement = document.getElementById('redirectCountdown');
+            const timerElement = document.getElementById('countdownTimer');
+            
+            if (countdownElement && timerElement) {
+                countdownElement.style.display = 'block';
+                
+                let countdown = 7; // 7 segundos restantes (ya pasaron 3)
+                timerElement.textContent = countdown;
+                
+                // Actualizar contador cada segundo
+                const countdownInterval = setInterval(() => {
+                    countdown--;
+                    timerElement.textContent = countdown;
+                    
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                        redirectToIndex();
+                    }
+                }, 1000);
+            }
+        }
+
+        // Función para redirigir al index con efecto
+        function redirectToIndex() {
+            console.log('🔄 Redirigiendo al index...');
+            
+            // Añadir efecto de fade out antes de redirigir
+            const verificationOverlay = document.querySelector('.verification-overlay');
+            if (verificationOverlay) {
+                verificationOverlay.classList.add('fade-out');
+            }
+            
+            // Redirigir después del efecto de fade
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
         }
 
         // Manejar errores globales

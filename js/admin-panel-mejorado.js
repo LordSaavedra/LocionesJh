@@ -1451,11 +1451,14 @@ class AdminPanel {
             }
 
             // Generar ID único para el QR
-            const qrId = this.generateUniqueQRId();
+            const qrId = typeof window.QRService !== 'undefined' ? 
+                window.QRService.generateQRId() : 
+                this.generateUniqueQRId();
             
             // Crear URL de verificación
-            const baseUrl = window.location.origin + window.location.pathname.replace('admin-panel-estructura-mejorada.html', '');
-            const verificationUrl = `${baseUrl}verificacion-qr.html?qr=${qrId}&product=${productId}`;
+            const verificationUrl = typeof window.QRService !== 'undefined' ?
+                window.QRService.createVerificationURL(qrId, productId) :
+                this.createVerificationURL(qrId, productId);
 
             // Generar código QR visual
             const canvas = document.getElementById('qrCanvas');
@@ -1518,11 +1521,17 @@ class AdminPanel {
         }
     }
 
-    // Generar ID único para QR
+    // Generar ID único para QR (fallback)
     generateUniqueQRId() {
         const timestamp = Date.now();
         const random = Math.random().toString(36).substr(2, 9);
         return `QR${timestamp}${random}`.toUpperCase();
+    }
+
+    // Crear URL de verificación (fallback)
+    createVerificationURL(qrId, productId) {
+        const baseUrl = window.location.origin + window.location.pathname.replace('admin-panel-estructura-mejorada.html', '');
+        return `${baseUrl}verificacion-qr.html?qr=${qrId}&product=${productId}`;
     }
 
     // Mostrar resultado del QR generado
@@ -1559,14 +1568,52 @@ class AdminPanel {
     // Guardar registro del QR
     async saveQRRecord(qrData) {
         try {
-            // Aquí podrías guardar en Supabase o localStorage
-            const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
-            qrHistory.push(qrData);
-            localStorage.setItem('qrHistory', JSON.stringify(qrHistory));
+            // Usar el nuevo QRService
+            if (typeof window.QRService !== 'undefined') {
+                await window.QRService.createQRCode(qrData);
+                console.log('✅ Registro QR guardado usando QRService:', qrData.id);
+                return true;
+            }
+
+            // Fallback si QRService no está disponible
+            if (typeof window.supabase === 'undefined') {
+                throw new Error('Supabase no está disponible');
+            }
+
+            // Datos para Supabase
+            const qrRecord = {
+                codigo_qr: qrData.id,
+                producto_id: parseInt(qrData.productId),
+                url_verificacion: qrData.url,
+                lote: qrData.lote || null,
+                fecha_produccion: qrData.fechaProduccion || null,
+                notas: qrData.notas || null,
+                activo: true
+            };
+
+            const { data, error } = await window.supabase
+                .from('qr_codes')
+                .insert([qrRecord]);
+
+            if (error) {
+                throw error;
+            }
+
+            console.log('✅ Registro QR guardado en Supabase:', qrData.id);
+            return data;
             
-            console.log('✅ Registro QR guardado:', qrData.id);
         } catch (error) {
             console.error('❌ Error guardando registro QR:', error);
+            // Fallback a localStorage si falla todo lo demás
+            try {
+                if (typeof window.QRService !== 'undefined') {
+                    window.QRService.saveQRToLocalStorage(qrData);
+                    console.log('✅ Registro QR guardado en localStorage como fallback');
+                }
+            } catch (fallbackError) {
+                console.error('❌ Error guardando en fallback:', fallbackError);
+                throw error;
+            }
         }
     }
 
@@ -1631,10 +1678,25 @@ class AdminPanel {
     }
 
     // Regenerar QR código existente
-    regenerateQR(qrId) {
+    async regenerateQR(qrId) {
         try {
-            const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
-            const qrRecord = qrHistory.find(qr => qr.id === qrId);
+            let qrRecord = null;
+            
+            // Usar QRService si está disponible
+            if (typeof window.QRService !== 'undefined') {
+                try {
+                    const allQRs = await window.QRService.getAllQRs();
+                    qrRecord = allQRs.find(qr => qr.id === qrId);
+                } catch (serviceError) {
+                    console.warn('⚠️ Error usando QRService:', serviceError);
+                }
+            }
+            
+            // Fallback a localStorage si no encontramos con QRService
+            if (!qrRecord) {
+                const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+                qrRecord = qrHistory.find(qr => qr.id === qrId);
+            }
             
             if (!qrRecord) {
                 this.showAlert('QR no encontrado', 'error');
@@ -1642,39 +1704,54 @@ class AdminPanel {
             }
 
             // Confirmar regeneración
-            if (!confirm(`¿Estás seguro de que quieres regenerar el QR para "${qrRecord.producto}"?`)) {
+            const productName = qrRecord.producto?.nombre || qrRecord.producto || 'Producto desconocido';
+            if (!confirm(`¿Estás seguro de que quieres regenerar el QR para "${productName}"?`)) {
                 return;
             }
 
-            // Usar los datos existentes para regenerar
+            // Poblar formulario con datos existentes
             document.getElementById('qr-producto').value = qrRecord.productId;
             document.getElementById('qr-lote').value = qrRecord.lote || '';
             document.getElementById('qr-fecha').value = qrRecord.fechaProduccion || '';
             document.getElementById('qr-notas').value = qrRecord.notas || '';
 
-            // Regenerar el QR
-            this.generateQRCode();
-            
             // Eliminar el registro anterior
-            const updatedHistory = qrHistory.filter(qr => qr.id !== qrId);
-            localStorage.setItem('qrHistory', JSON.stringify(updatedHistory));
+            await this.deleteQR(qrId);
+
+            // Regenerar el QR
+            await this.generateQRCode();
             
             this.showAlert('QR regenerado exitosamente', 'success');
             
             // Actualizar la tabla de historial
-            this.loadQRHistory();
+            await this.loadQRHistory();
             
         } catch (error) {
-            console.error('Error regenerando QR:', error);
-            this.showAlert('Error al regenerar QR', 'error');
+            console.error('❌ Error regenerando QR:', error);
+            this.showAlert('Error al regenerar QR: ' + error.message, 'error');
         }
     }
 
     // Eliminar QR código
-    deleteQR(qrId) {
+    async deleteQR(qrId) {
         try {
-            const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
-            const qrRecord = qrHistory.find(qr => qr.id === qrId);
+            let qrRecord = null;
+            
+            // Buscar QR usando QRService
+            if (typeof window.QRService !== 'undefined') {
+                try {
+                    const allQRs = await window.QRService.getAllQRs();
+                    qrRecord = allQRs.find(qr => qr.id === qrId);
+                } catch (serviceError) {
+                    console.warn('⚠️ Error buscando QR con QRService:', serviceError);
+                }
+            }
+            
+            // Fallback a localStorage
+            if (!qrRecord) {
+                const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+                qrRecord = qrHistory.find(qr => qr.id === qrId);
+            }
             
             if (!qrRecord) {
                 this.showAlert('QR no encontrado', 'error');
@@ -1682,33 +1759,67 @@ class AdminPanel {
             }
 
             // Confirmar eliminación
-            if (!confirm(`¿Estás seguro de que quieres eliminar el QR para "${qrRecord.producto}"?\n\nEsta acción no se puede deshacer.`)) {
+            const productName = qrRecord.producto?.nombre || qrRecord.producto || 'Producto desconocido';
+            if (!confirm(`¿Estás seguro de que quieres eliminar el QR para "${productName}"?\n\nEsta acción no se puede deshacer.`)) {
                 return;
             }
 
-            // Eliminar del historial
-            const updatedHistory = qrHistory.filter(qr => qr.id !== qrId);
-            localStorage.setItem('qrHistory', JSON.stringify(updatedHistory));
+            // Eliminar usando QRService
+            if (typeof window.QRService !== 'undefined') {
+                const success = await window.QRService.deleteQR(qrId);
+                if (!success) {
+                    throw new Error('QRService no pudo eliminar el QR');
+                }
+                console.log('✅ QR eliminado usando QRService');
+            } else {
+                // Fallback: eliminar del localStorage
+                const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+                const updatedHistory = qrHistory.filter(qr => qr.id !== qrId);
+                localStorage.setItem('qrHistory', JSON.stringify(updatedHistory));
+                console.log('✅ QR eliminado del localStorage');
+            }
             
             this.showAlert('QR eliminado exitosamente', 'success');
             
             // Actualizar la tabla de historial
-            this.loadQRHistory();
-            
-            // Actualizar estadísticas
-            this.updateQRStats();
+            await this.loadQRHistory();
             
         } catch (error) {
-            console.error('Error eliminando QR:', error);
-            this.showAlert('Error al eliminar QR', 'error');
+            console.error('❌ Error eliminando QR:', error);
+            this.showAlert('Error al eliminar QR: ' + error.message, 'error');
         }
     }
 
     // Mostrar vista previa del QR
-    showQRPreview(qrId) {
+    async showQRPreview(qrId) {
         try {
-            const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
-            const qrRecord = qrHistory.find(qr => qr.id === qrId);
+            let qrRecord = null;
+            
+            // Intentar obtener desde Supabase primero
+            if (typeof window.supabase !== 'undefined') {
+                const { data, error } = await window.supabase
+                    .from('qr_codes_with_product_info')
+                    .select('*')
+                    .eq('codigo_qr', qrId)
+                    .single();
+
+                if (!error && data) {
+                    qrRecord = {
+                        id: data.codigo_qr,
+                        producto: data.producto_nombre,
+                        marca: data.producto_marca,
+                        lote: data.lote,
+                        fechaProduccion: data.fecha_produccion,
+                        url: data.url_verificacion
+                    };
+                }
+            }
+            
+            // Fallback a localStorage si no encontramos en Supabase
+            if (!qrRecord) {
+                const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+                qrRecord = qrHistory.find(qr => qr.id === qrId);
+            }
             
             if (!qrRecord) {
                 this.showAlert('QR no encontrado', 'error');
@@ -1750,8 +1861,10 @@ class AdminPanel {
                     this.currentQR = {
                         canvas: canvas,
                         url: qrRecord.url,
-                        producto: qrRecord.producto,
-                        id: qrRecord.id
+                        product: { nombre: qrRecord.producto, marca: qrRecord.marca },
+                        id: qrRecord.id,
+                        lote: qrRecord.lote,
+                        fechaProduccion: qrRecord.fechaProduccion
                     };
                     
                     this.showAlert(`QR de ${qrRecord.producto} cargado`, 'success');
@@ -1762,8 +1875,8 @@ class AdminPanel {
             }
             
         } catch (error) {
-            console.error('Error en showQRPreview:', error);
-            this.showAlert('Error mostrando vista previa del QR', 'error');
+            console.error('❌ Error en showQRPreview:', error);
+            this.showAlert('Error mostrando vista previa del QR: ' + error.message, 'error');
         }
     }
 
@@ -2014,45 +2127,112 @@ class AdminPanel {
     // Cargar historial de QRs
     async loadQRHistory() {
         try {
-            const qrRecords = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+            let qrRecords = [];
+
+            // Usar QRService si está disponible
+            if (typeof window.QRService !== 'undefined') {
+                qrRecords = await window.QRService.getAllQRs();
+                console.log('✅ QR records cargados usando QRService:', qrRecords.length);
+            } else if (typeof window.supabase !== 'undefined') {
+                // Fallback directo a Supabase
+                const { data, error } = await window.supabase
+                    .from('qr_codes_with_product_info')
+                    .select('*')
+                    .order('fecha_creacion', { ascending: false });
+
+                if (error) {
+                    throw error;
+                }
+
+                // Transformar datos de Supabase al formato esperado
+                qrRecords = data.map(qr => ({
+                    id: qr.codigo_qr,
+                    productId: qr.producto_id,
+                    producto: qr.producto_nombre,
+                    marca: qr.producto_marca,
+                    lote: qr.lote,
+                    fechaProduccion: qr.fecha_produccion,
+                    fechaCreacion: qr.fecha_creacion,
+                    url: qr.url_verificacion,
+                    notas: qr.notas,
+                    escaneado: qr.total_escaneos > 0,
+                    contadorEscaneos: qr.total_escaneos,
+                    ultimaVerificacion: qr.ultima_verificacion,
+                    activo: qr.activo
+                }));
+
+                console.log('✅ QR records cargados desde Supabase:', qrRecords.length);
+            } else {
+                // Fallback final a localStorage
+                qrRecords = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+                console.log('✅ QR records cargados desde localStorage:', qrRecords.length);
+            }
+
             this.updateQRStats(qrRecords);
             this.displayQRHistory(qrRecords);
+            
         } catch (error) {
             console.error('❌ Error cargando historial QR:', error);
+            // Fallback a localStorage en caso de error
+            try {
+                const qrRecords = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+                this.updateQRStats(qrRecords);
+                this.displayQRHistory(qrRecords);
+                console.log('✅ Usando fallback localStorage');
+            } catch (fallbackError) {
+                console.error('❌ Error en fallback:', fallbackError);
+                this.displayQRHistory([]);
+            }
         }
     }
 
     // Actualizar estadísticas QR
     updateQRStats(qrRecords = null) {
-        // Si no se pasan registros, cargarlos desde localStorage
-        if (!qrRecords) {
-            qrRecords = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+        try {
+            // Si no se pasan registros, intentar cargarlos
+            if (!qrRecords) {
+                // No hacer llamada async aquí, solo mostrar 0s temporalmente
+                const updateStat = (id, value) => {
+                    const element = document.getElementById(id);
+                    if (element) element.textContent = value;
+                };
+                updateStat('total-qrs', '0');
+                updateStat('qrs-escaneados', '0');
+                updateStat('qrs-hoy', '0');
+                updateStat('qrs-semana', '0');
+                return;
+            }
+            
+            const totalQRs = qrRecords.length;
+            const escaneados = qrRecords.filter(qr => qr.escaneado || qr.contadorEscaneos > 0).length;
+            
+            const today = new Date().toDateString();
+            const qrsHoy = qrRecords.filter(qr => {
+                const fechaCreacion = qr.fechaCreacion || qr.fecha_creacion;
+                return new Date(fechaCreacion).toDateString() === today;
+            }).length;
+            
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            const qrsSemana = qrRecords.filter(qr => {
+                const fechaCreacion = qr.fechaCreacion || qr.fecha_creacion;
+                return new Date(fechaCreacion) >= weekAgo;
+            }).length;
+
+            // Actualizar elementos del DOM
+            const updateStat = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = value;
+            };
+
+            updateStat('total-qrs', totalQRs);
+            updateStat('qrs-escaneados', escaneados);
+            updateStat('qrs-hoy', qrsHoy);
+            updateStat('qrs-semana', qrsSemana);
+            
+        } catch (error) {
+            console.error('❌ Error actualizando estadísticas QR:', error);
         }
-        
-        const totalQRs = qrRecords.length;
-        const escaneados = qrRecords.filter(qr => qr.escaneado).length;
-        
-        const today = new Date().toDateString();
-        const qrsHoy = qrRecords.filter(qr => 
-            new Date(qr.fechaCreacion).toDateString() === today
-        ).length;
-        
-        const weekAgo = new Date();
-        weekAgo.setDate(weekAgo.getDate() - 7);
-        const qrsSemana = qrRecords.filter(qr => 
-            new Date(qr.fechaCreacion) >= weekAgo
-        ).length;
-
-        // Actualizar elementos del DOM
-        const updateStat = (id, value) => {
-            const element = document.getElementById(id);
-            if (element) element.textContent = value;
-        };
-
-        updateStat('total-qrs', totalQRs);
-        updateStat('qrs-escaneados', escaneados);
-        updateStat('qrs-hoy', qrsHoy);
-        updateStat('qrs-semana', qrsSemana);
     }
 
     // Mostrar historial de QRs en tabla
@@ -2086,19 +2266,20 @@ class AdminPanel {
                 </td>
                 <td>
                     <div class="product-cell">
-                        <strong>${qr.producto}</strong><br>
-                        <small>${qr.marca}</small>
+                        <strong>${qr.producto?.nombre || qr.producto || 'Producto desconocido'}</strong><br>
+                        <small>${qr.producto?.marca || qr.marca || ''}</small>
                     </div>
                 </td>
                 <td><code>${qr.id}</code></td>
                 <td>${qr.lote || '-'}</td>
-                <td>${new Date(qr.fechaCreacion).toLocaleDateString('es-CO')}</td>
+                <td>${new Date(qr.fechaCreacion || qr.fecha_creacion).toLocaleDateString('es-CO')}</td>
                 <td>
-                    <span class="badge ${qr.escaneado ? 'badge-success' : 'badge-secondary'}">
-                        ${qr.escaneado ? 'Sí' : 'No'}
+                    <span class="badge ${qr.escaneado || (qr.contadorEscaneos || qr.totalEscaneos || 0) > 0 ? 'badge-success' : 'badge-secondary'}">
+                        ${qr.escaneado || (qr.contadorEscaneos || qr.totalEscaneos || 0) > 0 ? `Sí (${qr.contadorEscaneos || qr.totalEscaneos || 0})` : 'No'}
                     </span>
                 </td>
-                <td>${qr.ultimaVerificacion ? new Date(qr.ultimaVerificacion).toLocaleDateString('es-CO') : '-'}</td>
+                <td>${qr.ultimaVerificacion || qr.ultima_verificacion ? 
+                    new Date(qr.ultimaVerificacion || qr.ultima_verificacion).toLocaleDateString('es-CO') : '-'}</td>
                 <td>
                     <div class="table-actions">
                         <button class="btn btn-sm btn-info" onclick="adminPanel.copyQRUrl('${qr.url}')" title="Copiar URL">
@@ -2116,6 +2297,91 @@ class AdminPanel {
         `).join('');
 
         tableBody.innerHTML = qrRows;
+    }
+
+    // Registrar escaneo de QR (para usar en página de verificación)
+    async registerQRScan(qrId, additionalData = {}) {
+        try {
+            if (typeof window.supabase === 'undefined') {
+                console.log('ℹ️ Supabase no disponible para registrar escaneo');
+                return false;
+            }
+
+            // Registrar el escaneo
+            const scanData = {
+                codigo_qr: qrId,
+                ip_address: additionalData.ip || null,
+                user_agent: additionalData.userAgent || navigator.userAgent || null,
+                referrer: additionalData.referrer || document.referrer || null,
+                ubicacion: additionalData.location || null
+            };
+
+            const { error } = await window.supabase
+                .from('qr_scans')
+                .insert([scanData]);
+
+            if (error) {
+                throw error;
+            }
+
+            console.log('✅ Escaneo QR registrado:', qrId);
+            return true;
+
+        } catch (error) {
+            console.error('❌ Error registrando escaneo QR:', error);
+            return false;
+        }
+    }
+
+    // Obtener información de QR para verificación
+    async getQRInfo(qrId) {
+        try {
+            if (typeof window.supabase === 'undefined') {
+                throw new Error('Supabase no está disponible');
+            }
+
+            const { data, error } = await window.supabase
+                .from('qr_codes_with_product_info')
+                .select('*')
+                .eq('codigo_qr', qrId)
+                .eq('activo', true)
+                .single();
+
+            if (error) {
+                throw error;
+            }
+
+            if (!data) {
+                return null;
+            }
+
+            return {
+                qr: {
+                    id: data.codigo_qr,
+                    lote: data.lote,
+                    fechaProduccion: data.fecha_produccion,
+                    fechaCreacion: data.fecha_creacion,
+                    notas: data.notas,
+                    totalEscaneos: data.total_escaneos,
+                    ultimaVerificacion: data.ultima_verificacion
+                },
+                producto: {
+                    id: data.producto_id,
+                    nombre: data.producto_nombre,
+                    marca: data.producto_marca,
+                    precio: data.producto_precio,
+                    ml: data.producto_ml,
+                    categoria: data.producto_categoria,
+                    descripcion: data.producto_descripcion,
+                    imagen_url: data.producto_imagen_url,
+                    luxury: data.producto_luxury
+                }
+            };
+
+        } catch (error) {
+            console.error('❌ Error obteniendo información QR:', error);
+            throw error;
+        }
     }
 }
 

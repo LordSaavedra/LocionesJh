@@ -524,6 +524,317 @@
                 </form>
             </section>
 
+            <!-- Carga Masiva CSV -->
+            <section id="carga-masiva" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-file-upload"></i>
+                        Carga Masiva desde CSV
+                    </h2>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary" id="downloadTemplate">
+                            <i class="fas fa-download"></i>
+                            Descargar Plantilla
+                        </button>
+                        <button class="btn btn-info" id="showInstructions">
+                            <i class="fas fa-question-circle"></i>
+                            Instrucciones
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Estadísticas de Carga -->
+                <div class="upload-stats" id="uploadStats" style="display: none;">
+                    <div class="stats-grid">
+                        <div class="stat-card success">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Procesados</h3>
+                                <span class="stat-number" id="processedCount">0</span>
+                            </div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Con Errores</h3>
+                                <span class="stat-number" id="errorCount">0</span>
+                            </div>
+                        </div>
+                        <div class="stat-card info">
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Tiempo</h3>
+                                <span class="stat-number" id="processTime">0s</span>
+                            </div>
+                        </div>
+                        <div class="stat-card primary">
+                            <div class="stat-icon">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Progreso</h3>
+                                <span class="stat-number" id="progressPercent">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenedor Principal de Carga -->
+                <div class="upload-container">
+                    <!-- Área de Upload -->
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-zone" id="uploadZone">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h3>Cargar Archivo CSV</h3>
+                            <p>Arrastra tu archivo aquí o haz click para seleccionar</p>
+                            <p class="upload-hint">Máximo 1000 productos por archivo • Solo archivos .csv</p>
+                            <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+                            <button class="btn btn-primary" id="selectFileBtn">
+                                <i class="fas fa-folder-open"></i>
+                                Seleccionar Archivo
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Información del Archivo -->
+                    <div class="file-info" id="fileInfo" style="display: none;">
+                        <div class="file-details">
+                            <div class="file-icon">
+                                <i class="fas fa-file-csv"></i>
+                            </div>
+                            <div class="file-data">
+                                <h4 id="fileName">archivo.csv</h4>
+                                <p id="fileSize">0 KB</p>
+                                <p id="fileRows">0 filas detectadas</p>
+                            </div>
+                            <div class="file-actions">
+                                <button class="btn btn-sm btn-danger" id="removeFile">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuración de Carga -->
+                    <div class="upload-config" id="uploadConfig" style="display: none;">
+                        <h3><i class="fas fa-cogs"></i> Configuración de Carga</h3>
+                        <div class="config-grid">
+                            <div class="config-group">
+                                <label>
+                                    <input type="checkbox" id="skipErrors" checked>
+                                    Saltar filas con errores
+                                </label>
+                                <span class="config-hint">Continúa procesando aunque haya errores</span>
+                            </div>
+                            <div class="config-group">
+                                <label>
+                                    <input type="checkbox" id="updateExisting">
+                                    Actualizar productos existentes
+                                </label>
+                                <span class="config-hint">Actualiza productos que ya existen (por nombre y marca)</span>
+                            </div>
+                            <div class="config-group">
+                                <label>
+                                    <input type="checkbox" id="validateImages">
+                                    Validar URLs de imágenes
+                                </label>
+                                <span class="config-hint">Verifica que las URLs de imágenes sean válidas</span>
+                            </div>
+                            <div class="config-group">
+                                <label for="batchSize">Tamaño de lote:</label>
+                                <select id="batchSize">
+                                    <option value="10">10 productos</option>
+                                    <option value="25" selected>25 productos</option>
+                                    <option value="50">50 productos</option>
+                                    <option value="100">100 productos</option>
+                                </select>
+                                <span class="config-hint">Productos a procesar por lote</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview de Datos -->
+                    <div class="data-preview" id="dataPreview" style="display: none;">
+                        <h3><i class="fas fa-eye"></i> Vista Previa de Datos</h3>
+                        <div class="preview-controls">
+                            <button class="btn btn-sm btn-secondary" id="validateData">
+                                <i class="fas fa-check-double"></i>
+                                Validar Datos
+                            </button>
+                            <button class="btn btn-sm btn-info" id="debugData" style="display: none;">
+                                <i class="fas fa-bug"></i>
+                                Debug Datos
+                            </button>
+                            <button class="btn btn-sm btn-warning" id="diagnoseSupabase" style="display: none;">
+                                <i class="fas fa-database"></i>
+                                Test Supabase
+                            </button>
+                            <span class="preview-info">Mostrando primeras 5 filas</span>
+                        </div>
+                        <div class="preview-table-container">
+                            <table class="preview-table" id="previewTable">
+                                <thead id="previewHeader"></thead>
+                                <tbody id="previewBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Errores de Validación -->
+                    <div class="validation-errors" id="validationErrors" style="display: none;">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Errores de Validación</h3>
+                        <div class="errors-list" id="errorsList"></div>
+                    </div>
+
+                    <!-- Barra de Progreso -->
+                    <div class="progress-container" id="progressContainer" style="display: none;">
+                        <h3><i class="fas fa-tasks"></i> Progreso de Carga</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                            <span class="progress-text" id="progressText">0%</span>
+                        </div>
+                        <div class="progress-details">
+                            <span id="progressDetail">Preparando carga...</span>
+                            <span id="progressTime">Tiempo estimado: --</span>
+                        </div>
+                    </div>
+
+                    <!-- Acciones de Carga -->
+                    <div class="upload-actions" id="uploadActions" style="display: none;">
+                        <button class="btn btn-success btn-lg" id="startUpload">
+                            <i class="fas fa-upload"></i>
+                            Iniciar Carga Masiva
+                        </button>
+                        <button class="btn btn-warning btn-lg" id="pauseUpload" style="display: none;">
+                            <i class="fas fa-pause"></i>
+                            Pausar
+                        </button>
+                        <button class="btn btn-danger btn-lg" id="cancelUpload" style="display: none;">
+                            <i class="fas fa-stop"></i>
+                            Cancelar
+                        </button>
+                    </div>
+
+                    <!-- Resultados de Carga -->
+                    <div class="upload-results" id="uploadResults" style="display: none;">
+                        <h3><i class="fas fa-chart-bar"></i> Resultados de Carga</h3>
+                        <div class="results-summary" id="resultsSummary"></div>
+                        <div class="results-actions">
+                            <button class="btn btn-primary" id="downloadReport">
+                                <i class="fas fa-download"></i>
+                                Descargar Reporte
+                            </button>
+                            <button class="btn btn-secondary" id="resetUpload">
+                                <i class="fas fa-redo"></i>
+                                Nueva Carga
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal de Instrucciones -->
+                <div class="modal-overlay" id="instructionsModal">
+                    <div class="modal instructions-modal">
+                        <div class="modal-header">
+                            <h3 class="modal-title">
+                                <i class="fas fa-info-circle"></i>
+                                Instrucciones de Carga Masiva
+                            </h3>
+                            <button class="modal-close" id="closeInstructions">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="instructions-content">
+                                <div class="instruction-section">
+                                    <h4><i class="fas fa-file-csv"></i> Formato del Archivo CSV</h4>
+                                    <p>El archivo debe tener las siguientes columnas (en este orden):</p>
+                                    <div class="csv-format">
+                                        <code>nombre,marca,precio,categoria,subcategoria,descripcion,notas,imagen_url,ml,stock,estado,descuento,luxury,activo</code>
+                                    </div>
+                                </div>
+
+                                <div class="instruction-section">
+                                    <h4><i class="fas fa-list"></i> Descripción de Campos</h4>
+                                    <div class="fields-list">
+                                        <div class="field-item required">
+                                            <strong>nombre</strong>: Nombre del producto (requerido)
+                                        </div>
+                                        <div class="field-item required">
+                                            <strong>marca</strong>: Marca del producto (requerido)
+                                        </div>
+                                        <div class="field-item required">
+                                            <strong>precio</strong>: Precio en pesos (requerido, solo números)
+                                        </div>
+                                        <div class="field-item required">
+                                            <strong>categoria</strong>: para-ellos, para-ellas, unisex (requerido)
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>subcategoria</strong>: designer, arabic, contemporary, vintage
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>descripcion</strong>: Descripción del producto
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>notas</strong>: Notas olfativas
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>imagen_url</strong>: URL de la imagen del producto
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>ml</strong>: Tamaño en mililitros (1-1000, default: 100)
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>stock</strong>: Cantidad disponible (default: 0)
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>estado</strong>: disponible, agotado, proximo, oferta (default: disponible)
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>descuento</strong>: Porcentaje de descuento (1-99, vacío si no hay)
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>luxury</strong>: true/false (default: false)
+                                        </div>
+                                        <div class="field-item">
+                                            <strong>activo</strong>: true/false (default: true)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="instruction-section">
+                                    <h4><i class="fas fa-exclamation-triangle"></i> Notas Importantes</h4>
+                                    <ul class="notes-list">
+                                        <li>La primera fila debe contener los nombres de las columnas</li>
+                                        <li>Los campos marcados como "requerido" no pueden estar vacíos</li>
+                                        <li>Usa comas como separador y comillas dobles para texto con comas</li>
+                                        <li>Las URLs de imágenes deben ser válidas y accesibles</li>
+                                        <li>Máximo 1000 productos por archivo</li>
+                                        <li>El archivo no debe superar los 5MB</li>
+                                    </ul>
+                                </div>
+
+                                <div class="instruction-section">
+                                    <h4><i class="fas fa-download"></i> Plantilla de Ejemplo</h4>
+                                    <p>Descarga la plantilla para ver un ejemplo del formato correcto:</p>
+                                    <button class="btn btn-primary" id="downloadTemplateModal">
+                                        <i class="fas fa-download"></i>
+                                        Descargar Plantilla CSV
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Categorías -->
             <section id="categorias" class="content-section">
                 <h2 class="section-title">
@@ -860,317 +1171,6 @@
                     </div>
                 </div>
             </section>
-
-            <!-- Carga Masiva CSV -->
-            <section id="carga-masiva" class="content-section">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="fas fa-file-upload"></i>
-                        Carga Masiva desde CSV
-                    </h2>
-                    <div class="section-actions">
-                        <button class="btn btn-secondary" id="downloadTemplate">
-                            <i class="fas fa-download"></i>
-                            Descargar Plantilla
-                        </button>
-                        <button class="btn btn-info" id="showInstructions">
-                            <i class="fas fa-question-circle"></i>
-                            Instrucciones
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Estadísticas de Carga -->
-                <div class="upload-stats" id="uploadStats" style="display: none;">
-                    <div class="stats-grid">
-                        <div class="stat-card success">
-                            <div class="stat-icon">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3>Procesados</h3>
-                                <span class="stat-number" id="processedCount">0</span>
-                            </div>
-                        </div>
-                        <div class="stat-card warning">
-                            <div class="stat-icon">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3>Con Errores</h3>
-                                <span class="stat-number" id="errorCount">0</span>
-                            </div>
-                        </div>
-                        <div class="stat-card info">
-                            <div class="stat-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3>Tiempo</h3>
-                                <span class="stat-number" id="processTime">0s</span>
-                            </div>
-                        </div>
-                        <div class="stat-card primary">
-                            <div class="stat-icon">
-                                <i class="fas fa-percentage"></i>
-                            </div>
-                            <div class="stat-content">
-                                <h3>Progreso</h3>
-                                <span class="stat-number" id="progressPercent">0%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Contenedor Principal de Carga -->
-                <div class="upload-container">
-                    <!-- Área de Upload -->
-                    <div class="upload-area" id="uploadArea">
-                        <div class="upload-zone" id="uploadZone">
-                            <div class="upload-icon">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                            </div>
-                            <h3>Cargar Archivo CSV</h3>
-                            <p>Arrastra tu archivo aquí o haz click para seleccionar</p>
-                            <p class="upload-hint">Máximo 1000 productos por archivo • Solo archivos .csv</p>
-                            <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
-                            <button class="btn btn-primary" id="selectFileBtn">
-                                <i class="fas fa-folder-open"></i>
-                                Seleccionar Archivo
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Información del Archivo -->
-                    <div class="file-info" id="fileInfo" style="display: none;">
-                        <div class="file-details">
-                            <div class="file-icon">
-                                <i class="fas fa-file-csv"></i>
-                            </div>
-                            <div class="file-data">
-                                <h4 id="fileName">archivo.csv</h4>
-                                <p id="fileSize">0 KB</p>
-                                <p id="fileRows">0 filas detectadas</p>
-                            </div>
-                            <div class="file-actions">
-                                <button class="btn btn-sm btn-danger" id="removeFile">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Configuración de Carga -->
-                    <div class="upload-config" id="uploadConfig" style="display: none;">
-                        <h3><i class="fas fa-cogs"></i> Configuración de Carga</h3>
-                        <div class="config-grid">
-                            <div class="config-group">
-                                <label>
-                                    <input type="checkbox" id="skipErrors" checked>
-                                    Saltar filas con errores
-                                </label>
-                                <span class="config-hint">Continúa procesando aunque haya errores</span>
-                            </div>
-                            <div class="config-group">
-                                <label>
-                                    <input type="checkbox" id="updateExisting">
-                                    Actualizar productos existentes
-                                </label>
-                                <span class="config-hint">Actualiza productos que ya existen (por nombre y marca)</span>
-                            </div>
-                            <div class="config-group">
-                                <label>
-                                    <input type="checkbox" id="validateImages">
-                                    Validar URLs de imágenes
-                                </label>
-                                <span class="config-hint">Verifica que las URLs de imágenes sean válidas</span>
-                            </div>
-                            <div class="config-group">
-                                <label for="batchSize">Tamaño de lote:</label>
-                                <select id="batchSize">
-                                    <option value="10">10 productos</option>
-                                    <option value="25" selected>25 productos</option>
-                                    <option value="50">50 productos</option>
-                                    <option value="100">100 productos</option>
-                                </select>
-                                <span class="config-hint">Productos a procesar por lote</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Preview de Datos -->
-                    <div class="data-preview" id="dataPreview" style="display: none;">
-                        <h3><i class="fas fa-eye"></i> Vista Previa de Datos</h3>
-                        <div class="preview-controls">
-                            <button class="btn btn-sm btn-secondary" id="validateData">
-                                <i class="fas fa-check-double"></i>
-                                Validar Datos
-                            </button>
-                            <button class="btn btn-sm btn-info" id="debugData" style="display: none;">
-                                <i class="fas fa-bug"></i>
-                                Debug Datos
-                            </button>
-                            <button class="btn btn-sm btn-warning" id="diagnoseSupabase" style="display: none;">
-                                <i class="fas fa-database"></i>
-                                Test Supabase
-                            </button>
-                            <span class="preview-info">Mostrando primeras 5 filas</span>
-                        </div>
-                        <div class="preview-table-container">
-                            <table class="preview-table" id="previewTable">
-                                <thead id="previewHeader"></thead>
-                                <tbody id="previewBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Errores de Validación -->
-                    <div class="validation-errors" id="validationErrors" style="display: none;">
-                        <h3><i class="fas fa-exclamation-triangle"></i> Errores de Validación</h3>
-                        <div class="errors-list" id="errorsList"></div>
-                    </div>
-
-                    <!-- Barra de Progreso -->
-                    <div class="progress-container" id="progressContainer" style="display: none;">
-                        <h3><i class="fas fa-tasks"></i> Progreso de Carga</h3>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progressFill"></div>
-                            <span class="progress-text" id="progressText">0%</span>
-                        </div>
-                        <div class="progress-details">
-                            <span id="progressDetail">Preparando carga...</span>
-                            <span id="progressTime">Tiempo estimado: --</span>
-                        </div>
-                    </div>
-
-                    <!-- Acciones de Carga -->
-                    <div class="upload-actions" id="uploadActions" style="display: none;">
-                        <button class="btn btn-success btn-lg" id="startUpload">
-                            <i class="fas fa-upload"></i>
-                            Iniciar Carga Masiva
-                        </button>
-                        <button class="btn btn-warning btn-lg" id="pauseUpload" style="display: none;">
-                            <i class="fas fa-pause"></i>
-                            Pausar
-                        </button>
-                        <button class="btn btn-danger btn-lg" id="cancelUpload" style="display: none;">
-                            <i class="fas fa-stop"></i>
-                            Cancelar
-                        </button>
-                    </div>
-
-                    <!-- Resultados de Carga -->
-                    <div class="upload-results" id="uploadResults" style="display: none;">
-                        <h3><i class="fas fa-chart-bar"></i> Resultados de Carga</h3>
-                        <div class="results-summary" id="resultsSummary"></div>
-                        <div class="results-actions">
-                            <button class="btn btn-primary" id="downloadReport">
-                                <i class="fas fa-download"></i>
-                                Descargar Reporte
-                            </button>
-                            <button class="btn btn-secondary" id="resetUpload">
-                                <i class="fas fa-redo"></i>
-                                Nueva Carga
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal de Instrucciones -->
-                <div class="modal-overlay" id="instructionsModal">
-                    <div class="modal instructions-modal">
-                        <div class="modal-header">
-                            <h3 class="modal-title">
-                                <i class="fas fa-info-circle"></i>
-                                Instrucciones de Carga Masiva
-                            </h3>
-                            <button class="modal-close" id="closeInstructions">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="instructions-content">
-                                <div class="instruction-section">
-                                    <h4><i class="fas fa-file-csv"></i> Formato del Archivo CSV</h4>
-                                    <p>El archivo debe tener las siguientes columnas (en este orden):</p>
-                                    <div class="csv-format">
-                                        <code>nombre,marca,precio,categoria,subcategoria,descripcion,notas,imagen_url,ml,stock,estado,descuento,luxury,activo</code>
-                                    </div>
-                                </div>
-
-                                <div class="instruction-section">
-                                    <h4><i class="fas fa-list"></i> Descripción de Campos</h4>
-                                    <div class="fields-list">
-                                        <div class="field-item required">
-                                            <strong>nombre</strong>: Nombre del producto (requerido)
-                                        </div>
-                                        <div class="field-item required">
-                                            <strong>marca</strong>: Marca del producto (requerido)
-                                        </div>
-                                        <div class="field-item required">
-                                            <strong>precio</strong>: Precio en pesos (requerido, solo números)
-                                        </div>
-                                        <div class="field-item required">
-                                            <strong>categoria</strong>: para-ellos, para-ellas, unisex (requerido)
-                                        </div>
-                                        <div class="field-item">
-                                            <strong>subcategoria</strong>: designer, arabic, contemporary, vintage
-                                        </div>
-                                        <div class="field-item">
-                                            <strong>descripcion</strong>: Descripción del producto
-                                        </div>
-                                        <div class="field-item">
-                                            <strong>notas</strong>: Notas olfativas
-                                        </div>
-                                        <div class="field-item">
-                                            <strong>imagen_url</strong>: URL de la imagen del producto
-                                        </div>
-                                        <div class="field-item">
-                                            <strong>ml</strong>: Tamaño en mililitros (1-1000, default: 100)
-                                        </div>
-                                        <div class="field-item">
-                                            <strong>stock</strong>: Cantidad disponible (default: 0)
-                                        </div>
-                                        <div class="field-item">
-                                            <strong>estado</strong>: disponible, agotado, proximo, oferta (default: disponible)
-                                        </div>
-                                        <div class="field-item">
-                                            <strong>descuento</strong>: Porcentaje de descuento (1-99, vacío si no hay)
-                                        </div>
-                                        <div class="field-item">
-                                            <strong>luxury</strong>: true/false (default: false)
-                                        </div>
-                                        <div class="field-item">
-                                            <strong>activo</strong>: true/false (default: true)
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="instruction-section">
-                                    <h4><i class="fas fa-exclamation-triangle"></i> Notas Importantes</h4>
-                                    <ul class="notes-list">
-                                        <li>La primera fila debe contener los nombres de las columnas</li>
-                                        <li>Los campos marcados como "requerido" no pueden estar vacíos</li>
-                                        <li>Usa comas como separador y comillas dobles para texto con comas</li>
-                                        <li>Las URLs de imágenes deben ser válidas y accesibles</li>
-                                        <li>Máximo 1000 productos por archivo</li>
-                                        <li>El archivo no debe superar los 5MB</li>
-                                    </ul>
-                                </div>
-
-                                <div class="instruction-section">
-                                    <h4><i class="fas fa-download"></i> Plantilla de Ejemplo</h4>
-                                    <p>Descarga la plantilla para ver un ejemplo del formato correcto:</p>
-                                    <button class="btn btn-primary" id="downloadTemplateModal">
-                                        <i class="fas fa-download"></i>
-                                        Descargar Plantilla CSV
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
         </main>
     </div>
 
@@ -1224,6 +1224,7 @@
 
     <!-- Scripts -->
     <script src="js/supabase-config-optimized.js"></script>
+    <script src="js/qr-service-fixed.js"></script>
     <script src="js/admin-panel-mejorado.js"></script>
     <script src="js/csv-upload-fixed.js"></script>
     <script>
@@ -1353,26 +1354,6 @@
                 alert('❌ QR Library not available');
             }
         };
-        
-        // Agregar botón de debug cuando la página cargue
-        window.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
-                const debugBtn = document.createElement('button');
-                debugBtn.innerHTML = '🧪 Test QR Library';
-                debugBtn.style.position = 'fixed';
-                debugBtn.style.top = '10px';
-                debugBtn.style.right = '10px';
-                debugBtn.style.zIndex = '9999';
-                debugBtn.style.padding = '5px 10px';
-                debugBtn.style.backgroundColor = '#007bff';
-                debugBtn.style.color = 'white';
-                debugBtn.style.border = 'none';
-                debugBtn.style.borderRadius = '4px';
-                debugBtn.style.cursor = 'pointer';
-                debugBtn.onclick = window.testQRLibrary;
-                document.body.appendChild(debugBtn);
-            }, 1000);
-        });
     </script>
 </body>
 </html>
