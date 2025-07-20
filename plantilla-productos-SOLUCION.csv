@@ -1,8 +1,122 @@
-nombre,marca,precio,categoria,subcategoria,descripcion,notas,imagen_url,ml,stock,estado,descuento,luxury,activo
-9 AM,AFNAN,95000,para-ellos,nicho,Fragancia fresca y especiada,Lim√≥n lavanda menta,https://github.com/LordSaavedra/Imagenes_JH/blob/main/9%20AM%20AFNAN.png?raw=true,100,10,disponible,,false,true
-9 PM,AFNAN,95000,para-ellos,nicho,Fragancia nocturna y especiada,Lim√≥n lavanda menta,https://github.com/LordSaavedra/Imagenes_JH/blob/main/9%20PM%20AFNAN.png?raw=true,100,10,disponible,,false,true
-Just Different,Hugo Boss,105000,para-ellos,designer,Perfume moderno y juvenil,Menta manzana verde albahaca,https://github.com/LordSaavedra/Imagenes_JH/blob/main/HUGO%20BOSS%20JUST%20DIFFERENT.png?raw=true,125,7,disponible,10,false,true
-Arabians Tonka,Montale,210000,unisex,nicho,Perfume intenso y oriental,Haba tonka azafr√°n oud,https://github.com/LordSaavedra/Imagenes_JH/blob/main/MONTALE%20ARABIANS%20TONKA.png?raw=true,100,5,disponible,,true,true
-Born In Roma Extradose,Valentino,185000,para-ellas,designer,Fragancia dulce y empoderante,Vainilla jazm√≠n bergamota,https://github.com/LordSaavedra/Imagenes_JH/blob/main/Valentino%20Born%20In%20Roma%20Extradose.png?raw=true,100,6,disponible,15,true,true
-Uomo,Valentino,160000,para-ellos,designer,Aroma elegante y sofisticado,Avellana chocolate cuero,https://github.com/LordSaavedra/Imagenes_JH/blob/main/Valentino%20UOMO.png?raw=true,100,4,disponible,,true,true
-Y,Yves Saint Laurent,175000,para-ellos,designer,Fragancia fresca y moderna,Bergamota salvia jengibre,https://github.com/LordSaavedra/Imagenes_JH/blob/main/Y%20YVES%20SAINT%20LAUREN.png?raw=true,100,12,disponible,10,true,true
+nombre;marca;Columna1;Columna2;precio;categoria;subcategoria;descripcion;notas;imagen_url;ml;stock;estado;descuento;luxury;activo
+0,375;AFNAN;FALSO;;95000;para-ellos;nicho;Fragancia fresca y especiada;Lim√≥n lavanda menta;https://github.com/LordSaavedra/Imagenes_JH/blob/main/9%20AM%20AFNAN.png?raw=true;100;10;disponible;;false;true
+0,875;AFNAN;FALSO;;95000;para-ellos;nicho;Fragancia nocturna y especiada;Lim√≥n lavanda menta;https://github.com/LordSaavedra/Imagenes_JH/blob/main/9%20PM%20AFNAN.png?raw=true;100;10;disponible;;false;true
+Just Different;Hugo Boss;FALSO;;105000;para-ellos;designer;Perfume moderno y juvenil;Menta manzana verde albahaca;https://github.com/LordSaavedra/Imagenes_JH/blob/main/HUGO%20BOSS%20JUST%20DIFFERENT.png?raw=true;125;7;disponible;10;false;true
+Arabians Tonka;Montale;FALSO;;210000;unisex;nicho;Perfume intenso y oriental;Haba tonka azafr√°n oud;https://github.com/LordSaavedra/Imagenes_JH/blob/main/MONTALE%20ARABIANS%20TONKA.png?raw=true;100;5;disponible;;true;true
+Born In Roma Extradose;Valentino;FALSO;;185000;para-ellos;designer;Fragancia dulce y empoderante;Vainilla jazm√≠n bergamota;https://github.com/LordSaavedra/Imagenes_JH/blob/main/Valentino%20Born%20In%20Roma%20Extradose.png?raw=true;100;6;disponible;15;true;true
+Uomo;Valentino;FALSO;;160000;para-ellos;designer;Aroma elegante y sofisticado;Avellana chocolate cuero;https://github.com/LordSaavedra/Imagenes_JH/blob/main/Valentino%20UOMO.png?raw=true;100;4;disponible;;true;true
+Y;Yves Saint Laurent;FALSO;;175000;para-ellos;designer;Fragancia fresca y moderna;Bergamota salvia jengibre;https://github.com/LordSaavedra/Imagenes_JH/blob/main/Y%20YVES%20SAINT%20LAUREN.png?raw=true;100;12;disponible;10;true;true
+212;CAROLINA HERRERA;VERDADERO;CAROLINA HERRERA;80000;para-ellos;;;;;;;;;;
+212 VIP ;CAROLINA HERRERA;VERDADERO;CAROLINA HERRERA;70000;para-ellos;;;;;;;;;;
+212 SEXY ;CAROLINA HERRERA;VERDADERO;CAROLINA HERRERA;70000;para-ellos;;;;;;;;;;
+212 FOREVER YOUNG ;CAROLINA HERRERA ;FALSO;CAROLINA HERRERA;70000;para-ellos;;;;;;;;;;
+212 VIP BLACK ;CAROLINA HERRERA ;FALSO;CAROLINA HERRERA;70000;para-ellos;;;;;;;;;;
+212 WILD PARTY ;CAROLINA HERRERA ;FALSO;CAROLINA HERRERA;60000;para-ellos;;;;;;;;;;
+CH PRIVE ;CAROLINA HERRERA ;FALSO;CAROLINA HERRERA;AGOTADO;para-ellos;;;;;;;;;;
+CAROLINA HERRERA ;CAROLINA HERRERA ;FALSO;CAROLINA HERRERA;60000;para-ellos;;;;;;;;;;
+BAD BOY ;CAROLINA HERRERA ;FALSO;CAROLINA HERRERA;70000;para-ellos;;;;;;;;;;
+1 ONE MILLION ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
+1 ONE MILLION ELIXIR ;PACO RABANNE ;FALSO;PACO RABANNE;70000;para-ellos;;;;;;;;;;
+1 ONE MILLION LUCKY ;PACO RABANNE ;FALSO;PACO RABANNE;70000;para-ellos;;;;;;;;;;
+1 ONE MILLION PRIVE ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
+1 ONE MILLION ROYAL ;PACO RABANNE ;FALSO;PACO RABANNE;70000;para-ellos;;;;;;;;;;
+1 ONE MILLION PARFUM ;PACO RABANNE ;FALSO;PACO RABANNE;70000;para-ellos;;;;;;;;;;
+1 ONE MIILION GOLD ;PACO RABANNE ;FALSO;PACO RABANNE;70000;para-ellos;;;;;;;;;;
+PURE XS ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
+BLACK XS;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
+BLACK XS AFRODISIAQUE ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
+INVICTUS AQUA ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
+INVICTUS LEGEND ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
+INVICTUS INTENSE ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
+INVICTUS ONIX ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
+INVICTUS VICTORY ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
+PHANTOM ;PACO RABANNE ;FALSO;PACO RABANNE;70000;para-ellos;;;;;;;;;;
+EMBLEM ;MONTBLAC ;FALSO;MONTBLANC;60000;para-ellos;;;;;;;;;;
+LEGEND NIGHT ;MONTBLAC ;FALSO;MONTBLANC;AGOTADA;para-ellos;;;;;;;;;;
+LEGEND ;MONTBLAC ;FALSO;MONTBLANC;60000;para-ellos;;;;;;;;;;
+EXPLORET ;MONTBLAC ;FALSO;MONTBLANC;70000;para-ellos;;;;;;;;;;
+STAR WUALKER ;MONTBLAC ;FALSO;MONTBLANC;60000;para-ellos;;;;;;;;;;
+LACOSTE ESSENTIAL ;LACOSTE ;FALSO;LACOSTE;60000;para-ellos;;;;;;;;;;
+LACOSTE L12.12 BLANC ;LACOSTE ;FALSO;LACOSTE;60000;para-ellos;;;;;;;;;;
+LACOSTE L12.12NOIR ;LACOSTE ;FALSO;LACOSTE;60000;para-ellos;;;;;;;;;;
+LACOSTE RED ;LACOSTE ;FALSO;LACOSTE;70000;para-ellos;;;;;;;;;;
+LACOSTE L12.12BLEU ;LACOSTE ;FALSO;LACOSTE;60000;para-ellos;;;;;;;;;;
+LACOSTE ENERGIZED;LACOSTE ;FALSO;LACOSTE;70000;para-ellos;;;;;;;;;;
+LACOSTE L12.12ROUGE;LACOSTE ;FALSO;LACOSTE;60000;para-ellos;;;;;;;;;;
+LACOSTE  L12.12VERVET;LACOSTE ;FALSO;LACOSTE;60000;para-ellos;;;;;;;;;;
+BOSS ORANGE ;HUGO BOSS;VERDADERO;HUGO BOSS;AGOTADO;para-ellos;;;;;;;;;;
+BOTTLED NIGTH ;HUGO BOSS;VERDADERO;HUGO BOSS;60000;para-ellos;;;;;;;;;;
+BOTTLED  ;HUGO BOSS;VERDADERO;HUGO BOSS;70000;para-ellos;;;;;;;;;;
+BOTTLED TONIC ;HUGO BOSS;VERDADERO;HUGO BOSS;70000;para-ellos;;;;;;;;;;
+BOSS UNLIMITED ;HUGO BOSS;VERDADERO;HUGO BOSS;60000;para-ellos;;;;;;;;;;
+BOSS IN MOTION;HUGO BOSS;VERDADERO;HUGO BOSS;60000;para-ellos;;;;;;;;;;
+HUGO ;HUGO BOSS;VERDADERO;HUGO BOSS;60000;para-ellos;;;;;;;;;;
+HUGO RED ;HUGO BOSS;VERDADERO;HUGO BOSS;70000;para-ellos;;;;;;;;;;
+DARK BLUE ;HUGO BOSS;VERDADERO;HUGO BOSS;50000;para-ellos;;;;;;;;;;
+ENERGISE ;HUGO BOSS;VERDADERO;HUGO BOSS;70000;para-ellos;;;;;;;;;;
+ LE MALE ;JEAN PAUL GAULTIER;VERDADERO;JEAN PAUL GAULTIER;80000;para-ellos;;;;;;;;;;
+SCANDAL;JEAN PAUL GAULTIER;VERDADERO;JEAN PAUL GAULTIER;70000;para-ellos;;;;;;;;;;
+ULTRA MALE;JEAN PAUL GAULTIER;FALSO;;80000;para-ellos;;;;;;;;;;
+LE BEAU;JEAN PAUL GAULTIER;FALSO;;90000;para-ellos;;;;;;;;;;
+JEAN PAUL ELIXIR ;JEAN PAUL GAULTIER;FALSO;;90000;para-ellos;;;;;;;;;;
+LE BEAU  PARADISE GARDEN ;JEAN PAUL GAULTIER;FALSO;;AGOTADO;para-ellos;;;;;;;;;;
+LIGHT BLUE ;DOLCE & GABANNE ;FALSO;;60000;para-ellos;;;;;;;;;;
+K BY DOLCE & GABANNA ;DOLCE & GABANNE ;FALSO;;70000;para-ellos;;;;;;;;;;
+BLEU CHANEL ;CHANEL;FALSO;;60000;para-ellos;;;;;;;;;;
+ALLURE SPORT ;CHANEL;FALSO;;60000;para-ellos;;;;;;;;;;
+POLO BLUE ;RALPH LAUREN ;FALSO;;60000;para-ellos;;;;;;;;;;
+POLO RED ;RALPH LAUREN ;FALSO;;60000;para-ellos;;;;;;;;;;
+POLO BLACK;RALPH LAUREN ;FALSO;;60000;para-ellos;;;;;;;;;;
+JEAN PASCAL ;JEAN-PASCAL;FALSO;;80000;para-ellos;;;;;;;;;;
+LAPIDUS ;TED LAPIDUS ;FALSO;;60000;para-ellos;;;;;;;;;;
+TOMMY HILFIGER ;TOMMY HILFIGER;FALSO;;60000;para-ellos;;;;;;;;;;
+SWISS ARMY ;VICTORINOX;FALSO;;60000;para-ellos;;;;;;;;;;
+360;PERRY ELLIS;FALSO;;60000;para-ellos;;;;;;;;;;
+360 RED ;PERRY ELLIS;FALSO;;60000;para-ellos;;;;;;;;;;
+ACQUA DI GIO;GIORGIO ARMANI;FALSO;;60000;para-ellos;;;;;;;;;;
+ACQUA DI GIO PROFUMO;GIORGIO ARMANI;FALSO;;60000;para-ellos;;;;;;;;;;
+ACQUA DI  GIO PROFONDO ;GIORGIO ARMANI;FALSO;;70000;para-ellos;;;;;;;;;;
+ARMANI CODE ;GIORGIO ARMANI;FALSO;;70000;para-ellos;;;;;;;;;;
+BLUE SEDUCTION ;ANTONIO BANDERAS;FALSO;;60000;para-ellos;;;;;;;;;;
+THE ONE ;DOLCE & GABANNE ;FALSO;;60000;para-ellos;;;;;;;;;;
+BLUE LABEL ;GIVENCHY;FALSO;;60000;para-ellos;;;;;;;;;;
+DIESEL TATTO;DIESEL ;FALSO;;70000;para-ellos;;;;;;;;;;
+ONLY THE BRAVE ;DIESEL ;FALSO;;70000;para-ellos;;;;;;;;;;
+MAN IN BLACK ;BVLGARI;FALSO;;60000;para-ellos;;;;;;;;;;
+AQVA ;BVLGARI;FALSO;;60000;para-ellos;;;;;;;;;;
+MAN WOOD ;BVLGARI;FALSO;;70000;para-ellos;;;;;;;;;;
+DYLAN BLUE ;VERSACE ;FALSO;;60000;para-ellos;;;;;;;;;;
+POUR HOMME ;VERSACE;FALSO;;70000;para-ellos;;;;;;;;;;
+EAU FRAICHE ;VERSACE;FALSO;;60000;para-ellos;;;;;;;;;;
+EROS DE VERSACE ;VERSACE ;FALSO;;70000;para-ellos;;;;;;;;;;
+EROS FLAME;VERSACE;FALSO;;60000;para-ellos;;;;;;;;;;
+CLUB DE NUIT ;ARMAF ;FALSO;;90000;para-ellos;;;;;;;;;;
+TOY BOY ;MOSCHINO ;FALSO;;80000;para-ellos;;;;;;;;;;
+BLEECKER STREET ;N 9;FALSO;;90000;para-ellos;;;;;;;;;;
+SAUVAGE ;CRISTIAN DIOR ;FALSO;;70000;para-ellos;;;;;;;;;;
+SAUVAGE ELIXIR ;CRISTIAN DIOR ;FALSO;;70000;para-ellos;;;;;;;;;;
+FAHRENHEIT;CRISTIAN DIOR ;FALSO;;60000;para-ellos;;;;;;;;;;
+ETERNITY ;CALVIN KLEIN;FALSO;;60000;para-ellos;;;;;;;;;;
+CK ONE;CLAVIN KLEIN;FALSO;;50000;para-ellos;;;;;;;;;;
+SILVER MOUNTAIN ;CREED ;FALSO;;60000;para-ellos;;;;;;;;;;
+AVENTUS ;CREED ;FALSO;;60000;para-ellos;;;;;;;;;;
+MILLESIME IMPERIAL;CREED ;FALSO;;70000;para-ellos;;;;;;;;;;
+ASAD ;LATTAFA;FALSO;;80000;para-ellos;;;;;;;;;;
+THE SCENT ;HUGO BOSS;FALSO;;60000;para-ellos;;;;;;;;;;
+BADE… AL OUD AMETHYST;LATTAFA;FALSO;;130000;para-ellos;;;;;;;;;;
+KHAMRAH;LATTAFA;FALSO;;130000;para-ellos;;;;;;;;;;
+BHARARA KING ;BHARARA;FALSO;;130000;para-ellos;;;;;;;;;;
+OUD SAFFRON;ORIENTICA ;FALSO;;110000;para-ellos;;;;;;;;;;
+ROYAL AMBER;ORIENTICA ;FALSO;;110000;para-ellos;;;;;;;;;;
+VELVET GOLD ;ORIENTICA ;FALSO;;110000;para-ellos;;;;;;;;;;
+AMBER ROUGE ;ORIENTICA ;FALSO;;110000;para-ellos;;;;;;;;;;
+ROYAL BLEU ;ORIENTICA ;FALSO;;110000;para-ellos;;;;;;;;;;
+AZURE FANTASY ;ORIENTICA ;FALSO;;110000;para-ellos;;;;;;;;;;
+AMBER OUD GOLD ;AL HARAMAIN;FALSO;;120000;para-ellos;;;;;;;;;;
+L…AU DÕSSEY  POUR HOMME ;ISSEY MIYAKE ;FALSO;;60000;para-ellos;;;;;;;;;;
+KAKUNO ;ILMIN;FALSO;;70000;para-ellos;;;;;;;;;;
+ESCAPE ;CALVIN KLEIN;FALSO;;60000;para-ellos;;;;;;;;;;
+BADEE» AL OUD FOR GLORY;LATTAFA;FALSO;;110000;para-ellos;;;;;;;;;;
+BADE» AL OUD SUBLIME ;LATTAFA;FALSO;;110000;para-ellos;;;;;;;;;;
+KHAMRAH QAHWA;LATTAFA;FALSO;;130000;para-ellos;;;;;;;;;;
+BADE… AL OUD HONOR & GLORY;LATTAFA;FALSO;;110000;para-ellos;;;;;;;;;;

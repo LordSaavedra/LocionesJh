@@ -1173,9 +1173,12 @@ class AdminPanel {
             const lastSync = document.getElementById('lastSync');
             const connectionStatus = document.getElementById('connectionStatus');
             
+            // Verificar Supabase más detalladamente
+            const isSupabaseAvailable = this.isSupabaseAvailable();
+            
             if (supabaseStatus) {
-                supabaseStatus.textContent = typeof window.supabase !== 'undefined' ? 'Conectado' : 'Desconectado';
-                supabaseStatus.className = typeof window.supabase !== 'undefined' ? 'status success' : 'status error';
+                supabaseStatus.textContent = isSupabaseAvailable ? 'Conectado' : 'Desconectado';
+                supabaseStatus.className = isSupabaseAvailable ? 'status success' : 'status error';
             }
             
             if (productServiceStatus) {
@@ -1189,14 +1192,271 @@ class AdminPanel {
             
             if (connectionStatus) {
                 connectionStatus.innerHTML = `
-                    <i class="fas fa-circle" style="color: #28a745;"></i>
-                    <span>Conectado</span>
+                    <i class="fas fa-circle" style="color: ${isSupabaseAvailable ? '#28a745' : '#dc3545'};"></i>
+                    <span>${isSupabaseAvailable ? 'Conectado' : 'Desconectado'}</span>
                 `;
             }
             
         } catch (error) {
             console.error('❌ Error verificando conexión:', error);
         }
+    }
+
+    // Verificar si Supabase está disponible y correctamente inicializado
+    isSupabaseAvailable() {
+        return typeof window.supabase !== 'undefined' && 
+               window.supabase !== null && 
+               typeof window.supabase.from === 'function';
+    }
+
+    // Diagnosticar estado de Supabase (para debugging)
+    diagnoseSupabaseStatus() {
+        const status = {
+            isDefined: typeof window.supabase !== 'undefined',
+            isNotNull: window.supabase !== null,
+            hasFromFunction: false,
+            hasAuthProperty: false,
+            actualType: typeof window.supabase,
+            keys: []
+        };
+
+        if (window.supabase) {
+            status.hasFromFunction = typeof window.supabase.from === 'function';
+            status.hasAuthProperty = 'auth' in window.supabase;
+            status.keys = Object.keys(window.supabase);
+        }
+
+        console.log('🔍 Diagnóstico de Supabase:', status);
+        return status;
+    }
+
+    // Función de prueba para diagnosticar Supabase
+    testSupabaseConnection() {
+        console.log('🧪 === PRUEBA DE CONEXIÓN SUPABASE ===');
+        
+        // Diagnosticar estado
+        const diagnosis = this.diagnoseSupabaseStatus();
+        
+        // Mostrar información detallada
+        console.log('📊 Estado detallado:', {
+            windowSupabase: window.supabase,
+            isAvailable: this.isSupabaseAvailable(),
+            diagnosis: diagnosis
+        });
+
+        // Intentar una consulta simple si está disponible
+        if (this.isSupabaseAvailable()) {
+            console.log('✅ Supabase parece estar disponible, intentando consulta de prueba...');
+            
+            window.supabase
+                .from('productos')
+                .select('id, nombre')
+                .limit(1)
+                .then(({ data, error }) => {
+                    if (error) {
+                        console.error('❌ Error en consulta de prueba:', error);
+                    } else {
+                        console.log('✅ Consulta de prueba exitosa:', data);
+                    }
+                })
+                .catch((err) => {
+                    console.error('❌ Error ejecutando consulta:', err);
+                });
+        } else {
+            console.error('❌ Supabase no está disponible');
+            this.showAlert('Supabase no está inicializado correctamente. Verifica la configuración.', 'error');
+        }
+        
+        console.log('🧪 === FIN PRUEBA SUPABASE ===');
+        return diagnosis;
+    }
+
+    // Buscar QR específico con debugging detallado
+    async searchQRById(qrId) {
+        console.log('🔍 === BÚSQUEDA DETALLADA DE QR ===');
+        console.log('🎯 QR ID a buscar:', qrId);
+        
+        const searchResults = {
+            qrService: null,
+            supabase: null,
+            localStorage: null,
+            found: false,
+            activeStatus: null
+        };
+
+        // 1. Buscar en QRService
+        if (typeof window.QRService !== 'undefined') {
+            try {
+                console.log('🔍 Buscando en QRService...');
+                const allQRs = await window.QRService.getAllQRs();
+                console.log('📊 Total QRs en QRService:', allQRs.length);
+                
+                const qrFound = allQRs.find(qr => qr.id === qrId);
+                searchResults.qrService = qrFound || 'No encontrado';
+                
+                if (qrFound) {
+                    console.log('✅ QR encontrado en QRService:', qrFound);
+                    searchResults.found = true;
+                    searchResults.activeStatus = qrFound.activo;
+                }
+            } catch (error) {
+                console.error('❌ Error buscando en QRService:', error);
+                searchResults.qrService = 'Error: ' + error.message;
+            }
+        } else {
+            console.log('⚠️ QRService no disponible');
+            searchResults.qrService = 'Servicio no disponible';
+        }
+
+        // 2. Buscar en Supabase
+        if (this.isSupabaseAvailable()) {
+            try {
+                console.log('🔍 Buscando en Supabase...');
+                const { data, error } = await window.supabase
+                    .from('qr_codes')
+                    .select(`
+                        codigo_qr,
+                        url_verificacion,
+                        lote,
+                        fecha_produccion,
+                        notas,
+                        activo,
+                        producto_id
+                    `)
+                    .eq('codigo_qr', qrId);
+
+                if (error) {
+                    console.error('❌ Error consultando Supabase:', error);
+                    searchResults.supabase = 'Error: ' + error.message;
+                } else {
+                    console.log('📊 Resultado Supabase:', data);
+                    
+                    if (data && data.length > 0) {
+                        const qrData = data[0];
+                        searchResults.supabase = qrData;
+                        searchResults.found = true;
+                        searchResults.activeStatus = qrData.activo;
+                        console.log('✅ QR encontrado en Supabase:', qrData);
+                        console.log('🔒 Estado activo:', qrData.activo);
+                    } else {
+                        searchResults.supabase = 'No encontrado';
+                        console.log('❌ QR no encontrado en Supabase');
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Error accediendo a Supabase:', error);
+                searchResults.supabase = 'Error de conexión: ' + error.message;
+            }
+        } else {
+            console.log('⚠️ Supabase no disponible');
+            searchResults.supabase = 'Supabase no disponible';
+        }
+
+        // 3. Buscar en localStorage
+        try {
+            console.log('🔍 Buscando en localStorage...');
+            const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+            console.log('📊 Total QRs en localStorage:', qrHistory.length);
+            
+            if (qrHistory.length > 0) {
+                console.log('📋 Lista de QR IDs en localStorage:', qrHistory.map(qr => qr.id));
+            }
+            
+            const localQR = qrHistory.find(qr => qr.id === qrId);
+            searchResults.localStorage = localQR || 'No encontrado';
+            
+            if (localQR) {
+                console.log('✅ QR encontrado en localStorage:', localQR);
+                searchResults.found = true;
+                searchResults.activeStatus = localQR.activo !== undefined ? localQR.activo : true;
+            } else {
+                console.log('❌ QR no encontrado en localStorage');
+            }
+        } catch (error) {
+            console.error('❌ Error accediendo a localStorage:', error);
+            searchResults.localStorage = 'Error: ' + error.message;
+        }
+
+        // Resumen final
+        console.log('📊 === RESUMEN DE BÚSQUEDA ===');
+        console.log('🎯 QR ID:', qrId);
+        console.log('✅ Encontrado:', searchResults.found);
+        console.log('🔒 Estado activo:', searchResults.activeStatus);
+        console.log('📍 Resultados por fuente:', searchResults);
+        console.log('🔍 === FIN BÚSQUEDA DETALLADA ===');
+
+        return searchResults;
+    }
+
+    // Verificar estado específico de un QR (para usar desde consola)
+    async checkQRStatus(qrId) {
+        console.log(`🔍 === VERIFICACIÓN DE ESTADO QR: ${qrId} ===`);
+        
+        const results = await this.searchQRById(qrId);
+        
+        // Mostrar resumen en formato fácil de leer
+        if (results.found) {
+            console.log('✅ QR ENCONTRADO');
+            console.log('🔒 Estado activo:', results.activeStatus);
+            
+            if (results.activeStatus === false) {
+                console.log('❌ PROBLEMA: El QR está marcado como INACTIVO');
+                console.log('💡 Solución: Activar el QR en la base de datos');
+            } else if (results.activeStatus === true) {
+                console.log('✅ El QR está ACTIVO y debería funcionar');
+            } else if (results.activeStatus === null || results.activeStatus === undefined) {
+                console.log('⚠️ Estado activo no definido (se asume ACTIVO)');
+            }
+            
+            // Mostrar dónde se encontró
+            const sources = [];
+            if (results.qrService && typeof results.qrService === 'object') sources.push('QRService');
+            if (results.supabase && typeof results.supabase === 'object') sources.push('Supabase');
+            if (results.localStorage && typeof results.localStorage === 'object') sources.push('localStorage');
+            
+            console.log('📍 Fuentes donde se encontró:', sources.join(', '));
+        } else {
+            console.log('❌ QR NO ENCONTRADO en ninguna fuente');
+            console.log('💡 Posibles causas:');
+            console.log('  - ID incorrecto');
+            console.log('  - QR eliminado');
+            console.log('  - Problemas de conectividad');
+        }
+        
+        console.log('🔍 === FIN VERIFICACIÓN ===');
+        
+        // Mostrar alerta visual también
+        if (results.found) {
+            let productInfo = '';
+            // Obtener información del producto para mostrar en la alerta
+            if (results.qrService && typeof results.qrService === 'object') {
+                const qrData = results.qrService;
+                if (typeof qrData.producto === 'object') {
+                    productInfo = qrData.producto.nombre || 'Producto desconocido';
+                } else {
+                    productInfo = qrData.producto || 'Producto desconocido';
+                }
+            } else if (results.supabase && typeof results.supabase === 'object') {
+                productInfo = 'Producto en Supabase';
+            } else if (results.localStorage && typeof results.localStorage === 'object') {
+                const qrData = results.localStorage;
+                if (typeof qrData.producto === 'object') {
+                    productInfo = qrData.producto.nombre || 'Producto desconocido';
+                } else {
+                    productInfo = qrData.producto || 'Producto desconocido';
+                }
+            }
+            
+            if (results.activeStatus === false) {
+                this.showAlert(`QR "${qrId}" encontrado pero está INACTIVO - Producto: ${productInfo}`, 'warning');
+            } else {
+                this.showAlert(`QR "${qrId}" encontrado y está ACTIVO - Producto: ${productInfo}`, 'success');
+            }
+        } else {
+            this.showAlert(`QR "${qrId}" NO ENCONTRADO en ninguna fuente`, 'error');
+        }
+        
+        return results;
     }
 
     // Limpiar cache
@@ -1576,7 +1836,8 @@ class AdminPanel {
             }
 
             // Fallback si QRService no está disponible
-            if (typeof window.supabase === 'undefined') {
+            if (typeof window.supabase === 'undefined' || !window.supabase.from) {
+                console.warn('⚠️ Supabase no está disponible o no inicializado correctamente');
                 throw new Error('Supabase no está disponible');
             }
 
@@ -1704,7 +1965,15 @@ class AdminPanel {
             }
 
             // Confirmar regeneración
-            const productName = qrRecord.producto?.nombre || qrRecord.producto || 'Producto desconocido';
+            let productName;
+            if (typeof qrRecord.producto === 'object' && qrRecord.producto !== null) {
+                productName = qrRecord.producto.nombre || 'Producto desconocido';
+            } else if (typeof qrRecord.producto === 'string') {
+                productName = qrRecord.producto;
+            } else {
+                productName = 'Producto desconocido';
+            }
+            
             if (!confirm(`¿Estás seguro de que quieres regenerar el QR para "${productName}"?`)) {
                 return;
             }
@@ -1759,7 +2028,15 @@ class AdminPanel {
             }
 
             // Confirmar eliminación
-            const productName = qrRecord.producto?.nombre || qrRecord.producto || 'Producto desconocido';
+            let productName;
+            if (typeof qrRecord.producto === 'object' && qrRecord.producto !== null) {
+                productName = qrRecord.producto.nombre || 'Producto desconocido';
+            } else if (typeof qrRecord.producto === 'string') {
+                productName = qrRecord.producto;
+            } else {
+                productName = 'Producto desconocido';
+            }
+            
             if (!confirm(`¿Estás seguro de que quieres eliminar el QR para "${productName}"?\n\nEsta acción no se puede deshacer.`)) {
                 return;
             }
@@ -1793,53 +2070,141 @@ class AdminPanel {
     // Mostrar vista previa del QR
     async showQRPreview(qrId) {
         try {
+            console.log('🔍 Mostrando vista previa de QR:', qrId);
+            
+            // Usar nuestra función de búsqueda detallada
+            const searchResults = await this.searchQRById(qrId);
+            
             let qrRecord = null;
             
-            // Intentar obtener desde Supabase primero
-            if (typeof window.supabase !== 'undefined') {
-                const { data, error } = await window.supabase
-                    .from('qr_codes_with_product_info')
-                    .select('*')
-                    .eq('codigo_qr', qrId)
-                    .single();
-
-                if (!error && data) {
-                    qrRecord = {
-                        id: data.codigo_qr,
-                        producto: data.producto_nombre,
-                        marca: data.producto_marca,
-                        lote: data.lote,
-                        fechaProduccion: data.fecha_produccion,
-                        url: data.url_verificacion
-                    };
+            // Determinar cuál fuente usar basándose en los resultados
+            if (searchResults.qrService && typeof searchResults.qrService === 'object') {
+                const serviceData = searchResults.qrService;
+                
+                // Normalizar datos de QRService
+                let productoNombre, productoMarca;
+                
+                if (typeof serviceData.producto === 'object') {
+                    productoNombre = serviceData.producto.nombre || 'Producto desconocido';
+                    productoMarca = serviceData.producto.marca || '';
+                } else if (typeof serviceData.producto === 'string') {
+                    productoNombre = serviceData.producto;
+                    productoMarca = serviceData.marca || '';
+                } else {
+                    productoNombre = 'Producto desconocido';
+                    productoMarca = '';
                 }
+                
+                qrRecord = {
+                    id: serviceData.id,
+                    producto: productoNombre,
+                    marca: productoMarca,
+                    lote: serviceData.lote,
+                    fechaProduccion: serviceData.fechaProduccion,
+                    url: serviceData.url,
+                    activo: serviceData.activo !== undefined ? serviceData.activo : true
+                };
+                console.log('✅ Usando datos de QRService:', { producto: productoNombre, marca: productoMarca });
+            } else if (searchResults.supabase && typeof searchResults.supabase === 'object') {
+                // Convertir datos de Supabase al formato esperado
+                const supabaseData = searchResults.supabase;
+                
+                // Obtener información del producto si está disponible
+                let productInfo = null;
+                if (supabaseData.producto_id && this.isSupabaseAvailable()) {
+                    try {
+                        const { data: productData, error: productError } = await window.supabase
+                            .from('productos')
+                            .select('id, nombre, marca')
+                            .eq('id', supabaseData.producto_id)
+                            .single();
+                        
+                        if (!productError && productData) {
+                            productInfo = productData;
+                        }
+                    } catch (productErr) {
+                        console.warn('⚠️ Error obteniendo info del producto:', productErr);
+                    }
+                }
+
+                qrRecord = {
+                    id: supabaseData.codigo_qr,
+                    producto: productInfo?.nombre || 'Producto desconocido',
+                    marca: productInfo?.marca || '',
+                    lote: supabaseData.lote,
+                    fechaProduccion: supabaseData.fecha_produccion,
+                    url: supabaseData.url_verificacion,
+                    activo: supabaseData.activo
+                };
+                console.log('✅ Usando datos de Supabase');
+            } else if (searchResults.localStorage && typeof searchResults.localStorage === 'object') {
+                const localData = searchResults.localStorage;
+                
+                // Normalizar datos de localStorage
+                let productoNombre, productoMarca;
+                
+                if (typeof localData.producto === 'object') {
+                    productoNombre = localData.producto.nombre || 'Producto desconocido';
+                    productoMarca = localData.producto.marca || '';
+                } else if (typeof localData.producto === 'string') {
+                    productoNombre = localData.producto;
+                    productoMarca = localData.marca || '';
+                } else {
+                    productoNombre = 'Producto desconocido';
+                    productoMarca = '';
+                }
+                
+                qrRecord = {
+                    id: localData.id,
+                    producto: productoNombre,
+                    marca: productoMarca,
+                    lote: localData.lote,
+                    fechaProduccion: localData.fechaProduccion,
+                    url: localData.url,
+                    activo: localData.activo !== undefined ? localData.activo : true
+                };
+                console.log('✅ Usando datos de localStorage:', { producto: productoNombre, marca: productoMarca });
             }
             
-            // Fallback a localStorage si no encontramos en Supabase
             if (!qrRecord) {
-                const qrHistory = JSON.parse(localStorage.getItem('qrHistory') || '[]');
-                qrRecord = qrHistory.find(qr => qr.id === qrId);
+                console.error('❌ QR no encontrado en ninguna fuente:', qrId);
+                this.showAlert(
+                    `QR "${qrId}" no encontrado.\n\nBúsqueda realizada en:\n- QRService: ${typeof searchResults.qrService === 'string' ? searchResults.qrService : 'OK'}\n- Supabase: ${typeof searchResults.supabase === 'string' ? searchResults.supabase : 'OK'}\n- LocalStorage: ${typeof searchResults.localStorage === 'string' ? searchResults.localStorage : 'OK'}`, 
+                    'error'
+                );
+                return;
             }
-            
-            if (!qrRecord) {
-                this.showAlert('QR no encontrado', 'error');
+
+            // Verificar que esté activo
+            if (qrRecord.activo === false) {
+                console.warn('⚠️ QR encontrado pero está inactivo:', qrRecord);
+                this.showAlert(`El QR "${qrId}" está marcado como inactivo y no puede mostrarse.`, 'warning');
                 return;
             }
 
             // Verificar que la librería QR esté disponible
             const QRCodeLib = window.QRCodeLib || window.QRCode || window.qrcode;
             if (!QRCodeLib) {
-                this.showAlert('Librería QR no disponible', 'error');
+                console.error('❌ Librería QR no disponible');
+                this.showAlert('La librería de códigos QR no está disponible. Por favor, recarga la página.', 'error');
                 return;
             }
 
+            console.log('🔄 Generando vista previa del QR...');
             // Cambiar a la sección del generador QR
             this.showSection('generador-qr');
 
             // Regenerar el QR en el canvas principal
             const canvas = document.getElementById('qrCanvas');
-            if (canvas) {
-                QRCodeLib.toCanvas(canvas, qrRecord.url, {
+            if (!canvas) {
+                console.error('❌ Canvas QR no encontrado');
+                this.showAlert('Canvas de QR no encontrado', 'error');
+                return;
+            }
+
+            // Generar QR en canvas
+            try {
+                await QRCodeLib.toCanvas(canvas, qrRecord.url, {
                     width: 300,
                     height: 300,
                     color: {
@@ -1847,31 +2212,38 @@ class AdminPanel {
                         light: '#ffffff'
                     },
                     errorCorrectionLevel: 'M'
-                }).then(() => {
-                    // Mostrar información del QR
-                    this.displayQRResult(
-                        { nombre: qrRecord.producto, marca: qrRecord.marca },
-                        qrRecord.id,
-                        qrRecord.url,
-                        qrRecord.lote,
-                        qrRecord.fechaProduccion
-                    );
-                    
-                    // Guardar referencia para descargas
-                    this.currentQR = {
-                        canvas: canvas,
-                        url: qrRecord.url,
-                        product: { nombre: qrRecord.producto, marca: qrRecord.marca },
-                        id: qrRecord.id,
-                        lote: qrRecord.lote,
-                        fechaProduccion: qrRecord.fechaProduccion
-                    };
-                    
-                    this.showAlert(`QR de ${qrRecord.producto} cargado`, 'success');
-                }).catch(error => {
-                    console.error('Error generando vista previa QR:', error);
-                    this.showAlert('Error mostrando QR', 'error');
                 });
+
+                console.log('✅ QR generado exitosamente en vista previa');
+                
+                // Mostrar información del QR
+                this.displayQRResult(
+                    { nombre: qrRecord.producto, marca: qrRecord.marca },
+                    qrRecord.id,
+                    qrRecord.url,
+                    qrRecord.lote,
+                    qrRecord.fechaProduccion
+                );
+                
+                // Guardar referencia para descargas
+                this.currentQR = {
+                    canvas: canvas,
+                    url: qrRecord.url,
+                    product: { nombre: qrRecord.producto, marca: qrRecord.marca },
+                    id: qrRecord.id,
+                    lote: qrRecord.lote,
+                    fechaProduccion: qrRecord.fechaProduccion
+                };
+                
+                // Mensaje mejorado para la alerta
+                const productoInfo = qrRecord.marca ? 
+                    `${qrRecord.producto} (${qrRecord.marca})` : 
+                    qrRecord.producto;
+                this.showAlert(`Vista previa de QR: ${productoInfo}`, 'success');
+                
+            } catch (canvasError) {
+                console.error('❌ Error generando QR en canvas:', canvasError);
+                this.showAlert('Error mostrando el código QR: ' + canvasError.message, 'error');
             }
             
         } catch (error) {
@@ -2133,35 +2505,66 @@ class AdminPanel {
             if (typeof window.QRService !== 'undefined') {
                 qrRecords = await window.QRService.getAllQRs();
                 console.log('✅ QR records cargados usando QRService:', qrRecords.length);
-            } else if (typeof window.supabase !== 'undefined') {
-                // Fallback directo a Supabase
-                const { data, error } = await window.supabase
-                    .from('qr_codes_with_product_info')
-                    .select('*')
-                    .order('fecha_creacion', { ascending: false });
+            } else if (typeof window.supabase !== 'undefined' && window.supabase.from) {
+                try {
+                    console.log('🔍 Cargando QRs desde Supabase...');
+                    // Primero intentamos usar la vista, si existe
+                    let { data, error } = await window.supabase
+                        .from('qr_codes_with_product_info')
+                        .select('*')
+                        .order('fecha_creacion', { ascending: false });
 
-                if (error) {
-                    throw error;
+                    // Si la vista no existe, usar consulta directa
+                    if (error && error.message.includes('relation') && error.message.includes('does not exist')) {
+                        console.log('🔄 Vista no encontrada, usando consulta directa...');
+                        ({ data, error } = await window.supabase
+                            .from('qr_codes')
+                            .select(`
+                                codigo_qr,
+                                producto_id,
+                                url_verificacion,
+                                lote,
+                                fecha_produccion,
+                                fecha_creacion,
+                                notas,
+                                activo,
+                                productos (
+                                    nombre,
+                                    marca
+                                )
+                            `)
+                            .order('fecha_creacion', { ascending: false }));
+                    }
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    // Transformar datos de Supabase al formato esperado
+                    qrRecords = data.map(qr => ({
+                        id: qr.codigo_qr,
+                        productId: qr.producto_id,
+                        producto: qr.producto_nombre || qr.productos?.nombre || 'Producto desconocido',
+                        marca: qr.producto_marca || qr.productos?.marca || '',
+                        lote: qr.lote,
+                        fechaProduccion: qr.fecha_produccion,
+                        fechaCreacion: qr.fecha_creacion,
+                        url: qr.url_verificacion,
+                        notas: qr.notas,
+                        escaneado: qr.total_escaneos > 0,
+                        contadorEscaneos: qr.total_escaneos || 0,
+                        ultimaVerificacion: qr.ultima_verificacion,
+                        activo: qr.activo
+                    }));
+
+                    console.log('✅ QR records cargados desde Supabase:', qrRecords.length);
+                } catch (supabaseError) {
+                    console.warn('⚠️ Error cargando desde Supabase:', supabaseError.message);
+                    throw supabaseError;
                 }
-
-                // Transformar datos de Supabase al formato esperado
-                qrRecords = data.map(qr => ({
-                    id: qr.codigo_qr,
-                    productId: qr.producto_id,
-                    producto: qr.producto_nombre,
-                    marca: qr.producto_marca,
-                    lote: qr.lote,
-                    fechaProduccion: qr.fecha_produccion,
-                    fechaCreacion: qr.fecha_creacion,
-                    url: qr.url_verificacion,
-                    notas: qr.notas,
-                    escaneado: qr.total_escaneos > 0,
-                    contadorEscaneos: qr.total_escaneos,
-                    ultimaVerificacion: qr.ultima_verificacion,
-                    activo: qr.activo
-                }));
-
-                console.log('✅ QR records cargados desde Supabase:', qrRecords.length);
+            } else if (typeof window.supabase !== 'undefined' && !window.supabase.from) {
+                console.warn('⚠️ Supabase está definido pero no inicializado correctamente');
+                throw new Error('Supabase no está inicializado correctamente');
             } else {
                 // Fallback final a localStorage
                 qrRecords = JSON.parse(localStorage.getItem('qrHistory') || '[]');
@@ -2257,7 +2660,22 @@ class AdminPanel {
             return;
         }
 
-        const qrRows = qrRecords.map(qr => `
+        const qrRows = qrRecords.map(qr => {
+            // Normalizar información del producto
+            let productoNombre, productoMarca;
+            
+            if (typeof qr.producto === 'object' && qr.producto !== null) {
+                productoNombre = qr.producto.nombre || 'Producto desconocido';
+                productoMarca = qr.producto.marca || '';
+            } else if (typeof qr.producto === 'string') {
+                productoNombre = qr.producto;
+                productoMarca = qr.marca || '';
+            } else {
+                productoNombre = 'Producto desconocido';
+                productoMarca = '';
+            }
+            
+            return `
             <tr>
                 <td>
                     <div class="qr-mini" onclick="adminPanel.showQRPreview('${qr.id}')">
@@ -2266,8 +2684,8 @@ class AdminPanel {
                 </td>
                 <td>
                     <div class="product-cell">
-                        <strong>${qr.producto?.nombre || qr.producto || 'Producto desconocido'}</strong><br>
-                        <small>${qr.producto?.marca || qr.marca || ''}</small>
+                        <strong>${productoNombre}</strong><br>
+                        <small>${productoMarca}</small>
                     </div>
                 </td>
                 <td><code>${qr.id}</code></td>
@@ -2294,7 +2712,8 @@ class AdminPanel {
                     </div>
                 </td>
             </tr>
-        `).join('');
+        `;
+        }).join('');
 
         tableBody.innerHTML = qrRows;
     }

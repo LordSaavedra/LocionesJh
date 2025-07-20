@@ -9,6 +9,10 @@
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Librerías para QR -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    
       <!-- CSS del panel -->
     <link rel="stylesheet" href="../css/admin-panel.css">
     <link rel="stylesheet" href="../css/admin-panel-validacion.css">
@@ -50,6 +54,12 @@
                         <a href="#categorias">
                             <i class="fas fa-tags"></i>
                             Categorías
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#generador-qr">
+                            <i class="fas fa-qrcode"></i>
+                            Generador QR
                         </a>
                     </li>
                     <li>
@@ -314,6 +324,131 @@
                 </div>
             </section>
 
+            <!-- Generador QR -->
+            <section id="generador-qr" class="content-section">
+                <h2 class="section-title">Generador de Códigos QR</h2>
+                
+                <!-- Estadísticas QR -->
+                <div class="dashboard-grid" style="margin-bottom: 2rem;">
+                    <div class="dashboard-card">
+                        <h3>Total QRs</h3>
+                        <div class="number" id="total-qrs">0</div>
+                        <div class="description">Códigos generados</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>QRs Escaneados</h3>
+                        <div class="number" id="qrs-escaneados">0</div>
+                        <div class="description">Códigos verificados</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Hoy</h3>
+                        <div class="number" id="qrs-hoy">0</div>
+                        <div class="description">QRs generados hoy</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Esta Semana</h3>
+                        <div class="number" id="qrs-semana">0</div>
+                        <div class="description">QRs generados</div>
+                    </div>
+                </div>
+
+                <!-- Formulario de generación -->
+                <div class="qr-generator">
+                    <form id="qrGeneratorForm" class="qr-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="qr-producto">Producto *</label>
+                                <select id="qr-producto" name="producto" required>
+                                    <option value="">Seleccionar producto</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="qr-lote">Lote</label>
+                                <input type="text" id="qr-lote" name="lote" placeholder="Ej: L2025001">
+                            </div>
+                            <div class="form-group">
+                                <label for="qr-fecha">Fecha de Producción</label>
+                                <input type="date" id="qr-fecha" name="fecha_produccion">
+                            </div>
+                            <div class="form-group">
+                                <label for="qr-cantidad">Cantidad</label>
+                                <input type="number" id="qr-cantidad" name="cantidad" value="1" min="1" max="100">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="qr-notas">Notas</label>
+                            <textarea id="qr-notas" name="notas" rows="3" placeholder="Notas adicionales sobre este QR"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-qrcode"></i>
+                            Generar QR
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Resultado del QR -->
+                <div id="qrResult" class="qr-result" style="display: none;">
+                    <h3>QR Generado Exitosamente</h3>
+                    <div class="qr-display">
+                        <div class="qr-canvas-container">
+                            <canvas id="qrCanvas"></canvas>
+                        </div>
+                        <div class="qr-info">
+                            <h4>Información del QR</h4>
+                            <p><strong>Producto:</strong> <span id="qr-producto-nombre">-</span></p>
+                            <p><strong>Marca:</strong> <span id="qr-producto-marca">-</span></p>
+                            <p><strong>Código:</strong> <code id="qr-codigo-id">-</code></p>
+                            <p><strong>URL:</strong></p>
+                            <div class="input-group">
+                                <input type="text" id="qr-url" readonly class="form-control">
+                                <button type="button" class="btn btn-secondary" onclick="adminPanel.copyQRUrl()">
+                                    <i class="fas fa-copy"></i> Copiar
+                                </button>
+                            </div>
+                            <div class="qr-actions">
+                                <button onclick="adminPanel.downloadQR('png')" class="btn btn-success">
+                                    <i class="fas fa-download"></i> PNG
+                                </button>
+                                <button onclick="adminPanel.downloadQR('svg')" class="btn btn-info">
+                                    <i class="fas fa-vector-square"></i> SVG
+                                </button>
+                                <button onclick="adminPanel.printQR()" class="btn btn-secondary">
+                                    <i class="fas fa-print"></i> Imprimir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historial de QRs -->
+                <div class="qr-history">
+                    <h3>Historial de QRs</h3>
+                    <div class="table-container">
+                        <table class="qr-table">
+                            <thead>
+                                <tr>
+                                    <th>QR</th>
+                                    <th>Producto</th>
+                                    <th>Código</th>
+                                    <th>Lote</th>
+                                    <th>Fecha Creación</th>
+                                    <th>Escaneado</th>
+                                    <th>Última Verificación</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="qrHistoryTable">
+                                <tr>
+                                    <td colspan="8" class="text-center">
+                                        <i class="fas fa-spinner fa-spin"></i> Cargando historial...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
             <!-- Configuración -->
             <section id="configuracion" class="content-section">
                 <h2 class="section-title">Configuración del Sistema</h2>
@@ -347,11 +482,13 @@
         </div>    </div>
     
     <!-- Scripts en orden correcto -->
+    <script>
+        // Alias para compatibilidad con el código
+        window.QRCodeLib = window.QRCode || window.qrcode;
+    </script>
     <script src="../js/supabase-config-optimized.js"></script>
     <script src="../js/qr-service-fixed.js"></script>
-    <script src="../js/admin-panel-validacion-mejorada.js"></script>
-    <script src="../js/admin-panel-new.js"></script>
-    <script src="../js/admin-panel-integration.js"></script>
+    <script src="../js/admin-panel-mejorado.js"></script>
     
     <!-- Configuración de precios -->
     <script>
@@ -424,7 +561,7 @@
                 }
             } else {
                 console.error('❌ AdminPanel no está disponible');
-                alert('Error: La clase AdminPanel no está disponible. Verifica que admin-panel-new.js se haya cargado correctamente.');
+                alert('Error: La clase AdminPanel no está disponible. Verifica que admin-panel-mejorado.js se haya cargado correctamente.');
             }
         });
         
@@ -656,12 +793,7 @@
                 adminPanel.clearImagePreview(true); // Limpiar todo cuando el usuario hace click en limpiar
             }
         };
-        
-    <!-- JavaScript del panel de administración -->
-    <script src="../js/supabase-config-optimized.js"></script>
-    <script src="../js/admin-panel-validacion-mejorada.js"></script>
-    <script src="../js/admin-panel-new.js"></script>
-    <script src="../js/admin-panel-integration.js"></script>
+    </script>
     
     <!-- Configuración de precios -->
     <script>

@@ -1,8 +1,0 @@
-nombre,marca,precio,categoria,subcategoria,descripcion,notas,imagen_url,ml,stock,estado,descuento,luxury,activo
-9 AM,AFNAN,95000,para-ellos,nicho,Fragancia fresca y especiada,Limón lavanda menta,https://github.com/LordSaavedra/Imagenes_JH/blob/main/9%20AM%20AFNAN.png?raw=true,100,10,disponible,,false,true
-9 PM,AFNAN,95000,para-ellos,nicho,Fragancia nocturna y especiada,Limón lavanda menta,https://github.com/LordSaavedra/Imagenes_JH/blob/main/9%20PM%20AFNAN.png?raw=true,100,10,disponible,,false,true
-Just Different,Hugo Boss,105000,para-ellos,designer,Perfume moderno y juvenil,Menta manzana verde albahaca,https://github.com/LordSaavedra/Imagenes_JH/blob/main/HUGO%20BOSS%20JUST%20DIFFERENT.png?raw=true,125,7,disponible,10,false,true
-Arabians Tonka,Montale,210000,unisex,nicho,Perfume intenso y oriental,Haba tonka azafrán oud,https://github.com/LordSaavedra/Imagenes_JH/blob/main/MONTALE%20ARABIANS%20TONKA.png?raw=true,100,5,disponible,,true,true
-Born In Roma Extradose,Valentino,185000,para-ellas,designer,Fragancia dulce y empoderante,Vainilla jazmín bergamota,https://github.com/LordSaavedra/Imagenes_JH/blob/main/Valentino%20Born%20In%20Roma%20Extradose.png?raw=true,100,6,disponible,15,true,true
-Uomo,Valentino,160000,para-ellos,designer,Aroma elegante y sofisticado,Avellana chocolate cuero,https://github.com/LordSaavedra/Imagenes_JH/blob/main/Valentino%20UOMO.png?raw=true,100,4,disponible,,true,true
-Y,Yves Saint Laurent,175000,para-ellos,designer,Fragancia fresca y moderna,Bergamota salvia jengibre,https://github.com/LordSaavedra/Imagenes_JH/blob/main/Y%20YVES%20SAINT%20LAUREN.png?raw=true,100,12,disponible,10,true,true
