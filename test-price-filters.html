@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Filtros de Precios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test de Filtros de Precios</h1>
+        <p>Esta página permite probar que los filtros de precios están calculando correctamente los rangos mínimos y máximos.</p>
+        
+        <div class="test-section">
+            <h3>🚹 Para Ellos</h3>
+            <button class="test-button" onclick="testParaEllos()">Probar Filtros Para Ellos</button>
+            <div id="results-ellos" class="results" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🚺 Para Ellas</h3>
+            <button class="test-button" onclick="testParaEllas()">Probar Filtros Para Ellas</button>
+            <div id="results-ellas" class="results" style="display: none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📊 Información de Páginas</h3>
+            <button class="test-button" onclick="openParaEllos()">Abrir Para Ellos</button>
+            <button class="test-button" onclick="openParaEllas()">Abrir Para Ellas</button>
+        </div>
+    </div>
+
+    <script>
+        function testParaEllos() {
+            const resultsDiv = document.getElementById('results-ellos');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = `
+🔄 Abriendo página Para Ellos...
+📝 Para probar:
+1. Abre la consola del navegador (F12)
+2. Ejecuta: debugPricesEllos()
+3. Verifica que los precios mínimo y máximo se calculen desde los productos reales
+
+Comandos disponibles en consola:
+- debugPricesEllos() - Ver rangos de precios
+- window.paraEllosManager.productos - Ver todos los productos
+- window.paraEllosManager.updatePriceFilter() - Recalcular filtros
+            `;
+            window.open('/html/para_ellos.html', '_blank');
+        }
+
+        function testParaEllas() {
+            const resultsDiv = document.getElementById('results-ellas');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = `
+🔄 Abriendo página Para Ellas...
+📝 Para probar:
+1. Abre la consola del navegador (F12)
+2. Ejecuta: testPricesEllas() para análisis completo
+3. O ejecuta: debugPricesEllas() para debug rápido
+4. Verifica que los precios mínimo y máximo se calculen desde los productos reales
+
+Comandos disponibles en consola:
+- testPricesEllas() - Análisis completo de precios (RECOMENDADO)
+- debugPricesEllas() - Ver rangos de precios
+- window.paraEllasManager.productos - Ver todos los productos
+- window.paraEllasManager.setupPriceFilter() - Recalcular filtros
+            `;
+            window.open('/html/para_ellas.html', '_blank');
+        }
+
+        function openParaEllos() {
+            window.open('/html/para_ellos.html', '_blank');
+        }
+
+        function openParaEllas() {
+            window.open('/html/para_ellas.html', '_blank');
+        }
+
+        // Información inicial
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Página de testing de filtros de precios cargada');
+            console.log('📋 Instrucciones:');
+            console.log('1. Usa los botones para abrir las páginas de productos');
+            console.log('2. En cada página, abre la consola (F12)');
+            console.log('3. Ejecuta las funciones de debug para verificar los rangos de precios');
+            console.log('4. Verifica que los sliders se configuren con los precios reales de los productos');
+        });
+    </script>
+</body>
+</html>

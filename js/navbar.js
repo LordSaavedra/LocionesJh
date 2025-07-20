@@ -24,7 +24,9 @@ function initNavbar() {
         return;
     }
 
-    console.log('Elementos de navbar encontrados, configurando eventos');    // Toggle del menú hamburguesa
+    console.log('Elementos de navbar encontrados, configurando eventos');
+    
+    // Toggle del menú hamburguesa
     hamburgerMenu.addEventListener('click', function(e) {
         e.preventDefault();
         console.log('Hamburger menu clicked!');
@@ -33,7 +35,9 @@ function initNavbar() {
         document.body.style.overflow = hamburgerMenu.classList.contains('active') ? 'hidden' : '';
         console.log('Hamburger active:', hamburgerMenu.classList.contains('active'));
         console.log('Menu active:', navbarMenu.classList.contains('active'));
-    });    // Cerrar menú al hacer click en enlaces finales (que no tienen submenús)
+    });
+
+    // Cerrar menú al hacer click en enlaces finales (que no tienen submenús)
     navbarMenu.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             const parentLi = link.closest('li');
@@ -46,7 +50,9 @@ function initNavbar() {
                 document.body.style.overflow = '';
             }
         });
-    });    // Manejar submenús
+    });
+
+    // Manejar submenús
     document.querySelectorAll('.has-submenu').forEach(item => {
         const link = item.querySelector('a');
         const submenu = item.querySelector('.submenu');
@@ -74,7 +80,9 @@ function initNavbar() {
                 }
             });
         }
-    });    // Cerrar submenús al hacer click fuera de ellos
+    });
+
+    // Cerrar submenús al hacer click fuera de ellos
     document.addEventListener('click', function(e) {
         if (window.innerWidth <= 768 && navbarMenu.classList.contains('active')) {
             const clickedElement = e.target;

@@ -138,7 +138,8 @@ class ProductosServiceOptimized {
                     luxury,
                     notas,
                     subcategoria,
-                    created_at
+                    created_at,
+                    orden_display
                 `);
             
             // Solo aplicar límite si no es unlimited
@@ -160,8 +161,9 @@ class ProductosServiceOptimized {
                 query = query.or(`nombre.ilike.%${filtros.busqueda}%,descripcion.ilike.%${filtros.busqueda}%`);
             }
             
-            // Ordenar por fecha de creación (más recientes primero) para consistencia
-            query = query.order('created_at', { ascending: false });
+            // Ordenar por orden_display primero, luego por fecha de creación
+            query = query.order('orden_display', { ascending: true, nullsLast: true })
+                        .order('created_at', { ascending: false });
 
             // Ejecutar query con timeout (más tiempo para admin con muchos productos)
             const timeoutMs = filtros.unlimited ? 15000 : 8000;
@@ -448,6 +450,12 @@ class ProductosServiceOptimized {
             categoria: categoria,
             fallback: true
         });
+    }
+    
+    // Alias para mantener compatibilidad con código existente
+    static async obtenerProductosPorCategoria(categoria) {
+        console.log(`🔄 Usando método optimizado para categoría: "${categoria}"`);
+        return await this.obtenerProductosPorCategoriaOptimizado(categoria);
     }
 
     // Limpiar cache

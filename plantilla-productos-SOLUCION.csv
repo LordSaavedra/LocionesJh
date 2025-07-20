@@ -1,122 +1,115 @@
-nombre;marca;Columna1;Columna2;precio;categoria;subcategoria;descripcion;notas;imagen_url;ml;stock;estado;descuento;luxury;activo
-0,375;AFNAN;FALSO;;95000;para-ellos;nicho;Fragancia fresca y especiada;LimÃ³n lavanda menta;https://github.com/LordSaavedra/Imagenes_JH/blob/main/9%20AM%20AFNAN.png?raw=true;100;10;disponible;;false;true
-0,875;AFNAN;FALSO;;95000;para-ellos;nicho;Fragancia nocturna y especiada;LimÃ³n lavanda menta;https://github.com/LordSaavedra/Imagenes_JH/blob/main/9%20PM%20AFNAN.png?raw=true;100;10;disponible;;false;true
-Just Different;Hugo Boss;FALSO;;105000;para-ellos;designer;Perfume moderno y juvenil;Menta manzana verde albahaca;https://github.com/LordSaavedra/Imagenes_JH/blob/main/HUGO%20BOSS%20JUST%20DIFFERENT.png?raw=true;125;7;disponible;10;false;true
-Arabians Tonka;Montale;FALSO;;210000;unisex;nicho;Perfume intenso y oriental;Haba tonka azafrÃ¡n oud;https://github.com/LordSaavedra/Imagenes_JH/blob/main/MONTALE%20ARABIANS%20TONKA.png?raw=true;100;5;disponible;;true;true
-Born In Roma Extradose;Valentino;FALSO;;185000;para-ellos;designer;Fragancia dulce y empoderante;Vainilla jazmÃ­n bergamota;https://github.com/LordSaavedra/Imagenes_JH/blob/main/Valentino%20Born%20In%20Roma%20Extradose.png?raw=true;100;6;disponible;15;true;true
-Uomo;Valentino;FALSO;;160000;para-ellos;designer;Aroma elegante y sofisticado;Avellana chocolate cuero;https://github.com/LordSaavedra/Imagenes_JH/blob/main/Valentino%20UOMO.png?raw=true;100;4;disponible;;true;true
-Y;Yves Saint Laurent;FALSO;;175000;para-ellos;designer;Fragancia fresca y moderna;Bergamota salvia jengibre;https://github.com/LordSaavedra/Imagenes_JH/blob/main/Y%20YVES%20SAINT%20LAUREN.png?raw=true;100;12;disponible;10;true;true
-212;CAROLINA HERRERA;VERDADERO;CAROLINA HERRERA;80000;para-ellos;;;;;;;;;;
-212 VIP ;CAROLINA HERRERA;VERDADERO;CAROLINA HERRERA;70000;para-ellos;;;;;;;;;;
-212 SEXY ;CAROLINA HERRERA;VERDADERO;CAROLINA HERRERA;70000;para-ellos;;;;;;;;;;
-212 FOREVER YOUNG ;CAROLINA HERRERA ;FALSO;CAROLINA HERRERA;70000;para-ellos;;;;;;;;;;
-212 VIP BLACK ;CAROLINA HERRERA ;FALSO;CAROLINA HERRERA;70000;para-ellos;;;;;;;;;;
-212 WILD PARTY ;CAROLINA HERRERA ;FALSO;CAROLINA HERRERA;60000;para-ellos;;;;;;;;;;
-CH PRIVE ;CAROLINA HERRERA ;FALSO;CAROLINA HERRERA;AGOTADO;para-ellos;;;;;;;;;;
-CAROLINA HERRERA ;CAROLINA HERRERA ;FALSO;CAROLINA HERRERA;60000;para-ellos;;;;;;;;;;
-BAD BOY ;CAROLINA HERRERA ;FALSO;CAROLINA HERRERA;70000;para-ellos;;;;;;;;;;
-1 ONE MILLION ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
-1 ONE MILLION ELIXIR ;PACO RABANNE ;FALSO;PACO RABANNE;70000;para-ellos;;;;;;;;;;
-1 ONE MILLION LUCKY ;PACO RABANNE ;FALSO;PACO RABANNE;70000;para-ellos;;;;;;;;;;
-1 ONE MILLION PRIVE ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
-1 ONE MILLION ROYAL ;PACO RABANNE ;FALSO;PACO RABANNE;70000;para-ellos;;;;;;;;;;
-1 ONE MILLION PARFUM ;PACO RABANNE ;FALSO;PACO RABANNE;70000;para-ellos;;;;;;;;;;
-1 ONE MIILION GOLD ;PACO RABANNE ;FALSO;PACO RABANNE;70000;para-ellos;;;;;;;;;;
-PURE XS ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
-BLACK XS;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
-BLACK XS AFRODISIAQUE ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
-INVICTUS AQUA ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
-INVICTUS LEGEND ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
-INVICTUS INTENSE ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
-INVICTUS ONIX ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
-INVICTUS VICTORY ;PACO RABANNE ;FALSO;PACO RABANNE;60000;para-ellos;;;;;;;;;;
-PHANTOM ;PACO RABANNE ;FALSO;PACO RABANNE;70000;para-ellos;;;;;;;;;;
-EMBLEM ;MONTBLAC ;FALSO;MONTBLANC;60000;para-ellos;;;;;;;;;;
-LEGEND NIGHT ;MONTBLAC ;FALSO;MONTBLANC;AGOTADA;para-ellos;;;;;;;;;;
-LEGEND ;MONTBLAC ;FALSO;MONTBLANC;60000;para-ellos;;;;;;;;;;
-EXPLORET ;MONTBLAC ;FALSO;MONTBLANC;70000;para-ellos;;;;;;;;;;
-STAR WUALKER ;MONTBLAC ;FALSO;MONTBLANC;60000;para-ellos;;;;;;;;;;
-LACOSTE ESSENTIAL ;LACOSTE ;FALSO;LACOSTE;60000;para-ellos;;;;;;;;;;
-LACOSTE L12.12 BLANC ;LACOSTE ;FALSO;LACOSTE;60000;para-ellos;;;;;;;;;;
-LACOSTE L12.12NOIR ;LACOSTE ;FALSO;LACOSTE;60000;para-ellos;;;;;;;;;;
-LACOSTE RED ;LACOSTE ;FALSO;LACOSTE;70000;para-ellos;;;;;;;;;;
-LACOSTE L12.12BLEU ;LACOSTE ;FALSO;LACOSTE;60000;para-ellos;;;;;;;;;;
-LACOSTE ENERGIZED;LACOSTE ;FALSO;LACOSTE;70000;para-ellos;;;;;;;;;;
-LACOSTE L12.12ROUGE;LACOSTE ;FALSO;LACOSTE;60000;para-ellos;;;;;;;;;;
-LACOSTE  L12.12VERVET;LACOSTE ;FALSO;LACOSTE;60000;para-ellos;;;;;;;;;;
-BOSS ORANGE ;HUGO BOSS;VERDADERO;HUGO BOSS;AGOTADO;para-ellos;;;;;;;;;;
-BOTTLED NIGTH ;HUGO BOSS;VERDADERO;HUGO BOSS;60000;para-ellos;;;;;;;;;;
-BOTTLED  ;HUGO BOSS;VERDADERO;HUGO BOSS;70000;para-ellos;;;;;;;;;;
-BOTTLED TONIC ;HUGO BOSS;VERDADERO;HUGO BOSS;70000;para-ellos;;;;;;;;;;
-BOSS UNLIMITED ;HUGO BOSS;VERDADERO;HUGO BOSS;60000;para-ellos;;;;;;;;;;
-BOSS IN MOTION;HUGO BOSS;VERDADERO;HUGO BOSS;60000;para-ellos;;;;;;;;;;
-HUGO ;HUGO BOSS;VERDADERO;HUGO BOSS;60000;para-ellos;;;;;;;;;;
-HUGO RED ;HUGO BOSS;VERDADERO;HUGO BOSS;70000;para-ellos;;;;;;;;;;
-DARK BLUE ;HUGO BOSS;VERDADERO;HUGO BOSS;50000;para-ellos;;;;;;;;;;
-ENERGISE ;HUGO BOSS;VERDADERO;HUGO BOSS;70000;para-ellos;;;;;;;;;;
- LE MALE ;JEAN PAUL GAULTIER;VERDADERO;JEAN PAUL GAULTIER;80000;para-ellos;;;;;;;;;;
-SCANDAL;JEAN PAUL GAULTIER;VERDADERO;JEAN PAUL GAULTIER;70000;para-ellos;;;;;;;;;;
-ULTRA MALE;JEAN PAUL GAULTIER;FALSO;;80000;para-ellos;;;;;;;;;;
-LE BEAU;JEAN PAUL GAULTIER;FALSO;;90000;para-ellos;;;;;;;;;;
-JEAN PAUL ELIXIR ;JEAN PAUL GAULTIER;FALSO;;90000;para-ellos;;;;;;;;;;
-LE BEAU  PARADISE GARDEN ;JEAN PAUL GAULTIER;FALSO;;AGOTADO;para-ellos;;;;;;;;;;
-LIGHT BLUE ;DOLCE & GABANNE ;FALSO;;60000;para-ellos;;;;;;;;;;
-K BY DOLCE & GABANNA ;DOLCE & GABANNE ;FALSO;;70000;para-ellos;;;;;;;;;;
-BLEU CHANEL ;CHANEL;FALSO;;60000;para-ellos;;;;;;;;;;
-ALLURE SPORT ;CHANEL;FALSO;;60000;para-ellos;;;;;;;;;;
-POLO BLUE ;RALPH LAUREN ;FALSO;;60000;para-ellos;;;;;;;;;;
-POLO RED ;RALPH LAUREN ;FALSO;;60000;para-ellos;;;;;;;;;;
-POLO BLACK;RALPH LAUREN ;FALSO;;60000;para-ellos;;;;;;;;;;
-JEAN PASCAL ;JEAN-PASCAL;FALSO;;80000;para-ellos;;;;;;;;;;
-LAPIDUS ;TED LAPIDUS ;FALSO;;60000;para-ellos;;;;;;;;;;
-TOMMY HILFIGER ;TOMMY HILFIGER;FALSO;;60000;para-ellos;;;;;;;;;;
-SWISS ARMY ;VICTORINOX;FALSO;;60000;para-ellos;;;;;;;;;;
-360;PERRY ELLIS;FALSO;;60000;para-ellos;;;;;;;;;;
-360 RED ;PERRY ELLIS;FALSO;;60000;para-ellos;;;;;;;;;;
-ACQUA DI GIO;GIORGIO ARMANI;FALSO;;60000;para-ellos;;;;;;;;;;
-ACQUA DI GIO PROFUMO;GIORGIO ARMANI;FALSO;;60000;para-ellos;;;;;;;;;;
-ACQUA DI  GIO PROFONDO ;GIORGIO ARMANI;FALSO;;70000;para-ellos;;;;;;;;;;
-ARMANI CODE ;GIORGIO ARMANI;FALSO;;70000;para-ellos;;;;;;;;;;
-BLUE SEDUCTION ;ANTONIO BANDERAS;FALSO;;60000;para-ellos;;;;;;;;;;
-THE ONE ;DOLCE & GABANNE ;FALSO;;60000;para-ellos;;;;;;;;;;
-BLUE LABEL ;GIVENCHY;FALSO;;60000;para-ellos;;;;;;;;;;
-DIESEL TATTO;DIESEL ;FALSO;;70000;para-ellos;;;;;;;;;;
-ONLY THE BRAVE ;DIESEL ;FALSO;;70000;para-ellos;;;;;;;;;;
-MAN IN BLACK ;BVLGARI;FALSO;;60000;para-ellos;;;;;;;;;;
-AQVA ;BVLGARI;FALSO;;60000;para-ellos;;;;;;;;;;
-MAN WOOD ;BVLGARI;FALSO;;70000;para-ellos;;;;;;;;;;
-DYLAN BLUE ;VERSACE ;FALSO;;60000;para-ellos;;;;;;;;;;
-POUR HOMME ;VERSACE;FALSO;;70000;para-ellos;;;;;;;;;;
-EAU FRAICHE ;VERSACE;FALSO;;60000;para-ellos;;;;;;;;;;
-EROS DE VERSACE ;VERSACE ;FALSO;;70000;para-ellos;;;;;;;;;;
-EROS FLAME;VERSACE;FALSO;;60000;para-ellos;;;;;;;;;;
-CLUB DE NUIT ;ARMAF ;FALSO;;90000;para-ellos;;;;;;;;;;
-TOY BOY ;MOSCHINO ;FALSO;;80000;para-ellos;;;;;;;;;;
-BLEECKER STREET ;N 9;FALSO;;90000;para-ellos;;;;;;;;;;
-SAUVAGE ;CRISTIAN DIOR ;FALSO;;70000;para-ellos;;;;;;;;;;
-SAUVAGE ELIXIR ;CRISTIAN DIOR ;FALSO;;70000;para-ellos;;;;;;;;;;
-FAHRENHEIT;CRISTIAN DIOR ;FALSO;;60000;para-ellos;;;;;;;;;;
-ETERNITY ;CALVIN KLEIN;FALSO;;60000;para-ellos;;;;;;;;;;
-CK ONE;CLAVIN KLEIN;FALSO;;50000;para-ellos;;;;;;;;;;
-SILVER MOUNTAIN ;CREED ;FALSO;;60000;para-ellos;;;;;;;;;;
-AVENTUS ;CREED ;FALSO;;60000;para-ellos;;;;;;;;;;
-MILLESIME IMPERIAL;CREED ;FALSO;;70000;para-ellos;;;;;;;;;;
-ASAD ;LATTAFA;FALSO;;80000;para-ellos;;;;;;;;;;
-THE SCENT ;HUGO BOSS;FALSO;;60000;para-ellos;;;;;;;;;;
-BADEÉ AL OUD AMETHYST;LATTAFA;FALSO;;130000;para-ellos;;;;;;;;;;
-KHAMRAH;LATTAFA;FALSO;;130000;para-ellos;;;;;;;;;;
-BHARARA KING ;BHARARA;FALSO;;130000;para-ellos;;;;;;;;;;
-OUD SAFFRON;ORIENTICA ;FALSO;;110000;para-ellos;;;;;;;;;;
-ROYAL AMBER;ORIENTICA ;FALSO;;110000;para-ellos;;;;;;;;;;
-VELVET GOLD ;ORIENTICA ;FALSO;;110000;para-ellos;;;;;;;;;;
-AMBER ROUGE ;ORIENTICA ;FALSO;;110000;para-ellos;;;;;;;;;;
-ROYAL BLEU ;ORIENTICA ;FALSO;;110000;para-ellos;;;;;;;;;;
-AZURE FANTASY ;ORIENTICA ;FALSO;;110000;para-ellos;;;;;;;;;;
-AMBER OUD GOLD ;AL HARAMAIN;FALSO;;120000;para-ellos;;;;;;;;;;
-LÉAU DÍSSEY  POUR HOMME ;ISSEY MIYAKE ;FALSO;;60000;para-ellos;;;;;;;;;;
-KAKUNO ;ILMIN;FALSO;;70000;para-ellos;;;;;;;;;;
-ESCAPE ;CALVIN KLEIN;FALSO;;60000;para-ellos;;;;;;;;;;
-BADEEÈ AL OUD FOR GLORY;LATTAFA;FALSO;;110000;para-ellos;;;;;;;;;;
-BADEÈ AL OUD SUBLIME ;LATTAFA;FALSO;;110000;para-ellos;;;;;;;;;;
-KHAMRAH QAHWA;LATTAFA;FALSO;;130000;para-ellos;;;;;;;;;;
-BADEÉ AL OUD HONOR & GLORY;LATTAFA;FALSO;;110000;para-ellos;;;;;;;;;;
+nombre;marca;precio;categoria;subcategoria;descripcion;notas;imagen_url;ml;stock;estado;descuento;luxury;activo
+212;CAROLINA HERRERA; $ 220.000,00 ;para-ellos;designer;212 es un homenaje a la energía de la ciudad de Nueva York. Ofrece una frescura floral elegante que acompaña cada paso con confianza.;gardenia madreselva almizcle blanco;https://example.com/212-100.jpg;100;100;disponible;;false;true
+212 VIP ;CAROLINA HERRERA; $ 280.000,00 ;para-ellos;designer;212 VIP captura el espíritu de la noche exclusiva y el glamour urbano. Su acorde gourmand de champán y haba tonka deja una estela inolvidable.;champán haba tonka cedro;https://example.com/212-vip-100.jpg;100;100;disponible;10;false;true
+212 SEXY ;CAROLINA HERRERA; $ 240.000,00 ;para-ellos;designer;212 Sexy es una fragancia seductora que equilibra notas orientales y florales. Su corazón de vainilla y flor de azahar envuelve con un susurro atrevido.;almizcle vainilla flor de azahar;https://example.com/212-sexy-100.jpg;100;100;disponible;;false;true
+212 FOREVER YOUNG ;CAROLINA HERRERA ; $ 200.000,00 ;para-ellos;designer;212 Forever Young celebra la alegría de vivir con una frescura dulce y juvenil. Sus facetas frutales de mandarina y peonía inspiran optimismo.;mandarina peonía almizcle;https://example.com/212-forever-young-100.jpg;100;100;disponible;;false;true
+212 VIP BLACK ;CAROLINA HERRERA ; $ 300.000,00 ;para-ellos;designer;212 VIP Black es la versión nocturna y enigmática de la familia VIP. Combina absenta y vainilla negra para un acabado oscuro y magnético.;absenta vainilla negra madera;https://example.com/212-vip-black-100.jpg;100;100;disponible;15;false;true
+212 WILD PARTY ;CAROLINA HERRERA ; $ 260.000,00 ;para-ellos;designer;212 Wild Party irradia energía festiva con su mezcla chispeante. La grosella negra y el ylang-ylang despiertan el ánimo de celebración.;grosella negra ylang-ylang almizcle;https://example.com/212-wild-party-100.jpg;100;100;disponible;;false;true
+CH PRIVE ;CAROLINA HERRERA ; $ 320.000,00 ;para-ellos;designer;CH Privé es una fragancia sofisticada diseñada para la noche más selecta. El whisky y la haba tonka aportan calidez y elegancia clandestina.;whisky cedro haba tonka;https://example.com/ch-prive-100.jpg;100;100;disponible;10;false;true
+CAROLINA HERRERA ;CAROLINA HERRERA ; $ 210.000,00 ;para-ellos;designer;La fragancia original de Carolina Herrera ofrece una brisa floral fresca y luminosa. Un eterno bouquet de bergamota y freesia que realza la feminidad.;bergamota freesia almizcle;https://example.com/ch-original-100.jpg;100;100;disponible;;false;true
+BAD BOY ;CAROLINA HERRERA ; $ 250.000,00 ;para-ellos;designer;Bad Boy desafía los clichés con su dualidad de notas oscuras y luminosas. La pimienta negra y el cedro crean un aura rebelde con un fondo suave.;pimienta negra cedro haba tonka;https://example.com/bad-boy-100.jpg;100;100;disponible;;false;true
+1 ONE MILLION ;PACO RABANNE ; $ 240.000,00 ;para-ellos;designer;One Million es un símbolo de opulencia y poder. El pomelo rosa y la menta vibran sobre un corazón especiado de canela.;pomelo rosa menta canela;https://example.com/1m-100.jpg;100;100;disponible;;false;true
+1 ONE MILLION ELIXIR ;PACO RABANNE ; $ 320.000,00 ;para-ellos;designer;One Million Elixir intensifica el carácter gourmand con matices de ron y regaliz. Su riqueza oriental deja un rastro adictivo y cálido.;ron regaliz ámbar;https://example.com/1m-elixir-100.jpg;100;100;disponible;10;false;true
+1 ONE MILLION LUCKY ;PACO RABANNE ; $ 260.000,00 ;para-ellos;designer;One Million Lucky celebra la buena fortuna con notas dulces de avellana y ciruela. El pachulí terroso equilibra su carácter afrutado.;avellana ciruela pachulí;https://example.com/1m-lucky-100.jpg;100;100;disponible;;false;true
+1 ONE MILLION PRIVE ;PACO RABANNE ; $ 300.000,00 ;para-ellos;designer;One Million Privé aporta sofisticación con su corazón de haba tonka. El cuero suave y la madera exudan distinción.;haba tonka cuero madera;https://example.com/1m-prive-100.jpg;100;100;disponible;15;false;true
+1 ONE MILLION ROYAL ;PACO RABANNE ; $ 330.000,00 ;para-ellos;designer;One Million Royal es la cúspide del lujo especiado. El azafrán y el amaretto se combinan en una sinfonía lujosa.;azafrán amaretto gaiac;https://example.com/1m-royal-100.jpg;100;100;disponible;20;false;true
+1 ONE MILLION PARFUM ;PACO RABANNE ; $ 310.000,00 ;para-ellos;designer;One Million Parfum despliega su elegancia con lavanda y pachulí. El incienso aporta un aire de ceremonia y distinción.;lavanda incienso pachulí;https://example.com/1m-parfum-100.jpg;100;100;disponible;;false;true
+1 ONE MIILION GOLD ;PACO RABANNE ; $ 350.000,00 ;para-ellos;designer;One Million Gold es un tesoro embotellado con cacao y vainilla. Su intensidad gourmand lo convierte en una pieza de coleccionista.;cacao vainilla incienso;https://example.com/1m-gold-100.jpg;100;100;disponible;25;false;true
+PURE XS ;PACO RABANNE ; $ 230.000,00 ;para-ellos;designer;Pure XS combina especias exóticas y un corazón de vainilla. El yuzu aporta un frescor cítrico inesperado.;yuzu jengibre vainilla;https://example.com/pure-xs-100.jpg;100;100;disponible;;false;true
+BLACK XS;PACO RABANNE ; $ 220.000,00 ;para-ellos;designer;Black XS ofrece un aire rockero con su nota de regaliz. El anís estrellado y el cedro añaden profundidad sensual.;regaliz anís estrellado cedro;https://example.com/black-xs-100.jpg;100;100;disponible;;false;true
+BLACK XS AFRODISIAQUE ;PACO RABANNE ; $ 240.000,00 ;para-ellos;designer;Afrosidiaque es una variante seductora y exótica. La pimienta rosa y el pachulí intensifican su carácter misterioso.;pimienta rosa pachulí vainilla;https://example.com/black-xs-afrodisiaque-100.jpg;100;100;disponible;10;false;true
+INVICTUS AQUA ;PACO RABANNE ; $ 210.000,00 ;para-ellos;designer;Invictus Aqua evoca la frescura del océano con su acorde salino. El pomelo y la menta se funden sobre una base de guayaco.;pomelo menta madera de guayaco;https://example.com/invictus-aqua-100.jpg;100;100;disponible;;false;true
+INVICTUS LEGEND ;PACO RABANNE ; $ 230.000,00 ;para-ellos;designer;Invictus Legend intensifica la frescura marina con un toque salino. La mandarina chispea mientras el vetiver aporta carácter.;mandarina sal vetiver;https://example.com/invictus-legend-100.jpg;100;100;disponible;;false;true
+INVICTUS INTENSE ;PACO RABANNE ; $ 250.000,00 ;para-ellos;designer;Invictus Intense es un tour de force especiado y profundo. La pimienta rosa y el ámbar crean un aura apasionada.;pimienta rosa vetiver ámbar;https://example.com/invictus-intense-100.jpg;100;100;disponible;10;false;true
+INVICTUS ONIX ;PACO RABANNE ; $ 270.000,00 ;para-ellos;designer;Invictus Onyx es sofisticación oscura con notas de absenta. La madera de cedro y el ozono completan su firma moderna.;absenta cedro ozono;https://example.com/invictus-onyx-100.jpg;100;100;disponible;15;false;true
+INVICTUS VICTORY ;PACO RABANNE ; $ 260.000,00 ;para-ellos;designer;Invictus Victory celebra el triunfo con su dulzura cítrica. El limón y el ámbar se equilibran en un final radiante.;limón cedro ámbar;https://example.com/invictus-victory-100.jpg;100;100;disponible;;false;true
+PHANTOM ;PACO RABANNE ; $ 240.000,00 ;para-ellos;designer;Phantom es una fragancia futurista y gourmand. La crema de vainilla y la lavanda híbrida crean una dualidad sorprendente.;vainilla híbrida lavanda;https://example.com/phantom-100.jpg;100;100;disponible;;false;true
+EMBLEM ;MONTBLAC ; $ 200.000,00 ;para-ellos;designer;Emblem es una composición cítrica y especiada. El limón fresco y la nuez moscada brindan un impulso de energía.;limón nuez moscada vetiver;https://example.com/emblem-100.jpg;100;100;disponible;;false;true
+LEGEND NIGHT ;MONTBLAC ; $ 220.000,00 ;para-ellos;designer;Legend Night es una fragancia nocturna profunda. La artemisa y el ládano se mezclan con cedro para un carácter misterioso.;artemisa cedro ládano;https://example.com/legend-night-100.jpg;100;100;disponible;;false;true
+LEGEND ;MONTBLAC ; $ 180.000,00 ;para-ellos;designer;Legend es un clásico moderno con notas de lavanda. El pachulí aporta elegancia y persistencia en la piel.;lavanda bergamota pachulí;https://example.com/legend-100.jpg;100;100;disponible;;false;true
+EXPLORET ;MONTBLAC ; $ 210.000,00 ;para-ellos;designer;Explorer invita a la aventura con su corazón chocolatoso. La pimienta rosa y el vetiver evocan paisajes exóticos.;pimienta rosa vetiver cacao;https://example.com/explorer-100.jpg;100;100;disponible;;false;true
+STAR WUALKER ;MONTBLAC ; $ 190.000,00 ;para-ellos;designer;Star Walker combina toques ambarinos con frescor cítrico. El ámbar gris y la pimienta dan un halo moderno.;ámbar gris pimienta cedro;https://example.com/star-walker-100.jpg;100;100;disponible;;false;true
+LACOSTE ESSENTIAL ;LACOSTE ; $ 170.000,00 ;para-ellos;designer;Lacoste Essential es ligera y versátil para el día. El vetiver y el cedrón crean una base limpia y refinada.;cedro vetiver cedrón;https://example.com/lacoste-essential-100.jpg;100;100;disponible;;false;true
+LACOSTE L12.12 BLANC ;LACOSTE ; $ 180.000,00 ;para-ellos;designer;Lacoste Blanc evoca la pureza con sus notas verdes. El pepino y el romero aportan un frescor natural.;pepino romero cedro;https://example.com/lacoste-blanc-100.jpg;100;100;disponible;;false;true
+LACOSTE L12.12NOIR ;LACOSTE ; $ 190.000,00 ;para-ellos;designer;Lacoste Noir es cálido y especiado para la noche. La pimienta y el cardamomo se apoyan sobre un fondo de cuero.;pimienta cardamomo cuero;https://example.com/lacoste-noir-100.jpg;100;100;disponible;;false;true
+LACOSTE RED ;LACOSTE ; $ 175.000,00 ;para-ellos;designer;Lacoste Red es enérgico y juvenil. La manzana roja y el cedrón dan un impulso vibrante.;manzana roja cedrón cedro;https://example.com/lacoste-red-100.jpg;100;100;disponible;;false;true
+LACOSTE L12.12BLEU ;LACOSTE ; $ 180.000,00 ;para-ellos;designer;Lacoste Bleu es marino y luminoso. La toronja y el vetiver evocan brisas costeras.;toronja vetiver cedro;https://example.com/lacoste-bleu-100.jpg;100;100;disponible;;false;true
+LACOSTE ENERGIZED;LACOSTE ; $ 170.000,00 ;para-ellos;designer;Lacoste Energized es vivaz y fresco. La mandarina y la toronja despiertan los sentidos.;mandarina toronja cedrón;https://example.com/lacoste-energized-100.jpg;100;100;disponible;;false;true
+LACOSTE L12.12ROUGE;LACOSTE ; $ 175.000,00 ;para-ellos;designer;Lacoste Rouge combina especias con madera cálida. La canela y el papyrus cierran con sofisticación.;canela papyrus cardamomo;https://example.com/lacoste-rouge-100.jpg;100;100;disponible;;false;true
+LACOSTE  L12.12VERVET;LACOSTE ; $ 175.000,00 ;para-ellos;designer;Lacoste Vert es herbal y fresco para el día. El tomillo y el vetiver aportan un giro inesperado.;tomillo vetiver cedro;https://example.com/lacoste-vert-100.jpg;100;100;disponible;;false;true
+BOSS ORANGE ;HUGO BOSS; $ 200.000,00 ;para-ellos;designer;Boss Orange es afrutado y picante. La naranja dulce se mezcla con canela para un acabado alegre.;naranja canela almizcle;https://example.com/boss-orange-100.jpg;100;100;disponible;;false;true
+BOTTLED NIGTH ;HUGO BOSS; $ 210.000,00 ;para-ellos;designer;Boss Bottled Night es intenso y amaderado para la noche. La lavanda y el abedul dan un toque misterioso.;lavanda abedul sándalo;https://example.com/bottled-night-100.jpg;100;100;disponible;;false;true
+BOTTLED  ;HUGO BOSS; $ 190.000,00 ;para-ellos;designer;Boss Bottled es un clásico ambarino con alma fresca. La manzana y la canela aportan calidez.;manzana canela vetiver;https://example.com/bottled-100.jpg;100;100;disponible;;false;true
+BOTTLED TONIC ;HUGO BOSS; $ 200.000,00 ;para-ellos;designer;Boss Tonic es chispeante y vibrante. El pomelo y el mate crean una sensación revitalizante.;pomelo vetiver mate;https://example.com/bottled-tonic-100.jpg;100;100;disponible;;false;true
+BOSS UNLIMITED ;HUGO BOSS; $ 205.000,00 ;para-ellos;designer;Boss Unlimited es enérgico y deportivo. La bergamota y las especias dan un impulso activo.;bergamota cedro especias;https://example.com/boss-unlimited-100.jpg;100;100;disponible;;false;true
+BOSS IN MOTION;HUGO BOSS; $ 195.000,00 ;para-ellos;designer;Boss In Motion es dinámico para el estilo de vida activo. La toronja y la pimienta rosa despiertan el espíritu.;toronja pimienta rosa cedro;https://example.com/boss-in-motion-100.jpg;100;100;disponible;;false;true
+HUGO ;HUGO BOSS; $ 180.000,00 ;para-ellos;designer;Hugo es un aroma verde y fresco que evoca libertad. La menta y la lavanda aportan un carácter relajado.;menta lavanda cilantro;https://example.com/hugo-100.jpg;100;100;disponible;;false;true
+HUGO RED ;HUGO BOSS; $ 185.000,00 ;para-ellos;designer;Hugo Red es especiado y vibrante. La naranja y el jengibre dejan una estela energizante.;naranja jengibre cedro;https://example.com/hugo-red-100.jpg;100;100;disponible;;false;true
+DARK BLUE ;HUGO BOSS; $ 170.000,00 ;para-ellos;designer;Dark Blue es acuático y sofisticado. La mezcla de cítricos y madera crea una profundidad refrescante.;cítricos madera de gaiac musgo;https://example.com/dark-blue-100.jpg;100;100;disponible;;false;true
+ENERGISE ;HUGO BOSS; $ 175.000,00 ;para-ellos;designer;Energise es estimulante y refrescante. La lima verde y el vetiver ofrecen un empujón revitalizante.;lima verde vetiver cedro;https://example.com/energise-100.jpg;100;100;disponible;;false;true
+ LE MALE ;JEAN PAUL GAULTIER; $ 230.000,00 ;para-ellos;designer;Le Male es un ícono fougère oriental. La menta fresca se suaviza con la calidez de la vainilla.;menta lavanda vainilla;https://example.com/le-male-125.jpg;125;100;disponible;;false;true
+SCANDAL;JEAN PAUL GAULTIER; $ 240.000,00 ;para-ellos;designer;Scandal es dulce y atrevido con su corazón de miel. La gardenia le confiere un toque floral sofisticado.;miel gardenia pachulí;https://example.com/scandal-80.jpg;80;100;disponible;;false;true
+ULTRA MALE;JEAN PAUL GAULTIER; $ 250.000,00 ;para-ellos;designer;Ultra Male mezcla dulzura especiada con una profundidad masculina. La pera y la canela se funden en un abrazo seductor.;pera canela vainilla;https://example.com/ultra-male-125.jpg;125;9;disponible;;false;true
+LE BEAU;JEAN PAUL GAULTIER; $ 220.000,00 ;para-ellos;designer;Le Beau ofrece un viaje tropical con su corazón de coco y vetiver. La combinación de benjuí y caramelo aporta un final amaderado suave.;coco vetiver benjuí;https://example.com/le-beau-75.jpg;75;7;disponible;;false;true
+JEAN PAUL ELIXIR ;JEAN PAUL GAULTIER; $ 260.000,00 ;para-ellos;designer;Jean Paul Elixir intensifica la elegancia con notas especiadas y amaderadas. El cardamomo y el incienso crean una firma profunda y duradera.;cardamomo incienso haba tonka;https://example.com/jpg-elixir-75.jpg;75;6;disponible;;false;true
+LE BEAU  PARADISE GARDEN ;JEAN PAUL GAULTIER; $ 245.000,00 ;para-ellos;designer;Le Beau Paradise Garden es una oda al verano con su mezcla frutal y floral. La sandía y el hibisco aportan un frescor jugoso.;sandía hibisco musk;https://example.com/le-beau-paradise-75.jpg;75;5;disponible;;false;true
+LIGHT BLUE ;DOLCE & GABANNE ; $ 210.000,00 ;para-ellos;designer;Light Blue evoca la costa mediterránea con manzana y cedro. Su nota de azul mediterráneo añade una sensación de libertad marina.;manzana cedro azul mediterráneo;https://example.com/light-blue-100.jpg;100;12;disponible;;false;true
+K BY DOLCE & GABANNA ;DOLCE & GABANNE ; $ 230.000,00 ;para-ellos;designer;K by Dolce & Gabbana es un tributo a la masculinidad moderna con enebro y pomelo. El cedro aporta una base cálida y sofisticada.;pomelo enebro cedro;https://example.com/k-dg-100.jpg;100;8;disponible;;false;true
+BLEU CHANEL ;CHANEL; $ 320.000,00 ;para-ellos;designer;Bleu Chanel combina sofisticación marina con madera intensa. El incienso y el vetiver generan una estela elegante y atemporal.;pomelo incienso vetiver;https://example.com/bleu-chanel-100.jpg;100;9;disponible;;false;true
+ALLURE SPORT ;CHANEL; $ 280.000,00 ;para-ellos;designer;Allure Sport es una explosión de frescor deportivo con naranja y almizcle. Su base de cedro aporta estabilidad y carácter.;naranja almizcle cedro;https://example.com/allure-sport-100.jpg;100;7;disponible;;false;true
+POLO BLUE ;RALPH LAUREN ; $ 200.000,00 ;para-ellos;designer;Polo Blue evoca apertura y libertad con melón y pepino. El almizcle suave completa un perfil acuático y relajante.;melón pepino almizcle;https://example.com/polo-blue-125.jpg;125;11;disponible;;false;true
+POLO RED ;RALPH LAUREN ; $ 210.000,00 ;para-ellos;designer;Polo Red es enérgico y ardiente con toronja y pomelo. La base de madera aporta un remate cálido y duradero.;toronja pomelo madera;https://example.com/polo-red-125.jpg;125;9;disponible;;false;true
+POLO BLACK;RALPH LAUREN ; $ 205.000,00 ;para-ellos;designer;Polo Black es sofisticado y nocturno con mango y té negro. El haba tonka completa un aura elegante y misteriosa.;mango té negro haba tonka;https://example.com/polo-black-125.jpg;125;8;disponible;;false;true
+JEAN PASCAL ;JEAN-PASCAL; $ 150.000,00 ;para-ellos;designer;Jean Pascal es una fragancia fresca aromática con lavanda y bergamota. La calidez del cedro aporta profundidad y carácter.;bergamota lavanda cedro;https://example.com/jean-pascal-100.jpg;100;10;disponible;;false;true
+LAPIDUS ;TED LAPIDUS ; $ 140.000,00 ;para-ellos;designer;Lapidus es un clásico renacido con enebro y pachulí. Su corazón amaderado y fresco equilibra tradición y modernidad.;enebro pachulí vetiver;https://example.com/lapidus-100.jpg;100;12;disponible;;false;true
+TOMMY HILFIGER ;TOMMY HILFIGER; $ 180.000,00 ;para-ellos;designer;Tommy Hilfiger es juvenil y vibrante con toronja y nectarina. La base de almizcle añade un toque limpio y desenfadado.;toronja nectarina almizcle;https://example.com/tommy-hilfiger-100.jpg;100;14;disponible;;false;true
+SWISS ARMY ;VICTORINOX; $ 160.000,00 ;para-ellos;designer;Swiss Army es fresca y utilitaria con limón y lavanda. El vetiver aporta estabilidad para un uso diario versátil.;limón lavanda vetiver;https://example.com/swiss-army-100.jpg;100;11;disponible;;false;true
+360;PERRY ELLIS; $ 150.000,00 ;para-ellos;designer;360 es un fresco cítrico herbal con naranja y lavanda. La base de cedro remata con un perfil limpio y moderno.;naranja lavanda cedro;https://example.com/360-perry-100.jpg;100;13;disponible;;false;true
+360 RED ;PERRY ELLIS; $ 155.000,00 ;para-ellos;designer;360 Red intensifica el calor especiado con canela y nuez moscada. El cedro añade un toque amaderado y robusto.;canela nuez moscada cedro;https://example.com/360-red-100.jpg;100;9;disponible;;false;true
+ACQUA DI GIO;GIORGIO ARMANI; $ 250.000,00 ;para-ellos;designer;Acqua di Giò es un tributo al mar con notas acuáticas y cítricas. El pachulí aporta un fondo terroso y sofisticado.;jazmín neroli pachulí;https://example.com/acqua-di-gio-100.jpg;100;15;disponible;;false;true
+ACQUA DI GIO PROFUMO;GIORGIO ARMANI; $ 290.000,00 ;para-ellos;designer;Acqua di Giò Profumo refina el original con incienso ahumado. La bergamota cítrica equilibra la profundidad marina.;bergamota incienso pachulí;https://example.com/acqua-di-gio-profumo-100.jpg;100;10;disponible;;false;true
+ACQUA DI  GIO PROFONDO ;GIORGIO ARMANI; $ 280.000,00 ;para-ellos;designer;Acqua di Giò Profondo explora las profundidades marinas con geranio y bergamota. El acorde de incienso crea misterio y elegancia.;bergamota geranio incienso;https://example.com/acqua-di-gio-profondo-100.jpg;100;8;disponible;;false;true
+ARMANI CODE ;GIORGIO ARMANI; $ 260.000,00 ;para-ellos;designer;Armani Code es un seductor oriental con anís estrellado y cuero. La bergamota aporta una frescura espolvoreada en un fondo cálido.;bergamota anís estrellado cuero;https://example.com/armani-code-75.jpg;75;12;disponible;;false;true
+BLUE SEDUCTION ;ANTONIO BANDERAS; $ 170.000,00 ;para-ellos;designer;Blue Seduction es acuático y fresco con menta y bergamota. El almizcle aporta una base suave y moderna.;menta bergamota almizcle;https://example.com/blue-seduction-100.jpg;100;11;disponible;;false;true
+THE ONE ;DOLCE & GABANNE ; $ 240.000,00 ;para-ellos;designer;The One es elegante y ambarino con pomelo y tabaco. El cilantro añade una chispa especiada vibrante.;pomelo cilantro tabaco;https://example.com/the-one-100.jpg;100;9;disponible;;false;true
+BLUE LABEL ;GIVENCHY; $ 230.000,00 ;para-ellos;designer;Blue Label es sofisticado y woody con bergamota y almizcle. El cedro aporta un fondo sólido y elegante.;bergamota almizcle cedro;https://example.com/blue-label-100.jpg;100;10;disponible;;false;true
+DIESEL TATTO;DIESEL ; $ 180.000,00 ;para-ellos;designer;Diesel Tattoo es gourmand con café y canela. La vainilla endulza su corazón mientras el cedro le aporta nervio.;café canela vainilla;https://example.com/diesel-tattoo-100.jpg;100;7;disponible;;false;true
+ONLY THE BRAVE ;DIESEL ; $ 190.000,00 ;para-ellos;designer;Only The Brave inspira valentía con limón y cuero. El incienso profundo aporta una estela audaz y moderna.;limón cuero incienso;https://example.com/only-the-brave-100.jpg;100;12;disponible;;false;true
+MAN IN BLACK ;BVLGARI; $ 260.000,00 ;para-ellos;designer;Man In Black es un oriental intenso con ron y especias. El cuero y el haba tonka completan un aura nocturna.;ron especias cuero;https://example.com/man-in-black-100.jpg;100;6;disponible;;false;true
+AQVA ;BVLGARI; $ 220.000,00 ;para-ellos;designer;Aqva es mineral y acuático con mandarina y posidonia. El ámbar añade una base suave y envolvente.;mandarina posidonia ámbar;https://example.com/aqva-100.jpg;100;10;disponible;;false;true
+MAN WOOD ;BVLGARI; $ 240.000,00 ;para-ellos;designer;Man Wood Essence mezcla cítricos y madera con cedrón y vetiver. El aroma terroso aporta un carácter natural y elegante.;cedrón vetiver madera;https://example.com/man-wood-essence-100.jpg;100;8;disponible;;false;true
+DYLAN BLUE ;VERSACE ; $ 250.000,00 ;para-ellos;designer;Dylan Blue es intenso y amaderado con pomelo y almizcle. El incienso añade un halo de misterio perdurable.;pomelo almizcle incienso;https://example.com/dylan-blue-100.jpg;100;9;disponible;;false;true
+POUR HOMME ;VERSACE; $ 230.000,00 ;para-ellos;designer;Pour Homme es un clásico fougère con bergamota y neroli. El cedro y el cuero completan una firma masculina sofisticada.;bergamota neroli cedro;https://example.com/pour-homme-100.jpg;100;11;disponible;;false;true
+EAU FRAICHE ;VERSACE; $ 200.000,00 ;para-ellos;designer;Eau Fraîche es ligero y revitalizante con limón y rosa. La madera aporta un remate limpio y fresco.;limón rosa madera;https://example.com/eau-fraiche-100.jpg;100;13;disponible;;false;true
+EROS DE VERSACE ;VERSACE ; $ 270.000,00 ;para-ellos;designer;Eros de Versace es vibrante y sensual con menta y manzana verde. La vainilla y el cedro crean una estela duradera.;menta manzana verde vainilla;https://example.com/eros-100.jpg;100;7;disponible;;false;true
+EROS FLAME;VERSACE; $ 290.000,00 ;para-ellos;designer;Eros Flame intensifica el calor con naranja y pimienta negra. El cistus aporta un fondo oscuro y magnético.;naranja pimienta negra cistus;https://example.com/eros-flame-100.jpg;100;6;disponible;;false;true
+CLUB DE NUIT ;ARMAF ; $ 160.000,00 ;para-ellos;designer;Club de Nuit es un homenaje a un clásico oriental con grosella negra. El jazmín y el limón aportan chispa floral.;grosella negra jazmín limón;https://example.com/club-de-nuit-100.jpg;100;14;disponible;;false;true
+TOY BOY ;MOSCHINO ; para-ellas ;para-ellos;210000;Toy Boy combina iris y almizcle para una firma moderna y atrevida. El cedro aporta un equilibrio amaderado.;iris almizcle cedro;https://example.com/toy-boy-100.jpg;100;8;disponible;;false;true
+BLEECKER STREET ;N 9; $ 190.000,00 ;para-ellos;designer;Bleecker Street evoca la cosmopolita vida neoyorquina con neroli y ámbar. La bergamota aporta un toque chispeante y sofisticado.;neroli ámbar bergamota;https://example.com/bleecker-street-100.jpg;100;9;disponible;;false;true
+SAUVAGE ;CRISTIAN DIOR ; $ 300.000,00 ;para-ellos;designer;Sauvage es una explosión de bergamota y ambroxan. La mezcla especiada y mineral redefine la frescura masculina moderna.;bergamota ambroxan pimienta;https://example.com/sauvage-100.jpg;100;15;disponible;;false;true
+SAUVAGE ELIXIR ;CRISTIAN DIOR ; $ 350.000,00 ;para-ellos;designer;Sauvage Elixir es más profundo y concentrado. La canela y el licor aportan un calor especiado intenso.;canela licor pachulí;https://example.com/sauvage-elixir-100.jpg;100;7;disponible;10;false;true
+FAHRENHEIT;CRISTIAN DIOR ; $ 280.000,00 ;para-ellos;designer;Fahrenheit es un clásico con violeta y cuero. La nota de haba tonka añade un carácter cálido y distintivo.;violeta cuero haba tonka;https://example.com/fahrenheit-100.jpg;100;10;disponible;;false;true
+ETERNITY ;CALVIN KLEIN; $ 200.000,00 ;para-ellos;designer;Eternity celebra el amor eterno con mandarina y lavanda. La madera de sándalo aporta serenidad y persistencia.;mandarina lavanda sándalo;https://example.com/eternity-100.jpg;100;12;disponible;;false;true
+CK ONE;CLAVIN KLEIN; $ 180.000,00 ;para-ellos;designer;CK One es un referente unisex con piña y papaya. Su ligereza cítrica se apoya en un suave fondo almizclado.;piña papaya almizcle;https://example.com/ck-one-100.jpg;100;14;disponible;;false;true
+SILVER MOUNTAIN ;CREED ; $ 650.000,00 ;para-ellos;nicho;Silver Mountain Water evoca frescura alpina con té verde y bergamota. El almizcle y la pétrea mineralidad completan una experiencia cristalina.;té verde bergamota almizcle;https://example.com/silver-mountain-100.jpg;100;5;disponible;;true;true
+AVENTUS ;CREED ; $ 800.000,00 ;para-ellos;nicho;Aventus es icónico con piña y abedul ahumado. Su combinación de frutas y maderas crea un aura triunfal y sofisticada.;piña abedul almizcle;https://example.com/aventus-100.jpg;100;4;disponible;;true;true
+MILLESIME IMPERIAL;CREED ; $ 700.000,00 ;para-ellos;nicho;Millesime Imperial combina sal marina y almizcle con limón californiano. El cedro aporta un carácter náutico y elegante.;limón sal marina almizcle;https://example.com/millesime-imperial-100.jpg;100;3;disponible;;true;true
+ASAD ;LATTAFA; $ 120.000,00 ;para-ellos;nicho;Asad se inspira en creaciones orientales con bergamota y lavanda. El acorde de ámbar gris aporta una estela cálida y lujosa.;bergamota lavanda ámbar gris;https://example.com/asad-100.jpg;100;10;disponible;;true;true
+THE SCENT ;HUGO BOSS; $ 220.000,00 ;para-ellos;designer;The Scent seduce con cacao y cardamomo. El cuero de fondo aporta un aire masculino y sofisticado.;cacao cardamomo cuero;https://example.com/the-scent-100.jpg;100;8;disponible;;false;true
+BADEÉ AL OUD AMETHYST;LATTAFA; $ 130.000,00 ;para-ellos;nicho;Badeé Al Oud Amethyst es opulento con oud y rosa. El pachulí aporta un matiz terroso y sensorial.;oud rosa pachulí;https://example.com/badee-oud-amethyst-100.jpg;100;6;disponible;;true;true
+KHAMRAH;LATTAFA; $ 140.000,00 ;para-ellos;nicho;Khamrah es una fragancia especiada con azafrán e incienso. El ámbar dorado aporta una profundidad envolvente.;azafrán incienso ámbar;https://example.com/khamrah-100.jpg;100;7;disponible;;true;true
+BHARARA KING ;BHARARA; $ 110.000,00 ;para-ellos;nicho;Bharara King es oriental con oud y rosa. El ámbar y las especias crean una firma majestuosa.;oud rosa ámbar;https://example.com/bharara-king-100.jpg;100;5;disponible;;true;true
+OUD SAFFRON;ORIENTICA ; $ 150.000,00 ;para-ellos;nicho;Oud Saffron combina especias y madera con oud y azafrán. La nota de cuero completa una estela rica y exótica.;oud azafrán cuero;https://example.com/oud-saffron-100.jpg;100;6;disponible;;true;true
+ROYAL AMBER;ORIENTICA ; $ 150.000,00 ;para-ellos;nicho;Royal Amber es dulce y resinosa con ámbar y vainilla. Su carácter oriental aporta calor y sofisticación.;ámbar vainilla especias;https://example.com/royal-amber-100.jpg;100;7;disponible;;true;true
+VELVET GOLD ;ORIENTICA ; $ 150.000,00 ;para-ellos;nicho;Velvet Gold es floral y opulento con rosa y oud. El ámbar añade un matiz aterciopelado y lujoso.;rosa oud ámbar;https://example.com/velvet-gold-100.jpg;100;5;disponible;;true;true
+AMBER ROUGE ;ORIENTICA ; $ 150.000,00 ;para-ellos;nicho;Amber Rouge evoca dulzura y calidez con miel y ámbar. El pachulí aporta un fondo terroso y elegante.;miel ámbar pachulí;https://example.com/amber-rouge-100.jpg;100;6;disponible;;true;true
+ROYAL BLEU ;ORIENTICA ; $ 150.000,00 ;para-ellos;nicho;Royal Bleu mezcla frescor acuático y especias con cardamomo y menta. La madera aporta un respaldo sofisticado.;cardamomo menta madera;https://example.com/royal-bleu-100.jpg;100;8;disponible;;true;true
+AZURE FANTASY ;ORIENTICA ; $ 150.000,00 ;para-ellos;nicho;Azure Fantasy es fresco y marino con loto y sal. El almizcle aporta una estela suave y envolvente.;loto sal almizcle;https://example.com/azure-fantasy-100.jpg;100;6;disponible;;true;true
+AMBER OUD GOLD ;AL HARAMAIN; $ 140.000,00 ;para-ellos;nicho;Amber Oud Gold es un oriental dorado con ámbar y oud. El acorde de especias aporta un matiz exótico y refinado.;ámbar oud especias;https://example.com/amber-oud-gold-100.jpg;100;7;disponible;;true;true
+LÉAU DÍSSEY  POUR HOMME ;ISSEY MIYAKE ; $ 210.000,00 ;para-ellos;designer;L’Eau d’Issey es acuático y zen con yuzu y nuez moscada. El cedro aporta un cierre amaderado y equilibrado.;yuzu nuez moscada cedro;https://example.com/issey-pour-homme-100.jpg;100;12;disponible;;false;true
+KAKUNO ;ILMIN; $ 130.000,00 ;para-ellos;nicho;Kakuno despliega un bouquet floral y dulce con rosa y jazmín. La vainilla aporta una nota final suave y reconfortante.;rosa jazmín vainilla;https://example.com/kakuno-100.jpg;100;5;disponible;;true;true
+ESCAPE ;CALVIN KLEIN; $ 170.000,00 ;para-ellos;designer;Escape es renovador y herbal con menta y lavanda. El cedro añade una profundidad que invita a la aventura.;menta lavanda cedro;https://example.com/escape-100.jpg;100;10;disponible;;false;true
+BADEEÈ AL OUD FOR GLORY;LATTAFA; $ 130.000,00 ;para-ellos;nicho;Badeé Al Oud For Glory es majestuoso con oud y frutas secas. El ámbar aporta un toque cálido y regia.;oud frutas secas ámbar;https://example.com/badee-oud-for-glory-100.jpg;100;6;disponible;;true;true
+BADEÈ AL OUD SUBLIME ;LATTAFA; $ 130.000,00 ;para-ellos;nicho;Badeé Al Oud Sublime es balsámico y elegante con oud e incienso. La mirra aporta un matiz ancestral y profundo.;oud incienso mirra;https://example.com/badee-oud-sublime-100.jpg;100;5;disponible;;true;true
+KHAMRAH QAHWA;LATTAFA; $ 140.000,00 ;para-ellos;nicho;Khamrah Qahwa mezcla café y especias con cardamomo y ámbar. Su carácter gourmé invita a los sentidos.;café cardamomo ámbar;https://example.com/khamrah-qahwa-100.jpg;100;4;disponible;;true;true
+BADEÉ AL OUD HONOR & GLORY;LATTAFA; $ 130.000,00 ;para-ellos;nicho;Badeé Al Oud Honor & Glory es una oda al oud y la rosa con madera de agar. El acorde floral y amaderado irradia nobleza.;oud rosa madera de agar;https://example.com/badee-oud-honor-glory-100.jpg;100;3;disponible;;true;true

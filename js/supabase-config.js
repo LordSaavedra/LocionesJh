@@ -360,10 +360,30 @@ class ProductosService {
             
             console.log(`🎯 ${filteredData.length} productos filtrados para "${categoria}"`);
             
+            // Ordenar productos por orden_display (si existe), luego por fecha de creación
+            filteredData.sort((a, b) => {
+                // Si ambos tienen orden_display, usar ese valor
+                if (a.orden_display !== null && a.orden_display !== undefined && 
+                    b.orden_display !== null && b.orden_display !== undefined) {
+                    return a.orden_display - b.orden_display;
+                }
+                
+                // Si solo uno tiene orden_display, ese va primero
+                if (a.orden_display !== null && a.orden_display !== undefined) return -1;
+                if (b.orden_display !== null && b.orden_display !== undefined) return 1;
+                
+                // Si ninguno tiene orden_display, ordenar por fecha de creación (más recientes primero)
+                const dateA = new Date(a.created_at || 0);
+                const dateB = new Date(b.created_at || 0);
+                return dateB - dateA;
+            });
+            
+            console.log(`📋 Productos ordenados por orden_display y fecha de creación`);
+            
             // Log de productos encontrados para debugging
             if (filteredData.length > 0) {
-                filteredData.forEach(product => {
-                    console.log(`   - ${product.nombre} (cat: "${product.categoria}", subcat: "${product.subcategoria}")`);
+                filteredData.forEach((product, index) => {
+                    console.log(`   ${index + 1}. ${product.nombre} (orden: ${product.orden_display || 'null'}, cat: "${product.categoria}", subcat: "${product.subcategoria}")`);
                 });
             }
               // Si no encuentra productos, retornar array vacío

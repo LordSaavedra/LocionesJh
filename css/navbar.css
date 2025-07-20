@@ -288,14 +288,18 @@
     .navbar-container {
         grid-template-columns: auto 1fr auto; /* Ajuste para móvil */
         padding: 0 1rem;
-    }    .hamburger-menu {
+    }
+
+    .hamburger-menu {
         display: flex;
     }
 
     .navbar-logo {
         font-size: clamp(1.2rem, 3vw, 1.8rem);
         padding: 0 1rem;
-    }    .navbar-menu {
+    }
+
+    .navbar-menu {
         position: fixed;
         top: 80px;
         left: -100%;
@@ -323,7 +327,9 @@
         margin: 8px 0;
         width: 90%;
         max-width: 300px;
-    }    .navbar-menu a {
+    }
+
+    .navbar-menu a {
         font-size: 1.1rem;
         color: #1a1a1a !important;
         padding: 12px 20px;

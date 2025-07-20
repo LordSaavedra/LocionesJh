@@ -18,7 +18,38 @@ class AdminPanel {
         this.errorLogCooldown = 5000;
         this.placeholderErrorLogged = false;
         
+        // Sistema de ordenamiento temporal (pre-guardado)
+        this.isOrderingMode = false;
+        this.originalProductsOrder = [];
+        this.tempProductsOrder = [];
+        this.hasUnsavedChanges = false;
+        
         this.init();
+    }
+
+    // Helper para obtener el cliente Supabase correcto
+    getSupabaseClient() {
+        // Orden de prioridad para encontrar el cliente
+        const clients = [
+            window.supabaseClient,
+            window.supabase,
+            typeof supabaseClient !== 'undefined' ? supabaseClient : null
+        ];
+        
+        for (const client of clients) {
+            if (client && typeof client.from === 'function') {
+                console.log('✅ Cliente Supabase encontrado:', client.constructor?.name || 'Unknown');
+                return client;
+            }
+        }
+        
+        console.error('❌ Clientes disponibles:', {
+            'window.supabaseClient': typeof window.supabaseClient,
+            'window.supabase': typeof window.supabase,
+            'supabaseClient (global)': typeof supabaseClient
+        });
+        
+        throw new Error('Cliente Supabase no está disponible o no inicializado correctamente');
     }
 
     async init() {
@@ -287,6 +318,27 @@ class AdminPanel {
                     });
                     console.log('✅ Productos cargados (método alternativo):', this.productos.length);
                 }
+                
+                // Ordenar productos por orden_display (si existe), luego por fecha_creacion
+                this.productos.sort((a, b) => {
+                    // Si ambos tienen orden_display, ordenar por ese campo
+                    if (a.orden_display !== null && a.orden_display !== undefined &&
+                        b.orden_display !== null && b.orden_display !== undefined) {
+                        return a.orden_display - b.orden_display;
+                    }
+                    
+                    // Si solo uno tiene orden_display, ese va primero
+                    if (a.orden_display !== null && a.orden_display !== undefined) return -1;
+                    if (b.orden_display !== null && b.orden_display !== undefined) return 1;
+                    
+                    // Si ninguno tiene orden_display, ordenar por fecha (más recientes primero)
+                    const dateA = new Date(a.fecha_creacion || 0);
+                    const dateB = new Date(b.fecha_creacion || 0);
+                    return dateB - dateA;
+                });
+                
+                console.log('📋 Productos ordenados:', this.productos.length);
+                
             } else {
                 console.warn('⚠️ ProductosServiceOptimized no disponible');
                 this.productos = [];
@@ -2801,6 +2853,945 @@ class AdminPanel {
             console.error('❌ Error obteniendo información QR:', error);
             throw error;
         }
+    }
+
+    // ===== FUNCIONES DE ORDENAMIENTO =====
+    
+    // Toggle del modo de ordenamiento
+    async toggleOrderMode() {
+        console.log('🔀 Iniciando toggle del modo ordenamiento...');
+        
+        const orderBtn = document.getElementById('orderProductsBtn');
+        const gridContainer = document.querySelector('.products-grid');
+        const tableContainer = document.querySelector('.products-table-container');
+        
+        if (!orderBtn) {
+            console.error('❌ Botón de ordenamiento no encontrado');
+            return;
+        }
+        
+        // Prevenir interacción si está guardando
+        if (orderBtn.disabled || orderBtn.classList.contains('saving')) {
+            console.log('⚠️ Operación en progreso, ignorando clic');
+            this.showAlert('Por favor espera a que termine la operación actual', 'warning', 2000);
+            return;
+        }
+        
+        const isOrderMode = orderBtn.classList.contains('active');
+        
+        if (isOrderMode) {
+            // Verificar cliente Supabase antes de guardar
+            try {
+                const client = this.getSupabaseClient();
+                console.log('✅ Cliente Supabase verificado para guardar orden');
+                // Salir del modo ordenamiento
+                await this.exitOrderMode();
+            } catch (error) {
+                console.error('❌ Error verificando Supabase:', error);
+                this.showAlert('Error: No se puede conectar con la base de datos. Verifica tu conexión.', 'error');
+                return;
+            }
+        } else {
+            // Entrar en modo ordenamiento (no necesita Supabase)
+            this.enterOrderMode();
+        }
+    }
+    
+    // Entrar en modo ordenamiento
+    async enterOrderMode() {
+        console.log('🔀 Entrando en modo ordenamiento...');
+        
+        // Guardar el orden original como respaldo
+        this.originalProductsOrder = [...this.productos];
+        this.tempProductsOrder = [...this.productos];
+        this.isOrderingMode = true;
+        this.hasUnsavedChanges = false;
+        
+        const orderBtn = document.getElementById('orderProductsBtn');
+        const gridView = document.getElementById('gridView');
+        const tableView = document.getElementById('tableView');
+        const searchInput = document.getElementById('searchProducts');
+        const productsSection = document.querySelector('.products-section');
+        
+        // Cambiar estilo del botón
+        orderBtn.classList.add('active');
+        orderBtn.innerHTML = `
+            <i class="fas fa-check"></i>
+            Guardar Orden
+        `;
+        
+        // Deshabilitar otros controles
+        if (gridView) gridView.disabled = true;
+        if (tableView) tableView.disabled = true;
+        if (searchInput) searchInput.disabled = true;
+        
+        // Mostrar mensaje de instrucciones
+        this.showOrderInstructions();
+        
+        // Crear vista de lista especial para ordenamiento
+        await this.createOrderingListView();
+        
+        console.log('✅ Modo ordenamiento activado - Orden temporal guardado');
+    }
+    
+    // Salir del modo ordenamiento
+    async exitOrderMode() {
+        console.log('� Saliendo del modo ordenamiento...');
+        
+        this.isOrderingMode = false;
+        
+        const orderBtn = document.getElementById('orderProductsBtn');
+        const gridView = document.getElementById('gridView');
+        const tableView = document.getElementById('tableView');
+        const searchInput = document.getElementById('searchProducts');
+        
+        // Prevenir múltiples clics
+        if (orderBtn.disabled || orderBtn.classList.contains('saving')) {
+            console.log('⚠️ Ya se está guardando el orden, ignorando clic adicional');
+            return;
+        }
+        
+        try {
+            // Mostrar estado de carga y deshabilitar botón
+            orderBtn.disabled = true;
+            orderBtn.classList.add('saving');
+            orderBtn.innerHTML = `
+                <i class="fas fa-spinner fa-spin"></i>
+                Guardando...
+            `;
+            
+            // Mostrar alerta de progreso
+            const progressAlertId = this.showAlert(
+                'Actualizando orden de productos, por favor espera...', 
+                'info', 
+                10000 // 10 segundos de duración máxima
+            );
+            
+            // Deshabilitar otros controles
+            if (gridView) gridView.disabled = true;
+            if (tableView) tableView.disabled = true;
+            if (searchInput) searchInput.disabled = true;
+            
+            // Si hay cambios sin guardar, actualizamos la base de datos
+            if (this.hasUnsavedChanges) {
+                await this.saveProductOrder();
+                this.productos = [...this.tempProductsOrder]; // Actualizar productos principales
+            }
+            
+            // Cerrar alerta de progreso
+            this.closeAlert(progressAlertId, 'manual');
+            
+            // Limpiar estado temporal
+            this.originalProductsOrder = [];
+            this.tempProductsOrder = [];
+            this.hasUnsavedChanges = false;
+            
+            // Restaurar botón
+            orderBtn.classList.remove('saving');
+            orderBtn.innerHTML = `
+                <i class="fas fa-sort"></i>
+                Ordenar
+            `;
+            orderBtn.disabled = false;
+            
+            // Rehabilitar controles
+            if (gridView) gridView.disabled = false;
+            if (tableView) tableView.disabled = false;
+            if (searchInput) searchInput.disabled = false;
+            
+            // Remover sortable
+            this.removeSortable();
+            
+            // Limpiar vista de ordenamiento
+            this.cleanupOrderingView();
+            
+            // Ocultar instrucciones
+            this.hideOrderInstructions();
+            
+            // Recargar productos con el nuevo orden
+            await this.reloadProducts();
+            
+            // Mostrar mensaje de éxito
+            this.showAlert('Orden de productos guardado exitosamente', 'success', 4000);
+            
+        } catch (error) {
+            console.error('❌ Error guardando orden:', error);
+            
+            // Restaurar botón en caso de error
+            orderBtn.classList.remove('saving');
+            orderBtn.innerHTML = `
+                <i class="fas fa-sort"></i>
+                Ordenar
+            `;
+            orderBtn.disabled = false;
+            
+            // Rehabilitar controles
+            if (gridView) gridView.disabled = false;
+            if (tableView) tableView.disabled = false;
+            if (searchInput) searchInput.disabled = false;
+            
+            // Mostrar error
+            this.showAlert('Error guardando el orden de productos: ' + error.message, 'error', 6000);
+        }
+    }
+    
+    // Mostrar instrucciones de ordenamiento
+    showOrderInstructions() {
+        const instructionsHtml = `
+            <div class="order-instructions" id="orderInstructions">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Modo Ordenamiento Activo:</strong> 
+                    Usa las flechas ⬆️ ⬇️ para cambiar el orden de los productos. 
+                    El número indica la posición actual. Haz clic en "Guardar Orden" cuando termines.
+                </div>
+            </div>
+        `;
+        
+        const productsGrid = document.querySelector('.products-grid');
+        if (productsGrid) {
+            productsGrid.insertAdjacentHTML('beforebegin', instructionsHtml);
+        }
+    }
+    
+    // Ocultar instrucciones de ordenamiento
+    hideOrderInstructions() {
+        const instructions = document.getElementById('orderInstructions');
+        if (instructions) {
+            instructions.remove();
+        }
+    }
+    
+    // Crear vista de lista especial para ordenamiento
+    async createOrderingListView() {
+        const gridContainer = document.querySelector('.products-grid');
+        const tableContainer = document.querySelector('.products-table-container');
+        
+        if (!gridContainer) return;
+        
+        // Ocultar containers existentes
+        if (gridContainer) gridContainer.style.display = 'none';
+        if (tableContainer) tableContainer.style.display = 'none';
+        
+        // Crear container para la lista de ordenamiento
+        let orderingContainer = document.getElementById('ordering-list-container');
+        if (!orderingContainer) {
+            orderingContainer = document.createElement('div');
+            orderingContainer.id = 'ordering-list-container';
+            orderingContainer.className = 'ordering-list-container';
+            
+            // Insertarlo después del grid container
+            gridContainer.parentNode.insertBefore(orderingContainer, gridContainer.nextSibling);
+        }
+        
+        // Generar HTML de la lista de ordenamiento usando el estado temporal
+        const orderingHTML = this.tempProductsOrder.map((product, index) => {
+            const imageSrc = this.getImagePath(product);
+            const productName = this.cleanFieldValue(product.nombre, 'Producto sin nombre');
+            const productBrand = this.cleanFieldValue(product.marca, '');
+            const placeholderSrc = this.getPlaceholderImagePath();
+            
+            return `
+                <div class="ordering-item" data-product-id="${product.id}" data-original-index="${index}">
+                    <div class="ordering-item-content">
+                        <div class="ordering-item-image">
+                            <img src="${imageSrc}" 
+                                 alt="${productName}"
+                                 onerror="this.src='${placeholderSrc}'"
+                                 loading="lazy">
+                        </div>
+                        <div class="ordering-item-info">
+                            <h4 class="ordering-item-name">${productName}</h4>
+                            <p class="ordering-item-brand">${productBrand}</p>
+                            <span class="ordering-item-price">${this.getPrecioInfo(product)}</span>
+                            <span class="ordering-item-category">${this.getCategoryName(product.categoria)}</span>
+                        </div>
+                    </div>
+                    <div class="ordering-controls">
+                        <div class="ordering-position" onclick="adminPanel.editPosition(${index})" title="Clic para editar posición">
+                            <span class="position-number" id="position-${index}">${index + 1}</span>
+                            <input type="number" 
+                                   class="position-input" 
+                                   id="input-${index}" 
+                                   value="${index + 1}" 
+                                   min="1" 
+                                   max="${this.tempProductsOrder.length}"
+                                   onblur="adminPanel.savePosition(${index}, this.value)"
+                                   onkeypress="adminPanel.handlePositionKeypress(event, ${index}, this.value)"
+                                   style="display: none;">
+                        </div>
+                        <div class="ordering-buttons">
+                            <button class="ordering-btn ordering-btn-up" 
+                                    onclick="adminPanel.moveProductUp(${index})" 
+                                    ${index === 0 ? 'disabled' : ''}
+                                    title="Subir posición">
+                                <i class="fas fa-chevron-up"></i>
+                            </button>
+                            <button class="ordering-btn ordering-btn-down" 
+                                    onclick="adminPanel.moveProductDown(${index})" 
+                                    ${index === this.tempProductsOrder.length - 1 ? 'disabled' : ''}
+                                    title="Bajar posición">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        orderingContainer.innerHTML = `
+            <div class="ordering-header">
+                <h3><i class="fas fa-sort"></i> Ordenar Productos</h3>
+                <p>Usa las flechas para cambiar el orden o haz clic en el número para editar la posición directamente</p>
+            </div>
+            <div class="ordering-list">
+                ${orderingHTML}
+            </div>
+        `;
+        
+        orderingContainer.style.display = 'block';
+        console.log('✅ Vista de lista de ordenamiento creada');
+    }
+    
+    // Mover producto hacia arriba
+    moveProductUp(currentIndex) {
+        if (currentIndex <= 0) return;
+        
+        console.log(`⬆️ Moviendo producto de posición ${currentIndex + 1} a ${currentIndex}`);
+        
+        // Intercambiar productos en el array temporal
+        [this.tempProductsOrder[currentIndex], this.tempProductsOrder[currentIndex - 1]] = 
+        [this.tempProductsOrder[currentIndex - 1], this.tempProductsOrder[currentIndex]];
+        
+        // Marcar cambios sin guardar
+        this.hasUnsavedChanges = true;
+        
+        // ACTUALIZACIÓN INTELIGENTE: Solo actualizar los elementos que cambiaron
+        this.updateSpecificOrderingItems(currentIndex, currentIndex - 1);
+    }
+    
+    // Mover producto hacia abajo
+    moveProductDown(currentIndex) {
+        if (currentIndex >= this.tempProductsOrder.length - 1) return;
+        
+        console.log(`⬇️ Moviendo producto de posición ${currentIndex + 1} a ${currentIndex + 2}`);
+        
+        // Intercambiar productos en el array temporal
+        [this.tempProductsOrder[currentIndex], this.tempProductsOrder[currentIndex + 1]] = 
+        [this.tempProductsOrder[currentIndex + 1], this.tempProductsOrder[currentIndex]];
+        
+        // Marcar cambios sin guardar
+        this.hasUnsavedChanges = true;
+        
+        // ACTUALIZACIÓN INTELIGENTE: Solo actualizar los elementos que cambiaron
+        this.updateSpecificOrderingItems(currentIndex, currentIndex + 1);
+    }
+    
+    // FUNCIONES PARA EDICIÓN MANUAL DE POSICIÓN
+    editPosition(index) {
+        console.log(`🔢 Editando posición para índice: ${index}`);
+        
+        const positionSpan = document.getElementById(`position-${index}`);
+        const positionInput = document.getElementById(`input-${index}`);
+        
+        if (positionSpan && positionInput) {
+            positionSpan.style.display = 'none';
+            positionInput.style.display = 'block';
+            positionInput.focus();
+            positionInput.select();
+        }
+    }
+    
+    savePosition(index, newPosition) {
+        console.log(`💾 Solicitando cambio de posición ${index + 1} → ${newPosition}`);
+        
+        const positionSpan = document.getElementById(`position-${index}`);
+        const positionInput = document.getElementById(`input-${index}`);
+        
+        if (!positionSpan || !positionInput) return;
+        
+        const position = parseInt(newPosition);
+        const maxPosition = this.productos.length;
+        const currentPosition = index + 1;
+        
+        // Validar posición
+        if (isNaN(position) || position < 1 || position > maxPosition) {
+            this.showAlert(`❌ Posición inválida. Debe ser entre 1 y ${maxPosition}`, 'error');
+            positionInput.value = currentPosition; // Restaurar valor original
+            positionSpan.style.display = 'block';
+            positionInput.style.display = 'none';
+            return;
+        }
+        
+        // Si la posición es la misma, no hacer nada
+        if (position === currentPosition) {
+            console.log('📍 Misma posición, no se requiere cambio');
+            positionSpan.style.display = 'block';
+            positionInput.style.display = 'none';
+            return;
+        }
+        
+        // Mostrar información del intercambio que se va a realizar
+        const fromProductName = this.cleanFieldValue(this.productos[index].nombre, 'Producto sin nombre');
+        const toProductName = this.cleanFieldValue(this.productos[position - 1].nombre, 'Producto sin nombre');
+        
+        console.log(`🔄 Intercambiando:`);
+        console.log(`  - "${fromProductName}" (posición ${currentPosition})`);
+        console.log(`  - "${toProductName}" (posición ${position})`);
+        
+        // Realizar el intercambio (convertir de posición 1-based a índice 0-based)
+        this.moveProductToPosition(index, position - 1);
+        
+        // Ocultar input y mostrar span
+        positionSpan.style.display = 'block';
+        positionInput.style.display = 'none';
+    }
+    
+    handlePositionKeypress(event, index, value) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            this.savePosition(index, value);
+        } else if (event.key === 'Escape') {
+            event.preventDefault();
+            const positionSpan = document.getElementById(`position-${index}`);
+            const positionInput = document.getElementById(`input-${index}`);
+            
+            if (positionSpan && positionInput) {
+                positionInput.value = index + 1; // Restaurar valor original
+                positionSpan.style.display = 'block';
+                positionInput.style.display = 'none';
+            }
+        }
+    }
+    
+    moveProductToPosition(fromIndex, toIndex) {
+        console.log(`🔄 Intercambiando producto de posición ${fromIndex + 1} con posición ${toIndex + 1}`);
+        
+        if (fromIndex === toIndex) return;
+        
+        // Validar índices
+        if (fromIndex < 0 || fromIndex >= this.tempProductsOrder.length || 
+            toIndex < 0 || toIndex >= this.tempProductsOrder.length) {
+            console.error('❌ Índices inválidos:', { fromIndex, toIndex, total: this.tempProductsOrder.length });
+            this.showAlert('❌ Error: posición inválida', 'error');
+            return;
+        }
+        
+        // INTERCAMBIO DIRECTO: Intercambiar las posiciones sin afectar otros productos
+        const temp = this.tempProductsOrder[fromIndex];
+        this.tempProductsOrder[fromIndex] = this.tempProductsOrder[toIndex];
+        this.tempProductsOrder[toIndex] = temp;
+        
+        // Marcar cambios sin guardar
+        this.hasUnsavedChanges = true;
+        
+        console.log(`✅ Intercambio completado entre posiciones ${fromIndex + 1} y ${toIndex + 1}`);
+        
+        // ACTUALIZACIÓN INTELIGENTE: Solo actualizar los elementos que cambiaron
+        this.updateSpecificOrderingItems(fromIndex, toIndex);
+        
+        this.showAlert('✅ Posiciones intercambiadas correctamente', 'success');
+    }
+    
+    // Actualizar solo los elementos específicos que cambiaron (SIN recargar toda la vista)
+    updateSpecificOrderingItems(index1, index2) {
+        console.log(`🔄 Intercambiando elementos DOM en posiciones ${index1 + 1} y ${index2 + 1}`);
+        
+        const orderingList = document.querySelector('.ordering-list');
+        if (!orderingList) {
+            console.warn('⚠️ Lista de ordenamiento no encontrada');
+            return;
+        }
+        
+        const items = orderingList.querySelectorAll('.ordering-item');
+        if (!items || items.length <= Math.max(index1, index2)) {
+            console.warn('⚠️ Elementos insuficientes para intercambio');
+            return;
+        }
+        
+        const item1 = items[index1];
+        const item2 = items[index2];
+        
+        if (!item1 || !item2) {
+            console.warn('⚠️ No se encontraron elementos para intercambiar');
+            return;
+        }
+        
+        // Crear elementos temporales para marcar las posiciones
+        const temp1 = document.createElement('div');
+        const temp2 = document.createElement('div');
+        
+        // Insertar marcadores temporales
+        item1.parentNode.insertBefore(temp1, item1);
+        item2.parentNode.insertBefore(temp2, item2);
+        
+        // Intercambiar físicamente los elementos DOM
+        temp1.parentNode.insertBefore(item2, temp1);
+        temp2.parentNode.insertBefore(item1, temp2);
+        
+        // Remover marcadores temporales
+        temp1.remove();
+        temp2.remove();
+        
+        // Actualizar los números de posición y event handlers
+        this.updateAllPositionNumbers();
+        
+        console.log(`✅ Elementos DOM intercambiados correctamente`);
+    }
+    
+    // Actualizar todos los números de posición sin recargar la vista completa
+    updateAllPositionNumbers() {
+        console.log('🔢 Actualizando números de posición...');
+        
+        const orderingItems = document.querySelectorAll('.ordering-item');
+        orderingItems.forEach((item, visualIndex) => {
+            // Actualizar atributo data-original-index para reflejar nuevo orden
+            item.setAttribute('data-original-index', visualIndex);
+            
+            // Actualizar número de posición
+            const positionSpan = item.querySelector('.position-number');
+            if (positionSpan) {
+                positionSpan.textContent = visualIndex + 1;
+                positionSpan.id = `position-${visualIndex}`; // Actualizar ID
+            }
+            
+            // Actualizar input de posición
+            const positionInput = item.querySelector('.position-input');
+            if (positionInput) {
+                positionInput.value = visualIndex + 1;
+                positionInput.max = this.tempProductsOrder.length;
+                positionInput.id = `input-${visualIndex}`; // Actualizar ID
+            }
+            
+            // Actualizar atributos onclick para reflejar nuevos índices
+            const editButton = item.querySelector('.ordering-position');
+            if (editButton) {
+                editButton.setAttribute('onclick', `adminPanel.editPosition(${visualIndex})`);
+            }
+            
+            // Actualizar botones de flecha
+            const upButton = item.querySelector('.ordering-btn-up');
+            const downButton = item.querySelector('.ordering-btn-down');
+            
+            if (upButton) {
+                upButton.setAttribute('onclick', `adminPanel.moveProductUp(${visualIndex})`);
+                upButton.disabled = visualIndex === 0;
+            }
+            
+            if (downButton) {
+                downButton.setAttribute('onclick', `adminPanel.moveProductDown(${visualIndex})`);
+                downButton.disabled = visualIndex === this.tempProductsOrder.length - 1;
+            }
+            
+            // Actualizar inputs de posición con eventos correctos
+            const positionInputElement = item.querySelector('.position-input');
+            if (positionInputElement) {
+                positionInputElement.setAttribute('onblur', `adminPanel.savePosition(${visualIndex}, this.value)`);
+                positionInputElement.setAttribute('onkeypress', `adminPanel.handlePositionKeypress(event, ${visualIndex}, this.value)`);
+            }
+        });
+        
+        console.log('✅ Números de posición e índices actualizados correctamente');
+    }
+    
+    // Actualizar la vista de lista de ordenamiento
+    updateOrderingListView() {
+        const orderingList = document.querySelector('.ordering-list');
+        if (!orderingList) return;
+        
+        // Regenerar HTML con las nuevas posiciones
+        const orderingHTML = this.productos.map((product, index) => {
+            const imageSrc = this.getImagePath(product);
+            const productName = this.cleanFieldValue(product.nombre, 'Producto sin nombre');
+            const productBrand = this.cleanFieldValue(product.marca, '');
+            const placeholderSrc = this.getPlaceholderImagePath();
+            
+            return `
+                <div class="ordering-item" data-product-id="${product.id}" data-original-index="${index}">
+                    <div class="ordering-item-content">
+                        <div class="ordering-item-image">
+                            <img src="${imageSrc}" 
+                                 alt="${productName}"
+                                 onerror="this.src='${placeholderSrc}'"
+                                 loading="lazy">
+                        </div>
+                        <div class="ordering-item-info">
+                            <h4 class="ordering-item-name">${productName}</h4>
+                            <p class="ordering-item-brand">${productBrand}</p>
+                            <span class="ordering-item-price">${this.getPrecioInfo(product)}</span>
+                            <span class="ordering-item-category">${this.getCategoryName(product.categoria)}</span>
+                        </div>
+                    </div>
+                    <div class="ordering-controls">
+                        <div class="ordering-position">
+                            <span class="position-number">${index + 1}</span>
+                        </div>
+                        <div class="ordering-buttons">
+                            <button class="ordering-btn ordering-btn-up" 
+                                    onclick="adminPanel.moveProductUp(${index})" 
+                                    ${index === 0 ? 'disabled' : ''}
+                                    title="Subir posición">
+                                <i class="fas fa-chevron-up"></i>
+                            </button>
+                            <button class="ordering-btn ordering-btn-down" 
+                                    onclick="adminPanel.moveProductDown(${index})" 
+                                    ${index === this.productos.length - 1 ? 'disabled' : ''}
+                                    title="Bajar posición">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        orderingList.innerHTML = orderingHTML;
+        
+        // Añadir efecto de actualización
+        orderingList.style.opacity = '0.7';
+        setTimeout(() => {
+            orderingList.style.opacity = '1';
+        }, 150);
+    }
+    
+    // Limpiar vista de ordenamiento
+    cleanupOrderingView() {
+        const orderingContainer = document.getElementById('ordering-list-container');
+        const gridContainer = document.querySelector('.products-grid');
+        const tableContainer = document.querySelector('.products-table-container');
+        
+        // Ocultar container de ordenamiento
+        if (orderingContainer) {
+            orderingContainer.style.display = 'none';
+        }
+        
+        // Mostrar containers originales
+        if (gridContainer) gridContainer.style.display = '';
+        if (tableContainer) tableContainer.style.display = '';
+    }
+    
+    // Hacer la grid sorteable con drag & drop
+    async makeSortable() {
+        const productsGrid = document.querySelector('.products-grid');
+        if (!productsGrid) return;
+        
+        // Agregar clases CSS para el ordenamiento
+        productsGrid.classList.add('sortable-grid');
+        
+        // Agregar event listeners para drag & drop
+        const productCards = productsGrid.querySelectorAll('.product-card');
+        
+        productCards.forEach((card, index) => {
+            card.draggable = true;
+            card.classList.add('sortable-item');
+            card.dataset.originalIndex = index;
+            
+            // Agregar indicador visual
+            const dragHandle = document.createElement('div');
+            dragHandle.className = 'drag-handle';
+            dragHandle.innerHTML = '<i class="fas fa-grip-vertical"></i>';
+            card.insertBefore(dragHandle, card.firstChild);
+            
+            // Event listeners
+            card.addEventListener('dragstart', this.handleDragStart.bind(this));
+            card.addEventListener('dragover', this.handleDragOver.bind(this));
+            card.addEventListener('drop', this.handleDrop.bind(this));
+            card.addEventListener('dragend', this.handleDragEnd.bind(this));
+        });
+        
+        console.log('✅ Grid convertida a sorteable');
+    }
+    
+    // Remover funcionalidad sorteable
+    removeSortable() {
+        const productsGrid = document.querySelector('.products-grid');
+        if (!productsGrid) return;
+        
+        productsGrid.classList.remove('sortable-grid');
+        
+        const productCards = productsGrid.querySelectorAll('.product-card');
+        productCards.forEach(card => {
+            card.draggable = false;
+            card.classList.remove('sortable-item', 'dragging');
+            
+            // Remover indicador de arrastre
+            const dragHandle = card.querySelector('.drag-handle');
+            if (dragHandle) {
+                dragHandle.remove();
+            }
+            
+            // Remover event listeners
+            card.removeEventListener('dragstart', this.handleDragStart);
+            card.removeEventListener('dragover', this.handleDragOver);
+            card.removeEventListener('drop', this.handleDrop);
+            card.removeEventListener('dragend', this.handleDragEnd);
+        });
+    }
+    
+    // Manejadores de eventos drag & drop
+    handleDragStart(e) {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', e.currentTarget.outerHTML);
+        e.currentTarget.classList.add('dragging');
+        this.draggedElement = e.currentTarget;
+    }
+    
+    handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        
+        const grid = e.currentTarget.closest('.products-grid');
+        const afterElement = this.getDragAfterElement(grid, e.clientY);
+        const dragging = grid.querySelector('.dragging');
+        
+        if (afterElement == null) {
+            grid.appendChild(dragging);
+        } else {
+            grid.insertBefore(dragging, afterElement);
+        }
+    }
+    
+    handleDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const draggedHTML = e.dataTransfer.getData('text/html');
+        if (this.draggedElement) {
+            this.draggedElement.classList.remove('dragging');
+        }
+        
+        return false;
+    }
+    
+    handleDragEnd(e) {
+        e.currentTarget.classList.remove('dragging');
+        this.draggedElement = null;
+    }
+    
+    // Obtener el elemento después del cual insertar
+    getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.product-card:not(.dragging)')];
+        
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+    
+    // Guardar el nuevo orden en la base de datos
+    async saveProductOrder() {
+        try {
+            console.log('🔍 Verificando cliente Supabase...');
+            
+            // Debugging: Verificar qué clientes están disponibles
+            console.log('window.supabaseClient:', typeof window.supabaseClient);
+            console.log('window.supabase:', typeof window.supabase);
+            console.log('supabaseClient global:', typeof supabaseClient);
+            
+            // Intentar obtener el cliente con múltiples opciones
+            let client = null;
+            if (window.supabaseClient && typeof window.supabaseClient.from === 'function') {
+                client = window.supabaseClient;
+                console.log('✅ Usando window.supabaseClient');
+            } else if (window.supabase && typeof window.supabase.from === 'function') {
+                client = window.supabase;
+                console.log('✅ Usando window.supabase');
+            } else if (typeof supabaseClient !== 'undefined' && typeof supabaseClient.from === 'function') {
+                client = supabaseClient;
+                console.log('✅ Usando supabaseClient global');
+            } else {
+                throw new Error('No se encontró un cliente Supabase válido');
+            }
+            
+            const productCards = document.querySelectorAll('.ordering-item');
+            const updates = [];
+            
+            // Si no hay items de ordenamiento, usar el array temporal de productos
+            if (productCards.length === 0) {
+                this.tempProductsOrder.forEach((product, index) => {
+                    if (product && product.id) {
+                        updates.push({
+                            id: product.id,
+                            orden_display: index + 1
+                        });
+                    }
+                });
+            } else {
+                // Usar los items de la vista de ordenamiento
+                productCards.forEach((item, index) => {
+                    const productId = parseInt(item.dataset.productId);
+                    if (productId && !isNaN(productId)) {
+                        updates.push({
+                            id: productId,
+                            orden_display: index + 1
+                        });
+                    }
+                });
+            }
+            
+            console.log('💾 Guardando orden de productos:', updates.length, 'productos');
+            
+            // Actualizar orden en la base de datos
+            let successCount = 0;
+            for (const update of updates) {
+                try {
+                    console.log(`📝 Actualizando producto ${update.id} -> orden ${update.orden_display}`);
+                    
+                    const { error } = await client
+                        .from('productos')
+                        .update({ orden_display: update.orden_display })
+                        .eq('id', update.id);
+                    
+                    if (error) {
+                        console.error(`❌ Error actualizando producto ${update.id}:`, error);
+                        throw error;
+                    }
+                    
+                    successCount++;
+                    console.log(`✅ Producto ${update.id} actualizado correctamente`);
+                    
+                } catch (productError) {
+                    console.error(`❌ Error en producto individual ${update.id}:`, productError);
+                    throw new Error(`Error actualizando producto ${update.id}: ${productError.message}`);
+                }
+            }
+            
+            console.log(`✅ Orden de productos guardado exitosamente: ${successCount}/${updates.length} productos`);
+            
+        } catch (error) {
+            console.error('❌ Error completo guardando orden:', error);
+            console.error('Stack trace:', error.stack);
+            throw error;
+        }
+    }
+    
+    // Extraer ID del producto desde la tarjeta
+    extractProductIdFromCard(card) {
+        // Buscar el botón de editar que contiene el ID
+        const editButton = card.querySelector('button[onclick*="editProduct"]');
+        if (editButton) {
+            const onclickValue = editButton.getAttribute('onclick');
+            const match = onclickValue.match(/editProduct\((\d+)\)/);
+            if (match) {
+                return parseInt(match[1]);
+            }
+        }
+        return null;
+    }
+    
+    // Mostrar alerta temporal
+    showAlert(message, type = 'info', duration = 5000) {
+        const alertContainer = document.getElementById('alertContainer') || document.body;
+        const alertId = 'alert-' + Date.now();
+        
+        // Iconos según el tipo
+        const icons = {
+            success: 'check-circle',
+            error: 'exclamation-triangle',
+            info: 'info-circle',
+            warning: 'exclamation-circle'
+        };
+        
+        const icon = icons[type] || icons.info;
+        
+        const alertHtml = `
+            <div id="${alertId}" class="alert alert-${type} alert-temporary" style="
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                max-width: 420px;
+                min-width: 300px;
+                animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            ">
+                <i class="fas fa-${icon}"></i>
+                <div class="alert-message">${message}</div>
+                <button class="alert-close" onclick="adminPanel.closeAlert('${alertId}')" title="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+        
+        alertContainer.insertAdjacentHTML('beforeend', alertHtml);
+        
+        // Auto-remover después del tiempo especificado
+        const autoRemoveTimer = setTimeout(() => {
+            this.closeAlert(alertId, 'auto');
+        }, duration);
+        
+        // Guardar referencia del timer para poder cancelarlo si se cierra manualmente
+        const alertElement = document.getElementById(alertId);
+        if (alertElement) {
+            alertElement.dataset.autoRemoveTimer = autoRemoveTimer;
+        }
+        
+        console.log(`✅ Alerta ${type} mostrada:`, message);
+        return alertId;
+    }
+    
+    // Cerrar alerta específica
+    closeAlert(alertId, source = 'manual') {
+        const alert = document.getElementById(alertId);
+        if (!alert) return;
+        
+        // Cancelar auto-remove si se cierra manualmente
+        if (source === 'manual' && alert.dataset.autoRemoveTimer) {
+            clearTimeout(parseInt(alert.dataset.autoRemoveTimer));
+        }
+        
+        console.log(`🔽 Cerrando alerta (${source}):`, alertId);
+        
+        // Animación de salida
+        alert.style.animation = source === 'manual' ? 
+            'fadeOut 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53)' : 
+            'slideOutRight 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53)';
+        
+        // Remover después de la animación
+        setTimeout(() => {
+            if (alert && alert.parentNode) {
+                alert.remove();
+            }
+        }, source === 'manual' ? 300 : 400);
+    }
+    
+    // Cerrar todas las alertas
+    closeAllAlerts() {
+        const alerts = document.querySelectorAll('.alert-temporary');
+        alerts.forEach(alert => {
+            if (alert.id) {
+                this.closeAlert(alert.id, 'manual');
+            }
+        });
+    }
+    
+    // Limpiar estado de guardado en caso de emergencia
+    resetOrderButtonState() {
+        const orderBtn = document.getElementById('orderProductsBtn');
+        const gridView = document.getElementById('gridView');
+        const tableView = document.getElementById('tableView');
+        const searchInput = document.getElementById('searchProducts');
+        
+        if (orderBtn) {
+            orderBtn.disabled = false;
+            orderBtn.classList.remove('saving', 'active');
+            orderBtn.innerHTML = `
+                <i class="fas fa-sort"></i>
+                Ordenar
+            `;
+        }
+        
+        // Rehabilitar controles
+        if (gridView) gridView.disabled = false;
+        if (tableView) tableView.disabled = false;
+        if (searchInput) searchInput.disabled = false;
+        
+        console.log('🔄 Estado del botón de ordenamiento restablecido');
     }
 }
 

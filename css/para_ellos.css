@@ -1613,40 +1613,113 @@ mark {
 @media (max-width: 768px) {
     .magazine-title {
         font-size: 3rem;
-    }    .modal-content {
+    }
+    
+    .modal-content {
         width: 95%;
+        height: 90vh;
         max-height: 90vh;
-        margin: 2rem 1rem;
+        margin: 5vh auto;
+        border-radius: 16px;
+        overflow-y: auto;
+    }
+
+    .quick-view-content {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        min-height: 100%;
     }
 
     .quick-view-image {
-        height: 350px;
+        height: 400px;
+        flex-shrink: 0;
+        border-radius: 16px 16px 0 0;
     }
 
     .quick-view-image img {
         object-fit: cover;
-        border-radius: 12px 12px 0 0;
+        border-radius: 16px 16px 0 0;
     }
 
     .quick-view-info {
         padding: 1.5rem;
+        flex: 1;
+        text-align: left;
     }
 
     .quick-view-info h2 {
         font-size: 1.8rem;
         text-align: center;
+        margin-bottom: 1rem;
+        line-height: 1.3;
     }
 
-    .quick-view_info .price {
-        font-size: 1.5rem;
+    .quick-view-info .brand {
+        font-size: 1.1rem;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .quick-view-info .size {
+        font-size: 1rem;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .quick-view-info .price {
+        font-size: 1.8rem;
+        text-align: center;
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+
+    .quick-view-info .description {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+        text-align: justify;
+    }
+
+    .quick-view-info .notes {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 8px;
+    }
+
+    .quick-view-info .notes h4 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .quick-view-info .notes p {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .quick-view-info .actions {
+        margin-top: auto;
+        padding-top: 1rem;
+    }
+
+    .add-to-bag-btn {
+        width: 100%;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        border-radius: 8px;
+        font-weight: 600;
     }
 
     .close-modal {
-        top: 10px;
+        top: 15px;
         right: 15px;
-        width: 35px;
-        height: 35px;
-        font-size: 20px;
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 50%;
+        z-index: 1001;
     }
 
     .index-grid {
@@ -1672,6 +1745,106 @@ mark {
 @media (max-width: 480px) {
     .modal-content {
         margin: 0.5rem;
+        width: calc(100% - 1rem);
+        height: 96vh;
+        max-height: 96vh;
+        border-radius: 12px;
+    }
+
+    .quick-view-content {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        min-height: 100%;
+    }
+
+    .quick-view-image {
+        height: 320px;
+        flex-shrink: 0;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .quick-view-image img {
+        border-radius: 12px 12px 0 0;
+    }
+
+    .quick-view-info {
+        padding: 1rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .quick-view-info h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+        line-height: 1.2;
+    }
+
+    .quick-view-info .brand {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .quick-view-info .size {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .quick-view-info .price {
+        font-size: 1.6rem;
+        margin-bottom: 0.75rem;
+        font-weight: bold;
+    }
+
+    .quick-view-info .description {
+        font-size: 0.85rem;
+        line-height: 1.4;
+        margin-bottom: 0.75rem;
+        text-align: justify;
+    }
+
+    .quick-view-info .notes {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 6px;
+        flex-shrink: 0;
+    }
+
+    .quick-view-info .notes h4 {
+        font-size: 1rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .quick-view-info .notes p {
+        font-size: 0.8rem;
+        line-height: 1.3;
+    }
+
+    .quick-view-info .actions {
+        margin-top: auto;
+        padding-top: 0.75rem;
+    }
+
+    .add-to-bag-btn {
+        width: 100%;
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+        min-height: 50px;
+    }
+
+    .close-modal {
+        top: 10px;
+        right: 10px;
+        width: 36px;
+        height: 36px;
+        font-size: 22px;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 50%;
+        z-index: 1001;
     }
 
     .modal-left {
@@ -2108,124 +2281,149 @@ mark {
     z-index: 1;
 }
 
-/* Video Overlay with Text */
-.video-overlay {
+/* Video Overlay Elegant - SOLO TEXTO SUPERPUESTO */
+.video-overlay-elegant {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 10;
-}
-
-.video-text-content {
     text-align: center;
-    color: white;
-    max-width: 90%;
-    padding: 3rem 2rem;
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    animation: fadeInUp 1.5s ease-out;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    padding: 2rem;
+    box-sizing: border-box;
 }
 
-.video-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 4.5rem;
-    font-weight: 600;
-    font-style: italic;
-    margin: 0 0 1.5rem 0;
-    letter-spacing: 0.05em;
+.video-title-elegant {
+    font-family: 'Clash Grotesk', sans-serif;
+    font-size: 7rem;
+    font-weight: 700;
+    font-style: normal;
+    margin: 0 0 2rem 0;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    text-shadow: 
-        0 0 10px rgba(0, 0, 0, 1),
-        0 0 20px rgba(0, 0, 0, 0.8),
-        0 0 30px rgba(0, 0, 0, 0.6);
-    line-height: 1.1;
     color: #ffffff;
+    line-height: 0.9;
+    animation: elegantFadeIn 3s ease-out;
+    transform: translateY(0);
+    transition: all 0.3s ease;
 }
 
-.video-subtitle {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem;
-    font-style: italic;
-    font-weight: 300;
+.video-subtitle-elegant {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    font-style: normal;
     margin: 0;
     line-height: 1.4;
-    color: #f0f0f0;
-    text-shadow: 
-        0 0 10px rgba(0, 0, 0, 1),
-        0 0 20px rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+    letter-spacing: 0.03em;
+    animation: elegantFadeIn 3s ease-out 0.5s both;
+    max-width: 800px;
+    transition: all 0.3s ease;
 }
 
-/* Animation for text appearance */
-@keyframes fadeInUp {
-    from {
+/* Animación elegante */
+@keyframes elegantFadeIn {
+    0% {
         opacity: 0;
-        transform: translateY(40px);
+        transform: translateY(50px) scale(0.8);
+        filter: blur(5px);
     }
-    to {
+    50% {
+        opacity: 0.7;
+        transform: translateY(25px) scale(0.9);
+        filter: blur(2px);
+    }
+    100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
+        filter: blur(0px);
     }
 }
 
-/* Responsive video styles */
+/* Efecto hover para interactividad */
+.video-title-elegant:hover {
+    transform: scale(1.02);
+    text-shadow: 
+        2px 2px 0px #000000,
+        4px 4px 0px rgba(0, 0, 0, 0.8),
+        6px 6px 0px rgba(0, 0, 0, 0.6),
+        8px 8px 0px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(255, 255, 255, 0.5),
+        0 0 60px rgba(255, 255, 255, 0.3);
+}
+
+.video-subtitle-elegant:hover {
+    transform: scale(1.01);
+    text-shadow: 
+        1px 1px 2px rgba(0, 0, 0, 1),
+        2px 2px 4px rgba(0, 0, 0, 0.8),
+        3px 3px 6px rgba(0, 0, 0, 0.6),
+        0 0 25px rgba(255, 255, 255, 0.4);
+}
+
+/* Responsive para texto elegante */
 @media (max-width: 1200px) {
-    .video-title-section {
-        height: 85vh;
+    .video-title-elegant {
+        font-size: 5.5rem;
+        letter-spacing: 0.12em;
     }
     
-    .video-title {
-        font-size: 3.8rem;
-    }
-    
-    .video-subtitle {
-        font-size: 1.3rem;
+    .video-subtitle-elegant {
+        font-size: 2rem;
+        max-width: 700px;
     }
 }
 
 @media (max-width: 768px) {
-    .video-title-section {
-        height: 70vh;
+    .video-overlay-elegant {
+        padding: 1.5rem;
     }
     
-    .video-text-content {
-        padding: 2rem 1.5rem;
-        max-width: 95%;
+    .video-title-elegant {
+        font-size: 4rem;
+        letter-spacing: 0.1em;
+        margin-bottom: 1.5rem;
     }
     
-    .video-title {
-        font-size: 2.8rem;
-        margin-bottom: 1rem;
-    }
-    
-    .video-subtitle {
-        font-size: 1.1rem;
+    .video-subtitle-elegant {
+        font-size: 1.6rem;
+        max-width: 100%;
     }
 }
 
 @media (max-width: 480px) {
-    .video-title-section {
-        height: 60vh;
+    .video-overlay-elegant {
+        padding: 1rem;
     }
     
-    .video-text-content {
-        padding: 1.5rem 1rem;
+    .video-title-elegant {
+        font-size: 3rem;
+        letter-spacing: 0.08em;
+        margin-bottom: 1rem;
+        line-height: 1;
     }
     
-    .video-title {
-        font-size: 2.2rem;
-        margin-bottom: 0.8rem;
-    }
-    
-    .video-subtitle {
-        font-size: 1rem;
+    .video-subtitle-elegant {
+        font-size: 1.3rem;
+        line-height: 1.3;
     }
 }
+
+@media (max-width: 360px) {
+    .video-title-elegant {
+        font-size: 2.5rem;
+        letter-spacing: 0.05em;
+    }
+    
+    .video-subtitle-elegant {
+        font-size: 1.1rem;
+    }
+}
+
+

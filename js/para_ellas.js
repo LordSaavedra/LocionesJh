@@ -82,7 +82,16 @@ class ParaEllasManager {
         this.setupFilters();
         this.setupPriceFilter();
         
+        // Hacer el manager disponible globalmente
+        window.paraEllasManager = this;
+        window.debugPricesEllas = () => this.debugPriceRange();
+        window.testPricesEllas = () => this.testPriceCalculation();
+        
+        // Agregar panel de herramientas de debug
+        this.addDebugPanel();
+        
         console.log('✅ ParaEllasManager inicializado completamente');
+        console.log('🔧 Para debug de precios, ejecuta: debugPricesEllas() o testPricesEllas()');
     }
 
     async loadProducts() {
@@ -113,6 +122,23 @@ class ParaEllasManager {
             const loadTime = endTime - startTime;
             
             console.log(`✅ ${this.productos.length} productos cargados en ${loadTime.toFixed(2)}ms`);
+            
+            // Log adicional para debugging de precios
+            if (this.productos.length > 0) {
+                const productSample = this.productos.slice(0, 3);
+                console.log('📋 Muestra de productos cargados:', productSample.map(p => ({
+                    id: p.id,
+                    nombre: p.nombre,
+                    precio: p.precio,
+                    categoria: p.categoria
+                })));
+                
+                const allPrices = this.productos.map(p => p.precio || 0).filter(p => p > 0);
+                console.log(`💰 Precios encontrados: ${allPrices.length}/${this.productos.length} productos tienen precio válido`);
+                if (allPrices.length > 0) {
+                    console.log(`📊 Rango inicial: $${Math.min(...allPrices)} - $${Math.max(...allPrices)}`);
+                }
+            }
             
             this.hideLoadingIndicator();
             
@@ -305,22 +331,121 @@ class ParaEllasManager {
     }
 
     setupPriceFilter() {
-        const priceRange = document.getElementById('priceRange');
-        const priceDisplay = document.getElementById('priceDisplay');
+        console.log('🔧 Ejecutando setupPriceFilter para ellas...');
+        console.log('📊 Estado actual - productos cargados:', this.productos.length);
         
-        if (priceRange && priceDisplay) {
-            priceRange.addEventListener('input', (e) => {
-                const maxPrice = parseInt(e.target.value);
-                this.activeFilters.priceMax = maxPrice;
-                priceDisplay.textContent = `Hasta $${new Intl.NumberFormat('es-CO').format(maxPrice)}`;
-                
-                // Aplicar filtro con debounce
-                clearTimeout(this.priceFilterTimeout);
-                this.priceFilterTimeout = setTimeout(() => {
-                    this.applyFilters();
-                }, 300);
+        const minSlider = document.getElementById('minPriceSliderEllas');
+        const maxSlider = document.getElementById('maxPriceSliderEllas');
+        const priceDisplay = document.getElementById('priceRangeDisplayEllas');
+        const resetButton = document.getElementById('resetPriceFilterEllas');
+
+        if (!minSlider || !maxSlider) {
+            console.error('❌ No se encontraron los elementos de slider de precio para ellas');
+            console.log('Elementos encontrados:', {
+                minSlider: !!minSlider,
+                maxSlider: !!maxSlider,
+                priceDisplay: !!priceDisplay
+            });
+            return;
+        }
+
+        // Obtener rango de precios de los productos
+        const prices = this.productos.map(p => p.precio || 0).filter(p => p > 0);
+        console.log(`🏷️ Precios encontrados en ${this.productos.length} productos para ellas:`, prices.sort((a,b) => a-b));
+        
+        if (prices.length === 0) {
+            console.warn('⚠️ No se encontraron precios válidos en los productos para ellas');
+            console.log('Productos sin precio válido:', this.productos.filter(p => !p.precio || p.precio <= 0));
+            return;
+        }
+        
+        if (prices.length > 0) {
+            const minPrice = Math.min(...prices);
+            const maxPrice = Math.max(...prices);
+            
+            console.log(`💰 Rango de precios calculado para ellas: $${this.formatPrice(minPrice)} - $${this.formatPrice(maxPrice)}`);
+            
+            // Configurar sliders
+            minSlider.min = minPrice;
+            minSlider.max = maxPrice;
+            minSlider.value = minPrice;
+            
+            maxSlider.min = minPrice;
+            maxSlider.max = maxPrice;
+            maxSlider.value = maxPrice;
+            
+            console.log('🎛️ Sliders configurados:', {
+                minSliderRange: `${minSlider.min} - ${minSlider.max}`,
+                minSliderValue: minSlider.value,
+                maxSliderRange: `${maxSlider.min} - ${maxSlider.max}`,
+                maxSliderValue: maxSlider.value
+            });
+            
+            // Actualizar los filtros activos
+            this.activeFilters.priceMin = minPrice;
+            this.activeFilters.priceMax = maxPrice;
+            
+            // Actualizar la visualización inicial
+            if (priceDisplay) {
+                priceDisplay.textContent = `$${this.formatPrice(minPrice)} - $${this.formatPrice(maxPrice)}`;
+            }
+            
+            // Inicializar la barra visual
+            this.updateSliderRangeVisual(minSlider, maxSlider);
+        }
+
+        const updatePriceRange = () => {
+            const min = parseInt(minSlider.value);
+            const max = parseInt(maxSlider.value);
+
+            if (min > max) {
+                minSlider.value = max;
+                maxSlider.value = min;
+            }
+
+            this.activeFilters.priceMin = parseInt(minSlider.value);
+            this.activeFilters.priceMax = parseInt(maxSlider.value);
+
+            if (priceDisplay) {
+                priceDisplay.textContent = `$${this.formatPrice(this.activeFilters.priceMin)} - $${this.formatPrice(this.activeFilters.priceMax)}`;
+            }
+
+            // Actualizar la barra visual del rango
+            this.updateSliderRangeVisual(minSlider, maxSlider);
+
+            this.applyFilters();
+        };
+
+        minSlider.addEventListener('input', updatePriceRange);
+        maxSlider.addEventListener('input', updatePriceRange);
+
+        if (resetButton) {
+            resetButton.addEventListener('click', () => {
+                minSlider.value = minSlider.min;
+                maxSlider.value = maxSlider.max;
+                updatePriceRange();
             });
         }
+
+        // Inicializar y aplicar filtros
+        updatePriceRange();
+        this.applyFilters();
+    }
+
+    updateSliderRangeVisual(minSlider, maxSlider) {
+        const rangeElement = document.getElementById('priceSliderRangeEllas');
+        if (!rangeElement) return;
+
+        const min = parseInt(minSlider.min);
+        const max = parseInt(minSlider.max);
+        const minVal = parseInt(minSlider.value);
+        const maxVal = parseInt(maxSlider.value);
+
+        const minPercent = ((minVal - min) / (max - min)) * 100;
+        const maxPercent = ((maxVal - min) / (max - min)) * 100;
+
+        rangeElement.style.left = `${minPercent}%`;
+        rangeElement.style.width = `${maxPercent - minPercent}%`;
     }
 
     applyFilters() {
@@ -805,7 +930,132 @@ class ParaEllasManager {
     async reloadProducts() {
         console.log('🔄 Recargando productos...');
         await this.loadProducts();
+        this.setupPriceFilter();
         this.applyFilters();
+    }
+
+    // Agregar panel de herramientas de debug
+    addDebugPanel() {
+        // Solo agregar en modo desarrollo
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            const debugPanel = document.createElement('div');
+            debugPanel.id = 'debug-tools-ellas';
+            debugPanel.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: rgba(0,0,0,0.8);
+                color: white;
+                padding: 10px;
+                border-radius: 8px;
+                z-index: 9999;
+                font-size: 12px;
+            `;
+            
+            debugPanel.innerHTML = `
+                <div style="margin-bottom: 5px; font-weight: bold;">🔧 Debug Ellas</div>
+                <button onclick="window.testPricesEllas()" style="margin: 2px; padding: 4px 8px; font-size: 11px;">🧪 Test</button>
+                <button onclick="window.debugPricesEllas()" style="margin: 2px; padding: 4px 8px; font-size: 11px;">💰 Precios</button>
+                <button onclick="console.log('Productos Ellas:', window.paraEllasManager.productos)" style="margin: 2px; padding: 4px 8px; font-size: 11px;">📦 Log</button>
+                <button onclick="window.paraEllasManager.reloadProducts()" style="margin: 2px; padding: 4px 8px; font-size: 11px;">🔄 Reload</button>
+            `;
+            
+            document.body.appendChild(debugPanel);
+        }
+    }
+
+    // Función específica para testear y verificar precios
+    testPriceCalculation() {
+        console.group('🧪 TEST COMPLETO DE PRECIOS PARA ELLAS');
+        
+        // 1. Verificar productos cargados
+        console.log('📊 Total productos:', this.productos.length);
+        
+        if (this.productos.length === 0) {
+            console.error('❌ No hay productos cargados');
+            console.groupEnd();
+            return false;
+        }
+        
+        // 2. Analizar estructura de precios
+        console.log('🔍 Muestra de productos:');
+        this.productos.slice(0, 5).forEach((p, i) => {
+            console.log(`  ${i+1}. ${p.nombre || 'Sin nombre'} - Precio: ${p.precio || 'No definido'}`);
+        });
+        
+        // 3. Extraer y filtrar precios
+        const allPrices = this.productos.map(p => p.precio);
+        const validPrices = allPrices.filter(p => p && p > 0);
+        const invalidPrices = allPrices.filter(p => !p || p <= 0);
+        
+        console.log('💰 Análisis de precios:');
+        console.log(`  - Precios válidos: ${validPrices.length}`);
+        console.log(`  - Precios inválidos: ${invalidPrices.length}`);
+        console.log(`  - Precios válidos ordenados:`, validPrices.sort((a,b) => a-b));
+        
+        if (validPrices.length === 0) {
+            console.error('❌ No hay precios válidos');
+            console.groupEnd();
+            return false;
+        }
+        
+        // 4. Calcular rangos
+        const minPrice = Math.min(...validPrices);
+        const maxPrice = Math.max(...validPrices);
+        
+        console.log('📈 Rangos calculados:');
+        console.log(`  - Precio mínimo: $${this.formatPrice(minPrice)} (${minPrice})`);
+        console.log(`  - Precio máximo: $${this.formatPrice(maxPrice)} (${maxPrice})`);
+        
+        // 5. Verificar elementos DOM
+        const minSlider = document.getElementById('minPriceSliderEllas');
+        const maxSlider = document.getElementById('maxPriceSliderEllas');
+        const display = document.getElementById('priceRangeDisplayEllas');
+        
+        console.log('🎛️ Estado elementos DOM:');
+        console.log('  - minSlider:', minSlider ? `${minSlider.min}-${minSlider.max} (valor: ${minSlider.value})` : 'NO ENCONTRADO');
+        console.log('  - maxSlider:', maxSlider ? `${maxSlider.min}-${maxSlider.max} (valor: ${maxSlider.value})` : 'NO ENCONTRADO');
+        console.log('  - display:', display ? display.textContent : 'NO ENCONTRADO');
+        
+        console.groupEnd();
+        
+        return {
+            productCount: this.productos.length,
+            validPrices: validPrices.length,
+            minPrice,
+            maxPrice,
+            slidersConfigured: !!(minSlider && maxSlider)
+        };
+    }
+
+    // Función de debug para verificar los rangos de precios
+    debugPriceRange() {
+        console.group('🔍 DEBUG RANGOS DE PRECIOS PARA ELLAS');
+        
+        const prices = this.productos.map(p => p.precio || 0).filter(p => p > 0);
+        console.log('📊 Total de productos:', this.productos.length);
+        console.log('💰 Productos con precio válido:', prices.length);
+        console.log('🏷️ Todos los precios:', prices.sort((a,b) => a-b));
+        
+        if (prices.length > 0) {
+            const minPrice = Math.min(...prices);
+            const maxPrice = Math.max(...prices);
+            console.log(`📉 Precio mínimo: $${this.formatPrice(minPrice)}`);
+            console.log(`📈 Precio máximo: $${this.formatPrice(maxPrice)}`);
+            
+            // Verificar elementos del filtro
+            const minSlider = document.getElementById('minPriceSliderEllas');
+            const maxSlider = document.getElementById('maxPriceSliderEllas');
+            const display = document.getElementById('priceRangeDisplayEllas');
+            
+            console.log('🎛️ Estado de los sliders:');
+            console.log('- Min slider:', minSlider ? `${minSlider.min} a ${minSlider.max}, valor: ${minSlider.value}` : 'No encontrado');
+            console.log('- Max slider:', maxSlider ? `${maxSlider.min} a ${maxSlider.max}, valor: ${maxSlider.value}` : 'No encontrado');
+            console.log('- Display:', display ? display.textContent : 'No encontrado');
+        }
+        
+        console.groupEnd();
+        return { productCount: this.productos.length, priceCount: prices.length, prices: prices.sort((a,b) => a-b) };
     }
 
     // Método de debug para verificar el estado
@@ -1111,6 +1361,11 @@ window.addEventListener('load', function() {
     if (!window.paraEllasManager) {
         console.log('🔄 Inicializando ParaEllasManager desde window.load...');
         window.paraEllasManager = new ParaEllasManager();
+        
+        // Agregar funciones de debug globales
+        window.debugPricesEllas = () => window.paraEllasManager.debugPriceRange();
+        window.testPricesEllas = () => window.paraEllasManager.testPriceCalculation();
+        console.log('🔧 Para debug de precios para ellas, ejecuta: testPricesEllas() o debugPricesEllas()');
     }
 });
 

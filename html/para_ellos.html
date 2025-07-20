@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="../css/para_ellos.css">
     <link rel="stylesheet" href="../css/cart.css">
     <link rel="stylesheet" href="../css/slide-cart.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&family=Italiana&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;600&family=Italiana&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@400,700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Navbar container -->
@@ -42,11 +43,9 @@
                     <source src="../VIDEOS/VIDEOPARASECCIONPARAELLOS.mp4" type="video/mp4">
                     Tu navegador no soporta el elemento de video.
                 </video>
-                <div class="video-overlay">
-                    <div class="video-text-content">
-                        <h1 class="video-title">Fragancias Masculinas</h1>
-                        <p class="video-subtitle">Descubre nuestra colección exclusiva de perfumes para caballero</p>
-                    </div>
+                <div class="video-overlay-elegant">
+                    <h1 class="video-title-elegant">FRAGANCIAS MASCULINAS</h1>
+                    <p class="video-subtitle-elegant">Descubre nuestra colección exclusiva de perfumes para caballero</p>
                 </div>
             </div>
             
@@ -79,25 +78,19 @@
                     <div class="price-filter-inline">
                         <div class="price-filter-header-inline">
                             <span class="price-label">Precio</span>
-                            <span class="price-range-display" id="priceRangeDisplay">$250K - $780K</span>
+                            <span class="price-range-display" id="priceRangeDisplayEllos">$250K - $780K</span>
                         </div>
                         <div class="price-slider-container">
                             <div class="price-slider-track">
-                                <div class="price-slider-range" id="priceSliderRange"></div>
+                                <div class="price-slider-range" id="priceSliderRangeEllos"></div>
                             </div>
                             <input type="range" 
-                                   id="minPriceSlider" 
+                                   id="minPriceSliderEllos" 
                                    class="price-slider price-slider-min" 
-                                   min="250000" 
-                                   max="780000" 
-                                   value="250000" 
                                    step="10000">
                             <input type="range" 
-                                   id="maxPriceSlider" 
+                                   id="maxPriceSliderEllos" 
                                    class="price-slider price-slider-max" 
-                                   min="250000" 
-                                   max="780000" 
-                                   value="780000" 
                                    step="10000">
                         </div>
                         <button class="reset-price-filter-inline" id="resetPriceFilter">Reset</button>
