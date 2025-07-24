@@ -1204,8 +1204,11 @@ mark {
     }
     
     .add-to-cart-btn {
-        padding: 0.7rem 1.5rem;
-        font-size: 0.8rem;
+        padding: 10px 16px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 500;
     }
     
     .notification {
@@ -1545,10 +1548,13 @@ mark {
 
     .add-to-bag-btn {
         width: 100%;
-        padding: 1rem 2rem;
-        font-size: 1.1rem;
-        border-radius: 8px;
-        font-weight: 600;
+        padding: 12px 20px;
+        font-size: 12px;
+        border-radius: 4px;
+        font-weight: 500;
+        min-height: auto;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
     .close-modal {
@@ -1669,11 +1675,13 @@ mark {
 
     .add-to-bag-btn {
         width: 100%;
-        padding: 0.875rem 1.5rem;
-        font-size: 1rem;
-        border-radius: 6px;
-        font-weight: 600;
-        min-height: 50px;
+        padding: 10px 16px;
+        font-size: 11px;
+        border-radius: 4px;
+        font-weight: 500;
+        min-height: auto;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
     }
 
     .close-modal {
@@ -2224,6 +2232,18 @@ mark {
     
     .video-subtitle-elegant {
         font-size: 1.1rem;
+    }
+    
+    /* Asegurar que los botones mantengan tamaño consistente */
+    .add-to-bag-btn,
+    .add-to-cart-btn {
+        padding: 9px 14px !important;
+        font-size: 10px !important;
+        font-weight: 500 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.6px !important;
+        min-height: 38px !important;
+        line-height: 1.2 !important;
     }
 }
 

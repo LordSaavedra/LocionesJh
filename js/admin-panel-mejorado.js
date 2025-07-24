@@ -23,6 +23,8 @@ class AdminPanel {
         this.originalProductsOrder = [];
         this.tempProductsOrder = [];
         this.hasUnsavedChanges = false;
+        this.currentOrderingCategory = null; // Nueva propiedad para categoría actual
+        this.categoryProducts = {}; // Productos separados por categoría
         
         this.init();
     }
@@ -2901,17 +2903,16 @@ class AdminPanel {
     async enterOrderMode() {
         console.log('🔀 Entrando en modo ordenamiento...');
         
-        // Guardar el orden original como respaldo
-        this.originalProductsOrder = [...this.productos];
-        this.tempProductsOrder = [...this.productos];
-        this.isOrderingMode = true;
-        this.hasUnsavedChanges = false;
+        // Preparar productos por categoría
+        this.categoryProducts = {
+            'para-ellos': this.productos.filter(p => p.categoria === 'para-ellos'),
+            'para-ellas': this.productos.filter(p => p.categoria === 'para-ellas')
+        };
         
         const orderBtn = document.getElementById('orderProductsBtn');
         const gridView = document.getElementById('gridView');
         const tableView = document.getElementById('tableView');
         const searchInput = document.getElementById('searchProducts');
-        const productsSection = document.querySelector('.products-section');
         
         // Cambiar estilo del botón
         orderBtn.classList.add('active');
@@ -2925,13 +2926,13 @@ class AdminPanel {
         if (tableView) tableView.disabled = true;
         if (searchInput) searchInput.disabled = true;
         
+        // Mostrar selector de categorías
+        this.showCategorySelector();
+        
         // Mostrar mensaje de instrucciones
         this.showOrderInstructions();
         
-        // Crear vista de lista especial para ordenamiento
-        await this.createOrderingListView();
-        
-        console.log('✅ Modo ordenamiento activado - Orden temporal guardado');
+        console.log('✅ Modo ordenamiento activado - Esperando selección de categoría');
     }
     
     // Salir del modo ordenamiento
@@ -2973,9 +2974,10 @@ class AdminPanel {
             if (searchInput) searchInput.disabled = true;
             
             // Si hay cambios sin guardar, actualizamos la base de datos
-            if (this.hasUnsavedChanges) {
+            if (this.hasUnsavedChanges && this.currentOrderingCategory) {
                 await this.saveProductOrder();
-                this.productos = [...this.tempProductsOrder]; // Actualizar productos principales
+                // Actualizar productos principales con los cambios de la categoría
+                this.updateMainProductsArray();
             }
             
             // Cerrar alerta de progreso
@@ -2985,6 +2987,8 @@ class AdminPanel {
             this.originalProductsOrder = [];
             this.tempProductsOrder = [];
             this.hasUnsavedChanges = false;
+            this.currentOrderingCategory = null;
+            this.categoryProducts = {};
             
             // Restaurar botón
             orderBtn.classList.remove('saving');
@@ -2998,9 +3002,6 @@ class AdminPanel {
             if (gridView) gridView.disabled = false;
             if (tableView) tableView.disabled = false;
             if (searchInput) searchInput.disabled = false;
-            
-            // Remover sortable
-            this.removeSortable();
             
             // Limpiar vista de ordenamiento
             this.cleanupOrderingView();
@@ -3035,6 +3036,104 @@ class AdminPanel {
         }
     }
     
+    // Mostrar selector de categorías para ordenamiento
+    showCategorySelector() {
+        const gridContainer = document.querySelector('.products-grid');
+        const tableContainer = document.querySelector('.products-table-container');
+        
+        if (gridContainer) gridContainer.style.display = 'none';
+        if (tableContainer) tableContainer.style.display = 'none';
+        
+        // Crear container del selector
+        let selectorContainer = document.getElementById('category-selector-container');
+        if (!selectorContainer) {
+            selectorContainer = document.createElement('div');
+            selectorContainer.id = 'category-selector-container';
+            selectorContainer.className = 'category-selector-container';
+            
+            const gridParent = gridContainer ? gridContainer.parentNode : document.querySelector('.products-section');
+            if (gridContainer) {
+                gridParent.insertBefore(selectorContainer, gridContainer);
+            } else {
+                gridParent.appendChild(selectorContainer);
+            }
+        }
+        
+        const paraEllosCount = this.categoryProducts['para-ellos'].length;
+        const paraEllasCount = this.categoryProducts['para-ellas'].length;
+        
+        selectorContainer.innerHTML = `
+            <div class="category-selector-header">
+                <h3><i class="fas fa-layer-group"></i> Selecciona la Categoría a Ordenar</h3>
+                <p>Elige qué sección quieres reorganizar. Cada categoría mantiene su orden independiente.</p>
+            </div>
+            
+            <div class="category-options">
+                <div class="category-option" onclick="adminPanel.selectOrderingCategory('para-ellos')">
+                    <div class="category-icon">
+                        <i class="fas fa-male"></i>
+                    </div>
+                    <div class="category-info">
+                        <h4>Para Ellos</h4>
+                        <p>${paraEllosCount} productos</p>
+                        <span class="category-description">Fragancias masculinas</span>
+                    </div>
+                    <div class="category-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                
+                <div class="category-option" onclick="adminPanel.selectOrderingCategory('para-ellas')">
+                    <div class="category-icon">
+                        <i class="fas fa-female"></i>
+                    </div>
+                    <div class="category-info">
+                        <h4>Para Ellas</h4>
+                        <p>${paraEllasCount} productos</p>
+                        <span class="category-description">Fragancias femeninas</span>
+                    </div>
+                    <div class="category-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-selector-actions">
+                <button class="btn btn-secondary" onclick="adminPanel.exitOrderMode()">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+            </div>
+        `;
+        
+        selectorContainer.style.display = 'block';
+        console.log('✅ Selector de categorías mostrado');
+    }
+    
+    // Seleccionar categoría para ordenar
+    async selectOrderingCategory(category) {
+        console.log(`🎯 Categoría seleccionada para ordenar: ${category}`);
+        
+        this.currentOrderingCategory = category;
+        this.isOrderingMode = true;
+        
+        // Preparar arrays temporales para la categoría seleccionada
+        this.originalProductsOrder = [...this.categoryProducts[category]];
+        this.tempProductsOrder = [...this.categoryProducts[category]];
+        this.hasUnsavedChanges = false;
+        
+        // Ocultar selector y mostrar lista de ordenamiento
+        const selectorContainer = document.getElementById('category-selector-container');
+        if (selectorContainer) {
+            selectorContainer.style.display = 'none';
+        }
+        
+        // Crear vista de lista especial para ordenamiento
+        await this.createOrderingListView();
+        
+        console.log(`✅ Iniciando ordenamiento para ${category} - ${this.tempProductsOrder.length} productos`);
+    }
+    
     // Mostrar instrucciones de ordenamiento
     showOrderInstructions() {
         const instructionsHtml = `
@@ -3042,8 +3141,8 @@ class AdminPanel {
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle"></i>
                     <strong>Modo Ordenamiento Activo:</strong> 
-                    Usa las flechas ⬆️ ⬇️ para cambiar el orden de los productos. 
-                    El número indica la posición actual. Haz clic en "Guardar Orden" cuando termines.
+                    Selecciona una categoría para comenzar a reorganizar los productos. 
+                    Cada sección mantiene su orden independiente.
                 </div>
             </div>
         `;
@@ -3141,8 +3240,18 @@ class AdminPanel {
         
         orderingContainer.innerHTML = `
             <div class="ordering-header">
-                <h3><i class="fas fa-sort"></i> Ordenar Productos</h3>
+                <h3><i class="fas fa-sort"></i> Ordenar Productos - ${this.getCategoryDisplayName(this.currentOrderingCategory)}</h3>
                 <p>Usa las flechas para cambiar el orden o haz clic en el número para editar la posición directamente</p>
+                <div class="ordering-category-info">
+                    <span class="category-badge ${this.currentOrderingCategory}">
+                        <i class="fas fa-${this.currentOrderingCategory === 'para-ellos' ? 'male' : 'female'}"></i>
+                        ${this.getCategoryDisplayName(this.currentOrderingCategory)} (${this.tempProductsOrder.length} productos)
+                    </span>
+                    <button class="btn btn-sm btn-secondary" onclick="adminPanel.switchOrderingCategory()">
+                        <i class="fas fa-exchange-alt"></i>
+                        Cambiar Categoría
+                    </button>
+                </div>
             </div>
             <div class="ordering-list">
                 ${orderingHTML}
@@ -3151,6 +3260,79 @@ class AdminPanel {
         
         orderingContainer.style.display = 'block';
         console.log('✅ Vista de lista de ordenamiento creada');
+    }
+    
+    // Obtener nombre display de la categoría
+    getCategoryDisplayName(category) {
+        const categoryNames = {
+            'para-ellos': 'Para Ellos',
+            'para-ellas': 'Para Ellas'
+        };
+        return categoryNames[category] || category;
+    }
+    
+    // Cambiar categoría durante el ordenamiento
+    switchOrderingCategory() {
+        console.log('🔄 Cambiando categoría de ordenamiento...');
+        
+        // Limpiar vista actual
+        const orderingContainer = document.getElementById('ordering-list-container');
+        if (orderingContainer) {
+            orderingContainer.style.display = 'none';
+        }
+        
+        // Mostrar selector de categorías nuevamente
+        this.showCategorySelector();
+    }
+    
+    // Actualizar array principal de productos con cambios de categoría
+    updateMainProductsArray() {
+        if (!this.currentOrderingCategory || !this.tempProductsOrder) return;
+        
+        console.log(`🔄 Actualizando productos principales para categoría: ${this.currentOrderingCategory}`);
+        
+        // Encontrar y reemplazar productos de la categoría ordenada
+        this.productos = this.productos.map(product => {
+            if (product.categoria === this.currentOrderingCategory) {
+                // Encontrar el producto actualizado en tempProductsOrder
+                const updatedProduct = this.tempProductsOrder.find(p => p.id === product.id);
+                return updatedProduct || product;
+            }
+            return product;
+        });
+        
+        console.log('✅ Array principal de productos actualizado');
+    }
+    
+    // Limpiar vistas de ordenamiento
+    cleanupOrderingView() {
+        const orderingContainer = document.getElementById('ordering-list-container');
+        const selectorContainer = document.getElementById('category-selector-container');
+        
+        if (orderingContainer) {
+            orderingContainer.remove();
+        }
+        
+        if (selectorContainer) {
+            selectorContainer.remove();
+        }
+        
+        // Restaurar vista normal
+        const gridContainer = document.querySelector('.products-grid');
+        const tableContainer = document.querySelector('.products-table-container');
+        
+        if (gridContainer) gridContainer.style.display = 'grid';
+        if (tableContainer) tableContainer.style.display = 'none';
+        
+        console.log('✅ Vistas de ordenamiento limpiadas');
+    }
+    
+    // Ocultar instrucciones de ordenamiento
+    hideOrderInstructions() {
+        const instructions = document.getElementById('orderInstructions');
+        if (instructions) {
+            instructions.remove();
+        }
     }
     
     // Mover producto hacia arriba

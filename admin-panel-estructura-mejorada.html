@@ -82,7 +82,7 @@
             }
         });
     </script>
-        });
+        
     </script>
     
     <!-- CSS del panel -->
@@ -100,17 +100,61 @@
         <header class="admin-header">
             <div class="header-content">
                 <div class="header-left">
-                    <h1><i class="fas fa-crown"></i> Panel de Administración</h1>
-                    <p>Gestión completa de productos - Aromes De Dieu</p>
+                    <div class="brand-section">
+                        <div class="brand-container">
+                            <div class="brand-icon-wrapper">
+                                <div class="brand-icon">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                                <div class="crown-decoration">
+                                    <div class="sparkle sparkle-1"></div>
+                                    <div class="sparkle sparkle-2"></div>
+                                    <div class="sparkle sparkle-3"></div>
+                                </div>
+                            </div>
+                            <div class="brand-content">
+                                <div class="brand-main">
+                                    <h1>Panel de Administración</h1>
+                                    <div class="luxury-underline"></div>
+                                </div>
+                                <div class="brand-details">
+                                    <p class="brand-description">Gestión completa de productos</p>
+                                    <div class="brand-signature">
+                                        <span class="brand-name">Aromes De Dieu</span>
+                                        <div class="signature-line"></div>
+                                        <span class="brand-status">Premium Admin</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="brand-ambient-glow"></div>
+                    </div>
                 </div>
                 <div class="header-right">
-                    <div class="connection-status" id="connectionStatus">
-                        <i class="fas fa-circle"></i>
-                        <span>Conectando...</span>
+                    <div class="header-controls">
+                        <div class="connection-status" id="connectionStatus">
+                            <div class="status-indicator">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="status-info">
+                                <span class="status-text">Conectando...</span>
+                                <small class="status-detail">Base de datos</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-refresh" id="refreshData">
+                            <i class="fas fa-sync-alt"></i> 
+                            <span>Actualizar</span>
+                        </button>
+                        <div class="admin-profile">
+                            <div class="profile-avatar">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <div class="profile-info">
+                                <span class="profile-name">Administrador</span>
+                                <small class="profile-role">Super Usuario</small>
+                            </div>
+                        </div>
                     </div>
-                    <button class="btn btn-secondary" id="refreshData">
-                        <i class="fas fa-sync-alt"></i> Actualizar
-                    </button>
                 </div>
             </div>
         </header>
