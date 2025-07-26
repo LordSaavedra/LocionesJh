@@ -27,7 +27,7 @@
 .navbar-logo {
     grid-column: 2; /* Posiciona el logo en la columna central */
     background: transparent;
-    font-family: "Times New Roman", serif;
+    font-family: "Cormorant Garamond", serif;
     font-size: clamp(1.5rem, 4vw, 2.5rem);
     color: #ffffff;
     text-decoration: none;
@@ -37,6 +37,29 @@
     white-space: nowrap;
     transition: all 0.3s ease;
     padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* Imagen del logo en navbar */
+.navbar-logo-img {
+    height: 65px;
+    width: auto;
+    max-width: 94px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+    filter: brightness(1.1);
+}
+
+/* Texto del logo */
+.navbar-logo-text {
+    font-family: "Cormorant Garamond", serif;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    color: inherit;
 }
 
 /* Botón hamburguesa */
@@ -313,7 +336,7 @@
     justify-content: center;
     line-height: 1;
     min-width: 18px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Cormorant Garamond', serif;
 }
 
 .cart-count.hidden {
@@ -340,6 +363,12 @@
     .navbar-logo {
         font-size: clamp(1.2rem, 3vw, 1.8rem);
         padding: 0 1rem;
+        gap: 8px;
+    }
+    
+    .navbar-logo-img {
+        height: 53px;
+        max-width: 75px;
     }
 
     .navbar-menu {

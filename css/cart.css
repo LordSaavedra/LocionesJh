@@ -94,7 +94,7 @@
     box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Cormorant Garamond', serif;
 }
 
 .cart-slide.active {
@@ -350,7 +350,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Cormorant Garamond', serif;
 }
 
 .cart-btn-primary {

@@ -1,0 +1,347 @@
+/* ======= POPUP DE DESCUENTO PREMIUM - SLIDE BAR ======= */
+
+/* Overlay del popup */
+.discount-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease;
+}
+
+.discount-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Container principal del popup - Slide Bar */
+.discount-popup {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 420px;
+    height: 100vh;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
+    transform: translateX(100%);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.discount-overlay.active .discount-popup {
+    transform: translateX(0);
+}
+
+/* Botón de cerrar */
+.popup-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    z-index: 10001;
+    transition: all 0.3s ease;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+}
+
+.popup-close:hover {
+    color: #000;
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+}
+
+/* Contenido principal */
+.popup-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Sección superior - Hero con imagen */
+.popup-left {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    padding: 40px 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 200px;
+}
+
+.popup-left::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('../IMAGENES/LOGO AROME DE DIEU.png') center/contain no-repeat;
+    opacity: 0.1;
+    filter: blur(2px);
+}
+
+.model-image {
+    position: relative;
+    z-index: 2;
+    margin-top: 20px;
+}
+
+.popup-logo {
+    max-width: 150px;
+    max-height: 80px;
+    object-fit: contain;
+    filter: brightness(1.2) contrast(1.1);
+}
+
+/* Sección inferior - Formulario */
+.popup-right {
+    flex: 1;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: #ffffff;
+}
+
+/* Header del popup */
+.popup-header {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.popup-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 10px 0;
+    line-height: 1.1;
+    letter-spacing: 1px;
+}
+
+.popup-title .highlight {
+    color: #d4af37;
+    display: block;
+    font-size: 2.8rem;
+    margin-top: 5px;
+    font-weight: 800;
+}
+
+.popup-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: #666;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 400;
+}
+
+/* Formulario */
+.popup-form {
+    margin-bottom: 20px;
+}
+
+.form-description {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 25px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.email-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.email-input {
+    padding: 15px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Cormorant Garamond', serif;
+    background: #fafafa;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.email-input:focus {
+    border-color: #d4af37;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.submit-btn {
+    padding: 16px 30px;
+    background: linear-gradient(135deg, #d4af37, #b8860b);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(135deg, #b8860b, #d4af37);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+}
+
+/* Footer del popup */
+.popup-footer {
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+.terms {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    color: #999;
+    margin: 0;
+    line-height: 1.4;
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .discount-popup {
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .popup-left {
+        padding: 30px 25px;
+        min-height: 150px;
+    }
+    
+    .popup-logo {
+        max-width: 120px;
+        max-height: 60px;
+    }
+    
+    .popup-right {
+        padding: 30px 25px;
+    }
+    
+    .popup-title {
+        font-size: 1.8rem;
+    }
+    
+    .popup-title .highlight {
+        font-size: 2.2rem;
+    }
+    
+    .popup-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .form-description {
+        font-size: 0.85rem;
+    }
+    
+    .popup-close {
+        top: 15px;
+        right: 15px;
+        font-size: 20px;
+        width: 30px;
+        height: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .discount-popup {
+        width: 100%;
+    }
+    
+    .popup-right {
+        padding: 25px 20px;
+    }
+    
+    .popup-title {
+        font-size: 1.6rem;
+    }
+    
+    .popup-title .highlight {
+        font-size: 2rem;
+    }
+    
+    .email-input, .submit-btn {
+        padding: 14px 18px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Animaciones */
+@keyframes popupFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes popupFadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.8) translateY(50px);
+    }
+}
+
+/* Estados de éxito */
+.popup-success {
+    text-align: center;
+    padding: 20px;
+}
+
+.success-icon {
+    font-size: 3rem;
+    color: #4CAF50;
+    margin-bottom: 15px;
+}
+
+.success-message {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.success-code {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #d4af37;
+    margin-bottom: 15px;
+}

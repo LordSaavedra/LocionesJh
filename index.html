@@ -1,15 +1,65 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
+<!<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aromes De Dieu</title>
+    <title>AROMES DE DIEU</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     <!-- Asegurarnos de que los estilos se cargan en el orden correcto -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/cart.css">
+    <link rel="stylesheet" href="css/discount-popup.css">
+</head>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArÔmes De Dieu</title>
+    <!-- Asegurarnos de que los estilos se cargan en el orden correcto -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/cart.css">
+    <link rel="stylesheet" href="css/discount-popup.css">
 </head>
 <body>
+    <!-- Popup de Descuento Premium - Slide Bar -->
+    <div id="discount-popup" class="discount-overlay">
+        <div class="discount-popup">
+            <button class="popup-close" aria-label="Cerrar popup">&times;</button>
+            
+            <div class="popup-content">
+                <!-- Sección Superior - Hero -->
+                <div class="popup-left">
+                    <div class="model-image">
+                        <img src="IMAGENES/LOGO AROME DE DIEU.png" alt="AROME DE DIEU" class="popup-logo">
+                    </div>
+                </div>
+                
+                <!-- Sección Inferior - Formulario -->
+                <div class="popup-right">
+                    <div class="popup-header">
+                        <h2 class="popup-title">15% OFF PERFUMES<br><span class="highlight">DESCUENTO</span></h2>
+                        <p class="popup-subtitle">En tu primera compra</p>
+                    </div>
+                    
+                    <div class="popup-form">
+                        <p class="form-description">Suscríbete y obtén un descuento exclusivo en fragancias de lujo</p>
+                        <form id="discount-form" class="email-form">
+                            <input type="email" placeholder="Ingresa tu email" required class="email-input">
+                            <button type="submit" class="submit-btn">OBTENER DESCUENTO</button>
+                        </form>
+                    </div>
+                    
+                    <div class="popup-footer">
+                        <p class="terms">*Válido para nuevos clientes. No acumulable con otras ofertas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Contenedor para la navbar -->
     <div id="navbar-container"></div>
       <!-- Hero Section con Videos -->
@@ -19,26 +69,176 @@
                 <source src="VIDEOS/Video1_index.mp4" type="video/mp4">
             </video>
             <div class="video-content">
-                <h2>Aromes De Dieu</h2>
+                <h2>ARÔMES DE DIEU</h2>
                 <p>L'art du parfum intemporel</p>
+                <a href="html/productos.html" class="shop-now-btn">Shop Now</a>
             </div>
         </div>
         
-        <div class="video-grid">
-            <div class="video-item">
-                <video autoplay loop muted playsinline>
-                    <source src="VIDEOS/Video2_index.mp4" type="video/mp4">
-                </video>
-                <div class="video-overlay">
-                    <h3>Collection Exclusive</h3>
+        <div class="featured-collection">
+            <div class="collection-container">
+                <!-- Imagen de fondo -->
+                <div class="collection-image-bg">
+                    <img src="IMAGENES/PARA_ELLAS.jpg" alt="Colección Exclusiva" class="collection-bg-img">
+                </div>
+                
+                <!-- Contenido de texto centrado -->
+                <div class="collection-text-content">
+                    <div class="collection-badge">EDICIÓN LIMITADA</div>
+                    <h2 class="collection-main-title">BOMBSHELL</h2>
+                    <h3 class="collection-sub-title">ESCAPE</h3>
+                    <p class="collection-description">Sumérgete en una vibrante mezcla de jugosa guayaba, palmeras exuberantes y cálidos rayos de sol.</p>
+                    <button class="collection-cta-btn" onclick="window.location.href='html/productos.html'">Comprar Ahora</button>
                 </div>
             </div>
-            <div class="video-item">
-                <video autoplay loop muted playsinline>
-                    <source src="VIDEOS/Video3_Index.mp4" type="video/mp4">
-                </video>
-                <div class="video-overlay">
-                    <h3>Essences Précieuses</h3>
+        </div>
+    </section>
+
+    <!-- Sección Discover Collection -->
+    <section class="discover-collection">
+        <div class="discover-container">
+            <h2 class="discover-title">DISCOVER AROME DE DIEU COLLECTION</h2>
+            
+            <div class="category-tabs">
+                <button class="tab-btn active" data-category="men">MEN</button>
+                <button class="tab-btn" data-category="women">WOMEN</button>
+            </div>
+            
+            <div class="perfumes-grid">
+                <!-- Perfumes para Hombres -->
+                <div class="perfume-card" data-category="men">
+                    <div class="perfume-image">
+                        <img src="IMAGENES/placeholder-hombres.svg" alt="Perfume Masculino 1" class="perfume-img">
+                        <div class="perfume-glow men-glow"></div>
+                    </div>
+                    <h3 class="perfume-name">AROME NOIR</h3>
+                    <p class="perfume-type">Eau de Parfum</p>
+                </div>
+                
+                <div class="perfume-card" data-category="men">
+                    <div class="perfume-image">
+                        <img src="IMAGENES/placeholder-hombres.svg" alt="Perfume Masculino 2" class="perfume-img">
+                        <div class="perfume-glow men-glow"></div>
+                    </div>
+                    <h3 class="perfume-name">AROME BLUE</h3>
+                    <p class="perfume-type">Eau de Toilette</p>
+                </div>
+                
+                <div class="perfume-card" data-category="men">
+                    <div class="perfume-image">
+                        <img src="IMAGENES/placeholder-hombres.svg" alt="Perfume Masculino 3" class="perfume-img">
+                        <div class="perfume-glow men-glow"></div>
+                    </div>
+                    <h3 class="perfume-name">AROME INTENSE</h3>
+                    <p class="perfume-type">Eau de Parfum</p>
+                </div>
+                
+                <div class="perfume-card" data-category="men">
+                    <div class="perfume-image">
+                        <img src="IMAGENES/placeholder-hombres.svg" alt="Perfume Masculino 4" class="perfume-img">
+                        <div class="perfume-glow men-glow"></div>
+                    </div>
+                    <h3 class="perfume-name">AROME SPORT</h3>
+                    <p class="perfume-type">Eau de Toilette</p>
+                </div>
+                
+                <!-- Perfumes para Mujeres -->
+                <div class="perfume-card hidden" data-category="women">
+                    <div class="perfume-image">
+                        <img src="IMAGENES/placeholder-simple.svg" alt="Perfume Femenino 1" class="perfume-img">
+                        <div class="perfume-glow women-glow"></div>
+                    </div>
+                    <h3 class="perfume-name">AROME ROSE</h3>
+                    <p class="perfume-type">Eau de Parfum</p>
+                </div>
+                
+                <div class="perfume-card hidden" data-category="women">
+                    <div class="perfume-image">
+                        <img src="IMAGENES/placeholder-simple.svg" alt="Perfume Femenino 2" class="perfume-img">
+                        <div class="perfume-glow women-glow"></div>
+                    </div>
+                    <h3 class="perfume-name">AROME DIVINE</h3>
+                    <p class="perfume-type">Eau de Parfum</p>
+                </div>
+                
+                <div class="perfume-card hidden" data-category="women">
+                    <div class="perfume-image">
+                        <img src="IMAGENES/placeholder-simple.svg" alt="Perfume Femenino 3" class="perfume-img">
+                        <div class="perfume-glow women-glow"></div>
+                    </div>
+                    <h3 class="perfume-name">AROME ELEGANCE</h3>
+                    <p class="perfume-type">Eau de Toilette</p>
+                </div>
+                
+                <div class="perfume-card hidden" data-category="women">
+                    <div class="perfume-image">
+                        <img src="IMAGENES/placeholder-simple.svg" alt="Perfume Femenino 4" class="perfume-img">
+                        <div class="perfume-glow women-glow"></div>
+                    </div>
+                    <h3 class="perfume-name">AROME PASSION</h3>
+                    <p class="perfume-type">Eau de Parfum</p>
+                </div>
+            </div>
+            
+            <div class="discover-footer">
+                <button class="discover-btn" onclick="window.location.href='html/productos.html'">Ver Toda la Colección</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Lo Que Hacemos -->
+    <section class="what-we-do">
+        <div class="container">
+            <h2 class="what-we-do-title">LO QUE HACEMOS</h2>
+            <div class="features-grid">
+                <!-- Contraentrega -->
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" stroke="#d4af37" stroke-width="2" fill="#d4af37" opacity="0.7"/>
+                            <path d="M12 6V14M8 10H16" stroke="#EFE8DC" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">CONTRAENTREGA</h3>
+                    <p class="feature-description">Paga cuando recibas tu pedido. Seguridad y confianza garantizada en cada compra.</p>
+                </div>
+
+                <!-- Calidad Premium -->
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L15.09 8.26L22 9L15.09 9.74L12 16L8.91 9.74L2 9L8.91 8.26L12 2Z" stroke="#d4af37" stroke-width="2" fill="#d4af37" opacity="0.8"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">CALIDAD PREMIUM</h3>
+                    <p class="feature-description">Fragancias de alta calidad con concentraciones superiores y duración prolongada.</p>
+                </div>
+
+                <!-- Envío Rápido -->
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 3H8C6.89 3 6 3.89 6 5V19C6 20.11 6.89 21 8 21H16C17.11 21 18 20.11 18 19V5C18 3.89 17.11 3 16 3Z" stroke="#d4af37" stroke-width="2"/>
+                            <path d="M10 7H14M10 11H14M10 15H11" stroke="#d4af37" stroke-width="1.5"/>
+                            <circle cx="12" cy="17" r="1" fill="#d4af37"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">ENVÍO RÁPIDO</h3>
+                    <p class="feature-description">Entrega en 24-48 horas en ciudades principales. Tu fragancia llegará rápido y segura.</p>
+                </div>
+
+                <!-- Atención Personalizada -->
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="#d4af37" stroke-width="2"/>
+                            <path d="M8 14S9.5 16 12 16S16 14 16 14" stroke="#d4af37" stroke-width="1.5"/>
+                            <circle cx="9" cy="9" r="1" fill="#d4af37"/>
+                            <circle cx="15" cy="9" r="1" fill="#d4af37"/>
+                        </svg>
+                    </div>
+                    <h3 class="feature-title">ATENCIÓN PERSONALIZADA</h3>
+                    <p class="feature-description">Asesoría experta para encontrar la fragancia perfecta según tu personalidad y estilo.</p>
                 </div>
             </div>
         </div>
@@ -48,6 +248,50 @@
     <script src="js/url-encryption.js"></script>
     <script src="js/url-encryption-adapter.js"></script>
     <script src="js/cart.js"></script>
+    <script src="js/discount-popup.js"></script>
+    <script>
+        // Funcionalidad para las pestañas de categorías
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const perfumeCards = document.querySelectorAll('.perfume-card');
+            
+            function showCategory(category) {
+                // Ocultar todas las tarjetas
+                perfumeCards.forEach(card => {
+                    if (card.dataset.category === category) {
+                        card.classList.remove('hidden');
+                        // Animación de entrada
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            card.style.transition = 'all 0.4s ease';
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, 100);
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+                
+                // Actualizar botones activos
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.querySelector(`[data-category="${category}"]`).classList.add('active');
+            }
+            
+            // Event listeners para las pestañas
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    showCategory(category);
+                });
+            });
+            
+            // Mostrar categoría inicial (men)
+            showCategory('men');
+        });
+    </script>
     <script src="js/cart-error-fixes.js"></script>
     <script src="js/limpiar-productos-prueba.js"></script>
     <script src="js/navbar.js"></script>
@@ -147,5 +391,12 @@
                 });
         });
     </script>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Footer Scripts -->
+    <link rel="stylesheet" href="css/footer.css">
+    <script src="js/footer.js"></script>
 </body>
 </html>

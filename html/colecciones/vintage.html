@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colección Vintage - Aromes De Dieu</title>
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/navbar.css">
+    <link rel="stylesheet" href="../../css/cart.css">
+    <link rel="stylesheet" href="../../css/slide-cart.css">
+    <link rel="stylesheet" href="../../css/colecciones/vintage-new.css">
+</head>
+<body>
+    <!-- Navbar container -->
+    <div id="navbar-container"></div>
+    
+    <!-- Carrito deslizante -->
+    <div id="cart-slide" class="cart-slide">
+        <div class="cart-header">
+            <h3 class="cart-title">Mi Carrito</h3>
+            <button id="cart-close" class="cart-close">&times;</button>
+        </div>
+        <div class="cart-content">
+            <div class="cart-items" id="cart-items">
+                <!-- Los productos se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total: $<span id="cart-total">0</span></span>
+            </div>
+            <button class="checkout-btn">Proceder al Pago</button>
+        </div>
+    </div>
+    
+    <!-- Overlay del carrito -->
+    <div id="cart-overlay" class="cart-overlay"></div>
+
+    <!-- Contenido principal -->
+    <div class="vintage-container">
+        <!-- Título principal -->
+        <h1 class="main-title">Los Más Vendidos</h1>
+        
+        <!-- Filtros de categoría -->
+        <nav class="category-filter">
+            <a href="#" class="filter-link active" data-category="all">Ver Todo</a>
+            <a href="#" class="filter-link" data-category="femeninos">Perfumes Femeninos</a>
+            <a href="#" class="filter-link" data-category="masculinos">Perfumes Masculinos</a>
+            <a href="#" class="filter-link" data-category="maquillaje">Maquillaje</a>
+            <a href="#" class="filter-link" data-category="tratamiento">Tratamiento</a>
+        </nav>
+        
+        <!-- Subtítulo -->
+        <h2 class="section-subtitle">Perfumes más vendidos para mujer</h2>
+
+        <!-- Grid de productos -->
+        <div class="products-grid">
+            <!-- Gris Dior -->
+            <div class="product-card" data-category="femeninos">
+                <div class="product-image">
+                    <img src="https://www.dior.com/couture/ecommerce/media/catalog/product/cache/1/image/1000x1000/17f82f742ffe127f42dca9de82fb58b1/Y/0/Y0996226_C099600226_E01_GHC.jpg" alt="Gris Dior" onerror="this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&h=400&fit=crop&crop=center'">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Gris Dior</h3>
+                    <p class="product-description">Eau de parfum unisex - notas chipre</p>
+                    <div class="product-intensity">
+                        <span class="intensity-label">Intensidad</span>
+                        <div class="intensity-dots">
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot"></div>
+                            <div class="intensity-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Miss Dior Parfum -->
+            <div class="product-card" data-category="femeninos">
+                <div class="product-image">
+                    <img src="https://www.dior.com/couture/ecommerce/media/catalog/product/cache/1/image/1000x1000/17f82f742ffe127f42dca9de82fb58b1/Y/0/Y0996420_C099600420_E01_GHC.jpg" alt="Miss Dior Parfum" onerror="this.src='https://images.unsplash.com/photo-1588405748880-12d1d2a59d75?w=400&h=400&fit=crop&crop=center'">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Miss Dior Parfum</h3>
+                    <p class="product-description">Perfume - notas florales, afrutadas y amaderadas intensas</p>
+                    <div class="product-intensity">
+                        <span class="intensity-label">Intensidad</span>
+                        <div class="intensity-dots">
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- J'adore L'Or -->
+            <div class="product-card" data-category="femeninos">
+                <div class="product-image">
+                    <img src="https://www.dior.com/couture/ecommerce/media/catalog/product/cache/1/image/1000x1000/17f82f742ffe127f42dca9de82fb58b1/Y/0/Y0996335_C099600335_E01_GHC.jpg" alt="J'adore L'Or" onerror="this.src='https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=400&fit=crop&crop=center'">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">J'adore L'Or</h3>
+                    <p class="product-description">Perfume para mujer - notas florales, radiantes e intensas</p>
+                    <div class="product-intensity">
+                        <span class="intensity-label">Intensidad</span>
+                        <div class="intensity-dots">
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sauvage - Perfume Masculino -->
+            <div class="product-card" data-category="masculinos" style="display: none;">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?w=400&h=400&fit=crop&crop=center" alt="Sauvage" onerror="this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&h=400&fit=crop&crop=center'">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Sauvage</h3>
+                    <p class="product-description">Eau de parfum masculino - notas frescas y especiadas</p>
+                    <div class="product-intensity">
+                        <span class="intensity-label">Intensidad</span>
+                        <div class="intensity-dots">
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Homme Sport - Perfume Masculino -->
+            <div class="product-card" data-category="masculinos" style="display: none;">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1521334884684-d80222895322?w=400&h=400&fit=crop&crop=center" alt="Homme Sport" onerror="this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&h=400&fit=crop&crop=center'">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Homme Sport</h3>
+                    <p class="product-description">Eau de toilette masculino - notas cítricas y aromáticas</p>
+                    <div class="product-intensity">
+                        <span class="intensity-label">Intensidad</span>
+                        <div class="intensity-dots">
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot"></div>
+                            <div class="intensity-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rouge Dior - Maquillaje -->
+            <div class="product-card" data-category="maquillaje" style="display: none;">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&h=400&fit=crop&crop=center" alt="Rouge Dior" onerror="this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&h=400&fit=crop&crop=center'">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Rouge Dior</h3>
+                    <p class="product-description">Labial de lujo - color intenso y duradero</p>
+                    <div class="product-intensity">
+                        <span class="intensity-label">Intensidad</span>
+                        <div class="intensity-dots">
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de historia del producto -->
+    <div id="product-modal" class="product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img id="modal-product-image" class="modal-product-image" src="" alt="">
+                <button class="modal-close" onclick="closeProductModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h2 id="modal-title" class="modal-title"></h2>
+                <p id="modal-subtitle" class="modal-subtitle"></p>
+                
+                <div class="story-section">
+                    <h3 class="story-title">La Historia</h3>
+                    <p id="modal-story" class="story-text"></p>
+                </div>
+
+                <div class="story-section">
+                    <h3 class="story-title">Notas Olfativas</h3>
+                    <div id="modal-notes" class="notes-grid"></div>
+                </div>
+
+                <div class="story-section">
+                    <h3 class="story-title">La Experiencia</h3>
+                    <p id="modal-experience" class="story-text"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../js/colecciones/vintage-clean.js"></script>
+    <script src="../../js/cart.js"></script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('../../html/navbar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('navbar-container').innerHTML = data;
+                    
+                    // Ajustar rutas para navegación desde colecciones/vintage.html
+                    const logo = document.querySelector('.navbar-logo');
+                    if (logo) {
+                        logo.setAttribute('href', '../../index.html');
+                    }
+                    
+                    // Ajustar enlaces del menú
+                    const navLinks = document.querySelectorAll('.navbar-menu a[href]');
+                    navLinks.forEach(link => {
+                        const currentHref = link.getAttribute('href');
+                        
+                        if (link.hasAttribute('data-vintage-link')) {
+                            link.setAttribute('href', 'vintage.html');
+                            return;
+                        }
+                        
+                        if (!currentHref.startsWith('http') && 
+                            !currentHref.startsWith('../../') && 
+                            !currentHref.startsWith('#') &&
+                            currentHref.endsWith('.html')) {
+                            
+                            if (currentHref.startsWith('colecciones/')) {
+                                const collectionPage = currentHref.replace('colecciones/', '');
+                                link.setAttribute('href', collectionPage);
+                            } else {
+                                const newHref = '../../html/' + currentHref;
+                                link.setAttribute('href', newHref);
+                            }
+                        }
+                    });
+                    
+                    // Inicializar navbar
+                    setTimeout(() => {
+                        if (typeof initNavbar === 'function') {
+                            initNavbar();
+                        }
+                    }, 150);
+                    
+                    // Reconfigurar carrito
+                    setTimeout(() => {
+                        if (window.shoppingCart && typeof window.shoppingCart.reconfigureEventListeners === 'function') {
+                            window.shoppingCart.reconfigureEventListeners();
+                        }
+                    }, 800);
+                })
+                .catch(error => console.error('Error cargando navbar:', error));
+
+            // Filtros de categorías
+            const filterLinks = document.querySelectorAll('.filter-link');
+            const productCards = document.querySelectorAll('.product-card');
+            const sectionSubtitle = document.querySelector('.section-subtitle');
+
+            const subtitleMap = {
+                'all': 'Los Más Vendidos',
+                'femeninos': 'Perfumes más vendidos para mujer',
+                'masculinos': 'Perfumes más vendidos para hombre',
+                'maquillaje': 'Maquillaje más vendido',
+                'tratamiento': 'Tratamientos más vendidos'
+            };
+
+            // Función para mostrar productos por categoría
+            function showProductsByCategory(category) {
+                console.log('Filtrando por categoría:', category);
+                
+                productCards.forEach(card => {
+                    const cardCategory = card.getAttribute('data-category');
+                    
+                    if (category === 'all') {
+                        // Ver todo: mostrar solo productos femeninos por defecto
+                        if (cardCategory === 'femeninos') {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    } else if (cardCategory === category) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Actualizar subtítulo
+                if (sectionSubtitle && subtitleMap[category]) {
+                    sectionSubtitle.textContent = subtitleMap[category];
+                }
+                
+                // Ajustar grid según la cantidad de productos visibles
+                adjustGridLayout();
+                
+                // Actualizar contador de productos
+                setTimeout(updateProductCounter, 100);
+            }
+
+            // Función para ajustar el layout del grid
+            function adjustGridLayout() {
+                const visibleCards = Array.from(productCards).filter(card => 
+                    card.style.display !== 'none'
+                );
+                
+                const productsGrid = document.querySelector('.products-grid');
+                
+                if (visibleCards.length <= 3) {
+                    productsGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+                } else if (visibleCards.length <= 6) {
+                    productsGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+                } else {
+                    productsGrid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(300px, 1fr))';
+                }
+            }
+
+            filterLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remover clase active de todos los links
+                    filterLinks.forEach(l => l.classList.remove('active'));
+                    // Agregar clase active al link clickeado
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    // Mostrar productos por categoría
+                    showProductsByCategory(category);
+                    
+                    console.log('Filtro aplicado:', category);
+                });
+            });
+
+            // Inicializar con "Ver Todo" (solo femeninos)
+            setTimeout(() => {
+                showProductsByCategory('femeninos');
+                
+                // Asegurar que "Perfumes Femeninos" esté activo por defecto
+                filterLinks.forEach(link => {
+                    if (link.getAttribute('data-category') === 'femeninos') {
+                        filterLinks.forEach(l => l.classList.remove('active'));
+                        link.classList.add('active');
+                    }
+                });
+            }, 100);
+        });
+
+        // Funciones adicionales para interactividad
+        
+        // Función para agregar click en productos (abrir modal o detalle)
+        function addProductClickHandlers() {
+            const productCards = document.querySelectorAll('.product-card');
+            
+            productCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Evitar que se active en productos ocultos
+                    if (this.style.display === 'none') return;
+                    
+                    const productName = this.querySelector('.product-name').textContent;
+                    const productDescription = this.querySelector('.product-description').textContent;
+                    
+                    console.log('Producto seleccionado:', productName);
+                    
+                    // Efecto visual de selección
+                    this.style.transform = 'scale(1.02)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-5px)';
+                    }, 200);
+                    
+                    // Aquí puedes agregar lógica para mostrar detalles del producto
+                    showProductDetails(productName, productDescription);
+                });
+            });
+        }
+
+        // Función para mostrar detalles del producto con historia
+        function showProductDetails(name, description) {
+            const productStories = {
+                'Gris Dior': {
+                    image: 'https://www.dior.com/couture/ecommerce/media/catalog/product/cache/1/image/1000x1000/17f82f742ffe127f42dca9de82fb58b1/Y/0/Y0996226_C099600226_E01_GHC.jpg',
+                    subtitle: 'Eau de Parfum Unisex - La Elegancia Atemporal',
+                    story: 'Gris Dior nace de la visión de François Demachy, Perfumista-Creador de Dior, quien quiso rendir homenaje al color fetiche de Christian Dior. Este gris Trianon, elegante y sofisticado, se convierte en una fragancia que trasciende géneros y épocas. Inspirado en los salones parisinos donde el fundador de la Maison creaba sus primeros diseños, Gris Dior evoca la nobleza del iris y la modernidad del chypre. Es una fragancia que cuenta la historia de la alta costura francesa, donde cada nota es como una pincelada de elegancia sobre la piel.',
+                    notes: [
+                        { title: 'Nota de Salida', desc: 'Bergamota de Calabria' },
+                        { title: 'Nota de Corazón', desc: 'Iris de Florencia' },
+                        { title: 'Nota de Fondo', desc: 'Sándalo y Musgo' }
+                    ],
+                    experience: 'Al pulverizar Gris Dior, se despliega una sinfonía olfativa que comienza con la frescura vibrante de la bergamota, como los primeros rayos de sol en un jardín parisino. Gradualmente, el corazón revela la nobleza del iris, esa flor aristocrática que Christian Dior adoraba. Finalmente, las notas de fondo abrazan la piel con la calidez del sándalo y la profundidad del musgo, creando una estela inolvidable que habla de elegancia y distinción.'
+                },
+                'Miss Dior Parfum': {
+                    image: 'https://www.dior.com/couture/ecommerce/media/catalog/product/cache/1/image/1000x1000/17f82f742ffe127f42dca9de82fb58b1/Y/0/Y0996420_C099600420_E01_GHC.jpg',
+                    subtitle: 'Parfum Femenino - El Romance Eterno',
+                    story: 'Miss Dior Parfum es mucho más que una fragancia; es una declaración de amor eterna. Creada como homenaje a la primera fragancia de la Maison en 1947, esta versión intensifica la pasión y la feminidad. Cada gota cuenta la historia de Catherine Dior, hermana del couturier y musa de la primera Miss Dior. En los jardins de Granville, donde Christian Dior pasó su infancia, florecían las rosas que inspirarían esta creación. La fragancia captura la esencia de una mujer enamorada, valiente y libre, que baila al ritmo de su propio corazón.',
+                    notes: [
+                        { title: 'Nota de Salida', desc: 'Rosa de Grasse' },
+                        { title: 'Nota de Corazón', desc: 'Peonía y Jazmín' },
+                        { title: 'Nota de Fondo', desc: 'Sándalo Rosado' }
+                    ],
+                    experience: 'Miss Dior Parfum es como un beso apasionado al amanecer. La rosa de Grasse se despliega inmediatamente, intensa y voluptuosa, como el primer encuentro de dos almas destinadas. En el corazón, la peonía y el jazmín danzan juntos, creando una melodía floral que evoca jardines secretos y promesas susurradas. La base de sándalo rosado envuelve todo en una caricia cálida y sensual, dejando una estela que habla de amor verdadero y pasión infinita.'
+                },
+                "J'adore L'Or": {
+                    image: 'https://www.dior.com/couture/ecommerce/media/catalog/product/cache/1/image/1000x1000/17f82f742ffe127f42dca9de82fb58b1/Y/0/Y0996335_C099600335_E01_GHC.jpg',
+                    subtitle: "Parfum Absolu - La Divinidad Dorada",
+                    story: "J'adore L'Or es la quintesencia del lujo y la feminidad. Esta creación excepcional nació del deseo de crear la fragancia floral más preciosa del mundo. Como una joya líquida, cada nota ha sido seleccionada como un diamante se elige para una corona. La rosa de Damasco, cultivada en los campos más exclusivos, se une al jazmín sambac de India y al ylang-ylang de Comores. François Demachy quiso crear no solo una fragancia, sino una experiencia sensorial que elevara el espíritu. J'adore L'Or es el perfume de las diosas modernas, de las mujeres que brillan con luz propia.",
+                    notes: [
+                        { title: 'Nota de Salida', desc: 'Rosa Damasco Dorada' },
+                        { title: 'Nota de Corazón', desc: 'Jazmín Sambac Absoluto' },
+                        { title: 'Nota de Fondo', desc: 'Ylang-Ylang de Comores' }
+                    ],
+                    experience: "Llevar J'adore L'Or es como vestirse de luz dorada. Desde el primer momento, la rosa damascena despliega su opulencia, rica como el oro líquido. El jazmín sambac añade una dimensión hipnótica, casi narcótica, que transporta a jardines orientales bajo la luna llena. El ylang-ylang de las islas Comores completa esta sinfonía con su voluptuosidad tropical. Es una fragancia que no se lleva, se vive; que no se aplica, se celebra. Cada pulverización es un ritual de belleza que transforma a quien la porta en una diosa terrestre."
+                }
+            };
+
+            const productData = productStories[name];
+            if (!productData) return;
+
+            // Rellenar el modal con la información del producto
+            document.getElementById('modal-title').textContent = name;
+            document.getElementById('modal-subtitle').textContent = productData.subtitle;
+            document.getElementById('modal-product-image').src = productData.image;
+            document.getElementById('modal-story').textContent = productData.story;
+            document.getElementById('modal-experience').textContent = productData.experience;
+
+            // Crear las notas olfativas
+            const notesContainer = document.getElementById('modal-notes');
+            notesContainer.innerHTML = '';
+            productData.notes.forEach(note => {
+                const noteCard = document.createElement('div');
+                noteCard.className = 'note-card';
+                noteCard.innerHTML = `
+                    <div class="note-title">${note.title}</div>
+                    <div class="note-desc">${note.desc}</div>
+                `;
+                notesContainer.appendChild(noteCard);
+            });
+
+            // Mostrar el modal
+            const modal = document.getElementById('product-modal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Función para cerrar el modal
+        function closeProductModal() {
+            const modal = document.getElementById('product-modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Cerrar modal al hacer click fuera del contenido
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('product-modal');
+            if (e.target === modal) {
+                closeProductModal();
+            }
+        });
+
+        // Cerrar modal con tecla Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeProductModal();
+            }
+        });
+
+        // Función para animaciones suaves en filtros
+        function addFilterAnimations() {
+            const filterLinks = document.querySelectorAll('.filter-link');
+            
+            filterLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.color = '#2c2c2c';
+                        this.style.transform = 'translateY(-1px)';
+                    }
+                });
+                
+                link.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.color = '#8a8a8a';
+                        this.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+        }
+
+        // Función para contador de productos visibles
+        function updateProductCounter() {
+            const visibleProducts = Array.from(document.querySelectorAll('.product-card'))
+                .filter(card => card.style.display !== 'none').length;
+            
+            console.log(`Productos visibles: ${visibleProducts}`);
+            
+            // Opcional: mostrar contador en la interfaz
+            let counter = document.querySelector('.product-counter');
+            if (!counter) {
+                counter = document.createElement('div');
+                counter.className = 'product-counter';
+                counter.style.cssText = `
+                    text-align: center;
+                    color: #8a8a8a;
+                    font-size: 14px;
+                    margin-top: 40px;
+                    font-style: italic;
+                `;
+                document.querySelector('.products-grid').parentElement.appendChild(counter);
+            }
+            
+            counter.textContent = `${visibleProducts} producto${visibleProducts !== 1 ? 's' : ''} disponible${visibleProducts !== 1 ? 's' : ''}`;
+        }
+
+        // Inicializar todas las funciones adicionales
+        setTimeout(() => {
+            addProductClickHandlers();
+            addFilterAnimations();
+            updateProductCounter();
+        }, 200);
+
+        // Función para agregar al carrito (solo para productos que tengan botón)
+        function addToCart(id, name, price) {
+            if (window.shoppingCart) {
+                // Mapeo de imágenes
+                const imageMap = {
+                    'gris-dior': 'https://www.dior.com/couture/ecommerce/media/catalog/product/cache/1/image/1000x1000/17f82f742ffe127f42dca9de82fb58b1/Y/0/Y0996226_C099600226_E01_GHC.jpg',
+                    'miss-dior': 'https://www.dior.com/couture/ecommerce/media/catalog/product/cache/1/image/1000x1000/17f82f742ffe127f42dca9de82fb58b1/Y/0/Y0996420_C099600420_E01_GHC.jpg',
+                    'jadore-lor': 'https://www.dior.com/couture/ecommerce/media/catalog/product/cache/1/image/1000x1000/17f82f742ffe127f42dca9de82fb58b1/Y/0/Y0996335_C099600335_E01_GHC.jpg'
+                };
+                
+                const product = {
+                    id: id,
+                    name: name,
+                    price: price,
+                    image: imageMap[id] || `../../IMAGENES/${id}.jpg`,
+                    quantity: 1
+                };
+                
+                window.shoppingCart.addProduct(product);
+                
+                // Mostrar feedback visual
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '¡Agregado!';
+                button.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                }, 2000);
+            } else {
+                console.warn('Sistema de carrito no disponible');
+            }
+        }
+    </script>
+    <script src="../../js/cart.js"></script>
+    <script src="../../js/cart-error-fixes.js"></script>
+    <script src="../../js/limpiar-productos-prueba.js"></script>
+    <script src="../../js/navbar.js"></script>
+</body>
+</html>
