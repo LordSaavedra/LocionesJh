@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colección Vintage - Aromes De Dieu</title>
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/navbar.css">
+    <link rel="stylesheet" href="../../css/cart.css">
+    <link rel="stylesheet" href="../../css/slide-cart.css">
+    <link rel="stylesheet" href="../../css/colecciones/vintage-new.css">
+</head>
+<body>
+    <!-- Navbar container -->
+    <div id="navbar-container"></div>
+    
+    <!-- Carrito deslizante -->
+    <div id="cart-slide" class="cart-slide">
+        <div class="cart-header">
+            <h3 class="cart-title">Mi Carrito</h3>
+            <button class="cart-close" id="cart-close">&times;</button>
+        </div>
+        <div class="cart-content">
+            <div id="cart-items" class="cart-items">
+                <!-- Los productos se cargarán aquí -->
+            </div>
+            <div class="cart-summary">
+                <div class="cart-total">
+                    <span>Total: $<span id="cart-total">0.00</span></span>
+                </div>
+                <button class="checkout-btn">Proceder al Pago</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="vintage-container">
+        <!-- Título principal -->
+        <h1 class="main-title">Los Más Vendidos</h1>
+        
+        <!-- Filtros de categoría -->
+        <nav class="category-filter">
+            <a href="#" class="filter-link" data-category="all">Ver Todo</a>
+            <a href="#" class="filter-link active" data-category="femeninos">Perfumes Femeninos</a>
+            <a href="#" class="filter-link" data-category="masculinos">Perfumes Masculinos</a>
+            <a href="#" class="filter-link" data-category="maquillaje">Maquillaje</a>
+            <a href="#" class="filter-link" data-category="tratamiento">Tratamiento</a>
+        </nav>
+        
+        <!-- Subtítulo -->
+        <h2 class="section-subtitle">Perfumes Femeninos</h2>
+
+        <!-- Grid de productos -->
+        <div class="products-grid">
+            <!-- Gris Dior -->
+            <div class="product-card" data-category="femeninos" data-product-id="gris-dior">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&h=400&fit=crop&crop=center" alt="Gris Dior" onerror="this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&h=400&fit=crop&crop=center'">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Gris Dior</h3>
+                    <p class="product-description">Eau de parfum unisex - notas chipre</p>
+                    <div class="product-intensity">
+                        <span class="intensity-label">Intensidad</span>
+                        <div class="intensity-dots">
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot"></div>
+                            <div class="intensity-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Miss Dior Parfum -->
+            <div class="product-card" data-category="femeninos" data-product-id="miss-dior">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1588405748880-12d1d2a59d75?w=400&h=400&fit=crop&crop=center" alt="Miss Dior Parfum" onerror="this.src='https://images.unsplash.com/photo-1588405748880-12d1d2a59d75?w=400&h=400&fit=crop&crop=center'">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Miss Dior Parfum</h3>
+                    <p class="product-description">Perfume - notas florales, afrutadas y amaderadas intensas</p>
+                    <div class="product-intensity">
+                        <span class="intensity-label">Intensidad</span>
+                        <div class="intensity-dots">
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- J'adore L'Or -->
+            <div class="product-card" data-category="femeninos" data-product-id="jadore">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=400&fit=crop&crop=center" alt="J'adore L'Or" onerror="this.src='https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=400&fit=crop&crop=center'">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">J'adore L'Or</h3>
+                    <p class="product-description">Perfume para mujer - notas florales, radiantes e intensas</p>
+                    <div class="product-intensity">
+                        <span class="intensity-label">Intensidad</span>
+                        <div class="intensity-dots">
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sauvage - Perfume Masculino -->
+            <div class="product-card" data-category="masculinos" data-product-id="sauvage" style="display: none; opacity: 0; transform: translateY(20px);">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?w=400&h=400&fit=crop&crop=center" alt="Sauvage" onerror="this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&h=400&fit=crop&crop=center'">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Sauvage</h3>
+                    <p class="product-description">Eau de parfum masculino - notas frescas y especiadas</p>
+                    <div class="product-intensity">
+                        <span class="intensity-label">Intensidad</span>
+                        <div class="intensity-dots">
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Homme Sport - Perfume Masculino -->
+            <div class="product-card" data-category="masculinos" data-product-id="homme-sport" style="display: none; opacity: 0; transform: translateY(20px);">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1521334884684-d80222895322?w=400&h=400&fit=crop&crop=center" alt="Homme Sport" onerror="this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&h=400&fit=crop&crop=center'">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Homme Sport</h3>
+                    <p class="product-description">Eau de toilette masculino - notas cítricas y aromáticas</p>
+                    <div class="product-intensity">
+                        <span class="intensity-label">Intensidad</span>
+                        <div class="intensity-dots">
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot"></div>
+                            <div class="intensity-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rouge Dior - Maquillaje -->
+            <div class="product-card" data-category="maquillaje" data-product-id="rouge-dior" style="display: none; opacity: 0; transform: translateY(20px);">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&h=400&fit=crop&crop=center" alt="Rouge Dior" onerror="this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400&h=400&fit=crop&crop=center'">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Rouge Dior</h3>
+                    <p class="product-description">Labial de lujo - color intenso y duradero</p>
+                    <div class="product-intensity">
+                        <span class="intensity-label">Intensidad</span>
+                        <div class="intensity-dots">
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot filled"></div>
+                            <div class="intensity-dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para historia del producto -->
+    <div id="productModal" class="product-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <button class="modal-close" aria-label="Cerrar modal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            
+            <div class="modal-hero">
+                <div class="modal-image-container">
+                    <img id="modalImage" class="modal-product-image" src="" alt="">
+                    <div class="image-gradient"></div>
+                </div>
+                <div class="modal-header-info">
+                    <div class="brand-badge">DIOR</div>
+                    <h2 id="modalTitle" class="modal-title"></h2>
+                    <p id="modalSubtitle" class="modal-subtitle"></p>
+                    <div class="modal-rating">
+                        <div class="stars">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                        </div>
+                        <span class="rating-text">4.8 (2,847 reseñas)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="content-tabs">
+                    <button class="tab-button active" data-tab="story">Historia</button>
+                    <button class="tab-button" data-tab="notes">Notas</button>
+                    <button class="tab-button" data-tab="experience">Experiencia</button>
+                </div>
+
+                <div class="tab-content">
+                    <div class="tab-panel active" id="story-panel">
+                        <div class="story-card">
+                            <div class="story-icon">📖</div>
+                            <div class="story-content">
+                                <h3 class="story-title">La Historia</h3>
+                                <p id="storyText" class="story-text"></p>
+                            </div>
+                        </div>
+                        
+                        <div class="story-card">
+                            <div class="story-icon">👑</div>
+                            <div class="story-content">
+                                <h3 class="story-title">El Legado</h3>
+                                <p id="historyText" class="story-text"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-panel" id="notes-panel">
+                        <div class="notes-container">
+                            <h3 class="notes-title">Pirámide Olfativa</h3>
+                            <div class="notes-pyramid">
+                                <div class="note-level top">
+                                    <div class="note-icon">🌸</div>
+                                    <div class="note-info">
+                                        <div class="note-title">Notas de Salida</div>
+                                        <div id="noteSalida" class="note-desc"></div>
+                                    </div>
+                                </div>
+                                <div class="note-level middle">
+                                    <div class="note-icon">💐</div>
+                                    <div class="note-info">
+                                        <div class="note-title">Notas de Corazón</div>
+                                        <div id="noteCorazon" class="note-desc"></div>
+                                    </div>
+                                </div>
+                                <div class="note-level bottom">
+                                    <div class="note-icon">🌿</div>
+                                    <div class="note-info">
+                                        <div class="note-title">Notas de Fondo</div>
+                                        <div id="noteFondo" class="note-desc"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-panel" id="experience-panel">
+                        <div class="experience-card">
+                            <div class="experience-icon">✨</div>
+                            <div class="experience-content">
+                                <h3 class="experience-title">La Experiencia Sensorial</h3>
+                                <p id="experienceText" class="experience-text"></p>
+                            </div>
+                        </div>
+                        
+                        <div class="fragrance-facts">
+                            <h4 class="facts-title">Detalles del Perfume</h4>
+                            <div class="facts-grid">
+                                <div class="fact-item">
+                                    <span class="fact-label">Concentración</span>
+                                    <span class="fact-value">Eau de Parfum</span>
+                                </div>
+                                <div class="fact-item">
+                                    <span class="fact-label">Duración</span>
+                                    <span class="fact-value">8-10 horas</span>
+                                </div>
+                                <div class="fact-item">
+                                    <span class="fact-label">Sillage</span>
+                                    <span class="fact-value">Moderado</span>
+                                </div>
+                                <div class="fact-item">
+                                    <span class="fact-label">Temporada</span>
+                                    <span class="fact-value">Todo el año</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="action-btn secondary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Favoritos
+                    </button>
+                    <button class="action-btn primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M9 10C10.1046 10 11 9.10457 11 8C11 6.89543 10.1046 6 9 6C7.89543 6 7 6.89543 7 8C7 9.10457 7.89543 10 9 10Z" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M2.67004 18.9501L7.60004 15.6401C8.39004 15.1101 9.53004 15.1701 10.24 15.7801L10.57 16.0701C11.35 16.7401 12.61 16.7401 13.39 16.0701L17.55 12.5001C18.33 11.8301 19.59 11.8301 20.37 12.5001L22 13.9001" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                        Añadir al Carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../js/url-encryption.js"></script>
+    <script src="../../js/url-encryption-adapter.js"></script>
+    <script src="../../js/colecciones/vintage-clean.js"></script>
+    <script src="../../js/cart.js"></script>
+    <script src="../../js/cart-error-fixes.js"></script>
+    <script src="../../js/limpiar-productos-prueba.js"></script>
+    <script src="../../js/navbar.js"></script>
+</body>
+</html>

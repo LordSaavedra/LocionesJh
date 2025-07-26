@@ -52,33 +52,79 @@ function initNavbar() {
         });
     });
 
-    // Manejar submenús
+    // Manejar submenús con mejores animaciones
     document.querySelectorAll('.has-submenu').forEach(item => {
         const link = item.querySelector('a');
         const submenu = item.querySelector('.submenu');
+        const arrow = item.querySelector('.submenu-arrow');
         
-        if (link && submenu) {
+        if (link && submenu && arrow) {
             link.addEventListener('click', function(e) {
                 if (window.innerWidth <= 768) {
                     e.preventDefault();
                     
-                    // Cerrar otros submenús abiertos
+                    // Cerrar otros submenús abiertos con animación
                     document.querySelectorAll('.has-submenu.active').forEach(openItem => {
                         if (openItem !== item) {
                             openItem.classList.remove('active');
+                            const openLink = openItem.querySelector('a');
+                            const openArrow = openItem.querySelector('.submenu-arrow');
+                            if (openLink) {
+                                openLink.setAttribute('aria-expanded', 'false');
+                            }
+                            if (openArrow) {
+                                openArrow.style.transform = '';
+                            }
                         }
                     });
                     
-                    // Toggle del submenú actual
-                    item.classList.toggle('active');
+                    // Toggle del submenú actual con animación mejorada
+                    const isActive = item.classList.contains('active');
                     
-                    // Actualizar aria-expanded
-                    const isExpanded = item.classList.contains('active');
-                    link.setAttribute('aria-expanded', isExpanded);
+                    if (!isActive) {
+                        // Abrir submenú
+                        item.classList.add('active');
+                        link.setAttribute('aria-expanded', 'true');
+                        arrow.style.transform = 'rotate(180deg)';
+                        
+                        // Animar los elementos del submenú
+                        setTimeout(() => {
+                            const submenuItems = submenu.querySelectorAll('a');
+                            submenuItems.forEach((item, index) => {
+                                setTimeout(() => {
+                                    item.style.animation = `slideInSubmenu 0.3s ease forwards`;
+                                }, index * 50);
+                            });
+                        }, 100);
+                    } else {
+                        // Cerrar submenú
+                        item.classList.remove('active');
+                        link.setAttribute('aria-expanded', 'false');
+                        arrow.style.transform = '';
+                        
+                        // Limpiar animaciones
+                        const submenuItems = submenu.querySelectorAll('a');
+                        submenuItems.forEach(item => {
+                            item.style.animation = '';
+                        });
+                    }
                     
-                    console.log('Submenu toggled:', link.textContent, 'Active:', isExpanded);
+                    console.log('Submenu toggled:', link.textContent, 'Active:', !isActive);
                 }
             });
+
+            // Mejorar feedback visual en hover para desktop
+            if (window.innerWidth > 768) {
+                item.addEventListener('mouseenter', () => {
+                    arrow.style.transform = 'translateY(-1px)';
+                });
+                
+                item.addEventListener('mouseleave', () => {
+                    if (!item.classList.contains('active')) {
+                        arrow.style.transform = '';
+                    }
+                });
+            }
         }
     });
 
@@ -89,12 +135,24 @@ function initNavbar() {
             const isInsideSubmenu = clickedElement.closest('.has-submenu');
             
             if (!isInsideSubmenu) {
-                // Cerrar todos los submenús abiertos
+                // Cerrar todos los submenús abiertos con animación
                 document.querySelectorAll('.has-submenu.active').forEach(item => {
                     item.classList.remove('active');
                     const link = item.querySelector('a');
+                    const arrow = item.querySelector('.submenu-arrow');
+                    const submenu = item.querySelector('.submenu');
+                    
                     if (link) {
                         link.setAttribute('aria-expanded', 'false');
+                    }
+                    if (arrow) {
+                        arrow.style.transform = '';
+                    }
+                    if (submenu) {
+                        const submenuItems = submenu.querySelectorAll('a');
+                        submenuItems.forEach(item => {
+                            item.style.animation = '';
+                        });
                     }
                 });
             }

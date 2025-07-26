@@ -334,6 +334,186 @@ class ParaEllasManager {
         console.log('🔧 Ejecutando setupPriceFilter para ellas...');
         console.log('📊 Estado actual - productos cargados:', this.productos.length);
         
+        // Verificar si existe el nuevo filtro rediseñado
+        const newFilterExists = document.getElementById('minPriceInputEllas');
+        
+        if (newFilterExists) {
+            this.initializeRedesignedPriceFilterEllas();
+        } else {
+            this.initializeLegacyPriceFilterEllas();
+        }
+    }
+
+    initializeRedesignedPriceFilterEllas() {
+        console.log('🎨 Inicializando filtro de precio rediseñado para ellas');
+        
+        // Elementos del nuevo filtro
+        const minPriceInput = document.getElementById('minPriceInputEllas');
+        const maxPriceInput = document.getElementById('maxPriceInputEllas');
+        const minSlider = document.getElementById('minPriceSliderEllas');
+        const maxSlider = document.getElementById('maxPriceSliderEllas');
+        const minThumb = document.getElementById('minThumbEllas');
+        const maxThumb = document.getElementById('maxThumbEllas');
+        const sliderRange = document.getElementById('priceSliderRangeEllas');
+        const resetButton = document.getElementById('resetPriceFilterEllas');
+        const applyButton = document.getElementById('applyPriceFilterEllas');
+        const toggleButton = document.getElementById('priceFilterToggleEllas');
+        const filterContent = document.getElementById('priceFilterContentEllas');
+        const presetButtons = document.querySelectorAll('.preset-btn');
+
+        if (!minPriceInput || !maxPriceInput) return;
+
+        // Obtener rango de precios
+        const prices = this.productos.map(p => p.precio || 0).filter(p => p > 0);
+        if (prices.length === 0) return;
+
+        const minPrice = Math.min(...prices);
+        const maxPrice = Math.max(...prices);
+
+        // Configurar sliders
+        minSlider.min = minPrice;
+        minSlider.max = maxPrice;
+        minSlider.value = minPrice;
+        maxSlider.min = minPrice;
+        maxSlider.max = maxPrice;
+        maxSlider.value = maxPrice;
+
+        // Configurar filtros activos
+        this.activeFilters.priceMin = minPrice;
+        this.activeFilters.priceMax = maxPrice;
+
+        // Formatear valores iniciales
+        minPriceInput.value = this.formatPriceForInput(minPrice);
+        maxPriceInput.value = this.formatPriceForInput(maxPrice);
+
+        // Función para actualizar thumbs y rango visual
+        const updateVisualElements = () => {
+            const minVal = parseInt(minSlider.value);
+            const maxVal = parseInt(maxSlider.value);
+            const range = maxPrice - minPrice;
+
+            const minPercent = ((minVal - minPrice) / range) * 100;
+            const maxPercent = ((maxVal - minPrice) / range) * 100;
+
+            if (minThumb) minThumb.style.left = `${minPercent}%`;
+            if (maxThumb) maxThumb.style.left = `${maxPercent}%`;
+            if (sliderRange) {
+                sliderRange.style.left = `${minPercent}%`;
+                sliderRange.style.width = `${maxPercent - minPercent}%`;
+            }
+        };
+
+        // Función para sincronizar todos los elementos
+        const syncAllElements = (source) => {
+            let minVal = parseInt(minSlider.value);
+            let maxVal = parseInt(maxSlider.value);
+
+            // Asegurar que min <= max
+            if (minVal > maxVal) {
+                if (source === 'min') {
+                    maxVal = minVal;
+                    maxSlider.value = maxVal;
+                } else {
+                    minVal = maxVal;
+                    minSlider.value = minVal;
+                }
+            }
+
+            // Actualizar inputs
+            minPriceInput.value = this.formatPriceForInput(minVal);
+            maxPriceInput.value = this.formatPriceForInput(maxVal);
+
+            // Actualizar filtros
+            this.activeFilters.priceMin = minVal;
+            this.activeFilters.priceMax = maxVal;
+
+            // Actualizar elementos visuales
+            updateVisualElements();
+
+            // Limpiar selección de presets
+            presetButtons.forEach(btn => btn.classList.remove('active'));
+        };
+
+        // Event listeners para sliders
+        minSlider.addEventListener('input', () => syncAllElements('min'));
+        maxSlider.addEventListener('input', () => syncAllElements('max'));
+
+        // Event listeners para inputs de texto
+        const handleInputChange = (input, isMin) => {
+            const value = this.parsePriceFromInput(input.value);
+            if (value !== null && value >= minPrice && value <= maxPrice) {
+                if (isMin) {
+                    minSlider.value = value;
+                    syncAllElements('min');
+                } else {
+                    maxSlider.value = value;
+                    syncAllElements('max');
+                }
+            }
+        };
+
+        minPriceInput.addEventListener('blur', () => handleInputChange(minPriceInput, true));
+        maxPriceInput.addEventListener('blur', () => handleInputChange(maxPriceInput, false));
+
+        // Event listeners para presets
+        presetButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const minVal = parseInt(btn.getAttribute('data-min'));
+                const maxVal = parseInt(btn.getAttribute('data-max'));
+                
+                minSlider.value = Math.max(minVal, minPrice);
+                maxSlider.value = Math.min(maxVal, maxPrice);
+                
+                syncAllElements();
+                
+                // Marcar como activo
+                presetButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        // Reset button
+        if (resetButton) {
+            resetButton.addEventListener('click', () => {
+                minSlider.value = minPrice;
+                maxSlider.value = maxPrice;
+                syncAllElements();
+            });
+        }
+
+        // Apply button
+        if (applyButton) {
+            applyButton.addEventListener('click', () => {
+                this.applyFilters();
+                console.log('� Filtros de precio aplicados para ellas:', {
+                    min: this.activeFilters.priceMin,
+                    max: this.activeFilters.priceMax
+                });
+            });
+        }
+
+        // Toggle functionality
+        if (toggleButton && filterContent) {
+            toggleButton.addEventListener('click', () => {
+                const isCollapsed = filterContent.classList.contains('collapsed');
+                
+                if (isCollapsed) {
+                    filterContent.classList.remove('collapsed');
+                    toggleButton.querySelector('svg').style.transform = 'rotate(180deg)';
+                } else {
+                    filterContent.classList.add('collapsed');
+                    toggleButton.querySelector('svg').style.transform = 'rotate(0deg)';
+                }
+            });
+        }
+
+        // Inicializar elementos visuales
+        updateVisualElements();
+        
+        console.log('✅ Filtro de precio rediseñado inicializado para ellas');
+    }
+
+    initializeLegacyPriceFilterEllas() {
         const minSlider = document.getElementById('minPriceSliderEllas');
         const maxSlider = document.getElementById('maxPriceSliderEllas');
         const priceDisplay = document.getElementById('priceRangeDisplayEllas');
@@ -341,21 +521,15 @@ class ParaEllasManager {
 
         if (!minSlider || !maxSlider) {
             console.error('❌ No se encontraron los elementos de slider de precio para ellas');
-            console.log('Elementos encontrados:', {
-                minSlider: !!minSlider,
-                maxSlider: !!maxSlider,
-                priceDisplay: !!priceDisplay
-            });
             return;
         }
 
         // Obtener rango de precios de los productos
         const prices = this.productos.map(p => p.precio || 0).filter(p => p > 0);
-        console.log(`🏷️ Precios encontrados en ${this.productos.length} productos para ellas:`, prices.sort((a,b) => a-b));
+        console.log(`�️ Precios encontrados en ${this.productos.length} productos para ellas:`, prices.sort((a,b) => a-b));
         
         if (prices.length === 0) {
             console.warn('⚠️ No se encontraron precios válidos en los productos para ellas');
-            console.log('Productos sin precio válido:', this.productos.filter(p => !p.precio || p.precio <= 0));
             return;
         }
         
@@ -373,13 +547,6 @@ class ParaEllasManager {
             maxSlider.min = minPrice;
             maxSlider.max = maxPrice;
             maxSlider.value = maxPrice;
-            
-            console.log('🎛️ Sliders configurados:', {
-                minSliderRange: `${minSlider.min} - ${minSlider.max}`,
-                minSliderValue: minSlider.value,
-                maxSliderRange: `${maxSlider.min} - ${maxSlider.max}`,
-                maxSliderValue: maxSlider.value
-            });
             
             // Actualizar los filtros activos
             this.activeFilters.priceMin = minPrice;
@@ -430,6 +597,18 @@ class ParaEllasManager {
         // Inicializar y aplicar filtros
         updatePriceRange();
         this.applyFilters();
+    }
+
+    // Función helper para formatear precio para input
+    formatPriceForInput(price) {
+        return new Intl.NumberFormat('es-CO').format(price);
+    }
+
+    // Función helper para parsear precio desde input
+    parsePriceFromInput(inputValue) {
+        const cleaned = inputValue.replace(/[^\d]/g, '');
+        const parsed = parseInt(cleaned);
+        return isNaN(parsed) ? null : parsed;
     }
 
     updateSliderRangeVisual(minSlider, maxSlider) {

@@ -75,25 +75,96 @@
                     </div>
 
                     <!-- Price Filter Inline -->
-                    <div class="price-filter-inline">
-                        <div class="price-filter-header-inline">
-                            <span class="price-label">Precio</span>
-                            <span class="price-range-display" id="priceRangeDisplayEllos">$250K - $780K</span>
-                        </div>
-                        <div class="price-slider-container">
-                            <div class="price-slider-track">
-                                <div class="price-slider-range" id="priceSliderRangeEllos"></div>
+                    <div class="price-filter-redesigned">
+                        <div class="filter-header">
+                            <div class="filter-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M12 1v6m0 6v6"></path>
+                                    <path d="m9 9 3 3 3-3"></path>
+                                </svg>
+                                <span>Filtrar por Precio</span>
                             </div>
-                            <input type="range" 
-                                   id="minPriceSliderEllos" 
-                                   class="price-slider price-slider-min" 
-                                   step="10000">
-                            <input type="range" 
-                                   id="maxPriceSliderEllos" 
-                                   class="price-slider price-slider-max" 
-                                   step="10000">
+                            <button class="filter-toggle" id="priceFilterToggle">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6,9 12,15 18,9"></polyline>
+                                </svg>
+                            </button>
                         </div>
-                        <button class="reset-price-filter-inline" id="resetPriceFilter">Reset</button>
+                        
+                        <div class="filter-content" id="priceFilterContent">
+                            <div class="price-display-modern">
+                                <div class="price-input-group">
+                                    <label for="minPriceInput">Desde</label>
+                                    <div class="price-input-wrapper">
+                                        <span class="currency">$</span>
+                                        <input type="text" id="minPriceInput" class="price-input" value="95.000" placeholder="95.000">
+                                    </div>
+                                </div>
+                                
+                                <div class="price-separator">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="9,18 15,12 9,6"></polyline>
+                                    </svg>
+                                </div>
+                                
+                                <div class="price-input-group">
+                                    <label for="maxPriceInput">Hasta</label>
+                                    <div class="price-input-wrapper">
+                                        <span class="currency">$</span>
+                                        <input type="text" id="maxPriceInput" class="price-input" value="795.000" placeholder="795.000">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="price-slider-modern">
+                                <div class="slider-track">
+                                    <div class="slider-range" id="priceSliderRange"></div>
+                                    <div class="slider-thumb slider-thumb-min" id="minThumb"></div>
+                                    <div class="slider-thumb slider-thumb-max" id="maxThumb"></div>
+                                </div>
+                                <input type="range" 
+                                       id="minPriceSlider" 
+                                       class="range-input range-min" 
+                                       min="95000" 
+                                       max="800000" 
+                                       value="95000"
+                                       step="5000">
+                                <input type="range" 
+                                       id="maxPriceSlider" 
+                                       class="range-input range-max" 
+                                       min="95000" 
+                                       max="800000" 
+                                       value="795000"
+                                       step="5000">
+                            </div>
+                            
+                            <div class="price-presets">
+                                <span class="presets-label">Rangos populares:</span>
+                                <div class="preset-buttons">
+                                    <button class="preset-btn" data-min="95000" data-max="200000">Bajo $200K</button>
+                                    <button class="preset-btn" data-min="200000" data-max="400000">$200K - $400K</button>
+                                    <button class="preset-btn" data-min="400000" data-max="600000">$400K - $600K</button>
+                                    <button class="preset-btn" data-min="600000" data-max="800000">Más de $600K</button>
+                                </div>
+                            </div>
+                            
+                            <div class="filter-actions">
+                                <button class="action-btn secondary" id="resetPriceFilter">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="1,4 1,10 7,10"></polyline>
+                                        <path d="M3.51,15a9,9,0,0,0,2.13,9.36,8.5,8.5,0,0,0,12.34,0c3.87-3.87,3.87-10.14,0-14A8.5,8.5,0,0,0,6,2.18L3.51,4.32"></path>
+                                    </svg>
+                                    Resetear
+                                </button>
+                                <button class="action-btn primary" id="applyPriceFilter">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="20,6 9,17 4,12"></polyline>
+                                    </svg>
+                                    Aplicar Filtro
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>                <!-- Loading Indicator -->
                 <div class="loading-indicator" id="loadingIndicator" style="display: none;">
@@ -193,6 +264,8 @@
         });    </script>    <!-- Supabase CDN -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <!-- Scripts de la aplicación -->
+    <script src="../js/url-encryption.js"></script>
+    <script src="../js/url-encryption-adapter.js"></script>
     <script src="../js/supabase-config.js"></script>
     <script src="../js/cart.js"></script>
     <script src="../js/cart-error-fixes.js"></script>
